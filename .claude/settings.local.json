@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__supabase__list_tables",
+      "Bash(grep:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase",
+    "puppeteer",
+    "taskmaster-ai"
+  ]
+}

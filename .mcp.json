@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@upstash/context7-mcp"]
+    },
+    "supabase": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=qxazrlwwaxtvbpkigbrl"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_aaeb5b5a9c91cf6daac6722c479a64e4502c0ffd"
+      }
+    },
+    "puppeteer": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "taskmaster-ai": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {}
+    }
+  }
+}

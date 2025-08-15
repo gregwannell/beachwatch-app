@@ -111,7 +111,7 @@ The **Beachwatch Data Explorer** is an interactive, map-centric application desi
 - Shadcn/UI component library  
 - Lucide icons  
 - Sonner notifications  
-- Recharts (or similar) for visualisation  
+- shadcn/ui charts for visualisation (built on Recharts with enhanced theming and accessibility)  
 
 ### Backend
 - Next.js API routes  
@@ -122,7 +122,7 @@ The **Beachwatch Data Explorer** is an interactive, map-centric application desi
 - Pre-aggregated annual metrics for performance  
 
 ### Mapping Library
-- Mapbox GL JS or Leaflet  
+- Leaflet with react-leaflet (open source, no API key required)  
 - UK boundary GeoJSON from ONS Geoportal  
 
 ### Deployment

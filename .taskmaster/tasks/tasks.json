@@ -62,13 +62,13 @@
         "id": 2,
         "title": "Install and Configure Core Dependencies",
         "description": "Install required libraries for mapping, data visualization, state management, and UI components as specified in the PRD",
-        "details": "Install React Query (@tanstack/react-query) v5.x for server state management. Install Recharts v2.8.x for data visualization. Install Mapbox GL JS (@mapbox/mapbox-gl-js) v3.x or Leaflet with react-leaflet v4.x for mapping. Install Sonner v1.x for notifications. Add additional shadcn/ui components: Card, Button, Select, Checkbox, Slider, Tooltip, Dialog, Sidebar. Configure React Query with QueryClient and proper error boundaries.",
-        "testStrategy": "Verify all dependencies are properly installed and importable. Test React Query client initialization. Validate Recharts can render basic charts. Test mapping library initialization with sample data.",
-        "priority": "high",
+        "status": "pending",
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Install React Query (@tanstack/react-query) v5.x for server state management. Install shadcn/ui charts component using 'npx shadcn@latest add chart' for data visualization (this automatically includes recharts as a dependency). Install Leaflet with react-leaflet v4.x for mapping (open source alternative to Mapbox). Install Sonner v1.x for notifications. Add additional shadcn/ui components: Card, Button, Select, Checkbox, Slider, Tooltip, Dialog, Sidebar. Configure React Query with QueryClient and proper error boundaries.",
+        "testStrategy": "Verify all dependencies are properly installed and importable. Test React Query client initialization. Validate shadcn/ui charts can render basic charts. Test Leaflet initialization with sample data.",
         "subtasks": []
       },
       {
@@ -163,90 +163,90 @@
       {
         "id": 5,
         "title": "Build Interactive UK Map Component",
-        "description": "Develop the core interactive map component with region selection, hover effects, tooltips, and responsive design",
-        "details": "Choose between Mapbox GL JS (requires API key) or Leaflet (open source). Create MapComponent with TypeScript interfaces for region data. Implement region boundary rendering with GeoJSON. Add hover highlighting with CSS transitions. Create tooltip component showing region name and 2-3 key metrics on hover. Implement click handlers for region selection. Add zoom and pan controls with bounds limiting to UK. Optimize rendering performance for large boundary datasets using layer clustering or simplification. Handle touch interactions for mobile devices.",
-        "testStrategy": "Test map rendering performance with full UK boundary data. Verify hover and click interactions across different regions. Test mobile touch responsiveness and zoom controls. Validate tooltip positioning and content accuracy.",
-        "priority": "high",
+        "description": "Develop the core interactive map component using Leaflet with region selection, hover effects, tooltips, and responsive design",
+        "status": "pending",
         "dependencies": [
           3,
           4
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Use Leaflet (open source, no API key required) with react-leaflet for the mapping implementation. Create MapComponent with TypeScript interfaces for region data. Implement region boundary rendering with GeoJSON. Add hover highlighting with CSS transitions. Create tooltip component showing region name and 2-3 key metrics on hover. Implement click handlers for region selection. Add zoom and pan controls with bounds limiting to UK. Optimize rendering performance for large boundary datasets using layer clustering or simplification. Handle touch interactions for mobile devices.",
+        "testStrategy": "Test map rendering performance with full UK boundary data. Verify hover and click interactions across different regions. Test mobile touch responsiveness and zoom controls. Validate tooltip positioning and content accuracy.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Evaluate and Set Up Mapping Library",
-            "description": "Research and choose between Mapbox GL JS and Leaflet, then install and configure the selected mapping library",
-            "dependencies": [],
-            "details": "Compare Mapbox GL JS (requires API key, better performance) vs Leaflet (open source, more flexible). Consider project requirements, budget constraints, and performance needs. Install chosen library with TypeScript support. Set up basic map container and initialization code.",
+            "title": "Install and Configure Leaflet with React-Leaflet",
+            "description": "Install Leaflet and react-leaflet packages, then set up basic map configuration with TypeScript support",
             "status": "pending",
+            "dependencies": [],
+            "details": "Install leaflet and react-leaflet packages with TypeScript definitions (@types/leaflet). Configure basic map container and initialization code using react-leaflet components. Set up CSS imports for Leaflet styles. Create initial MapComponent with proper TypeScript typing.",
             "testStrategy": ""
           },
           {
             "id": 2,
             "title": "Define TypeScript Interfaces for Region Data",
             "description": "Create comprehensive TypeScript interfaces and types for region data, map properties, and component props",
-            "dependencies": [],
-            "details": "Define interfaces for RegionData, MapBounds, RegionProperties, TooltipData, and MapComponentProps. Include geometry types for GeoJSON features. Add type definitions for map events, hover states, and selection states. Ensure compatibility with mapping library types.",
             "status": "pending",
+            "dependencies": [],
+            "details": "Define interfaces for RegionData, MapBounds, RegionProperties, TooltipData, and MapComponentProps. Include geometry types for GeoJSON features. Add type definitions for map events, hover states, and selection states. Ensure compatibility with Leaflet and react-leaflet types.",
             "testStrategy": ""
           },
           {
             "id": 3,
             "title": "Implement GeoJSON Boundary Rendering",
-            "description": "Set up region boundary rendering using GeoJSON data with proper styling and layer management",
-            "dependencies": [
-              "5.1",
-              "5.2"
-            ],
-            "details": "Load UK region boundary GeoJSON data from ONS Geoportal API. Create map layers for different administrative levels. Implement region styling with appropriate colors and borders. Set up layer switching for different geographic levels (countries, counties, unitary authorities).",
+            "description": "Set up region boundary rendering using GeoJSON data with proper styling and layer management using Leaflet's GeoJSON layer",
             "status": "pending",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Load UK region boundary GeoJSON data from ONS Geoportal API. Create GeoJSON layers using react-leaflet's GeoJSON component for different administrative levels. Implement region styling with appropriate colors and borders. Set up layer switching for different geographic levels (countries, counties, unitary authorities).",
             "testStrategy": ""
           },
           {
             "id": 4,
             "title": "Add Interactive Features - Hover and Click Handlers",
-            "description": "Implement hover highlighting, click selection, and interactive map controls with proper event handling",
-            "dependencies": [
-              "5.3"
-            ],
-            "details": "Add mouseenter/mouseleave event handlers for region highlighting. Implement click handlers for region selection with visual feedback. Add CSS transitions for smooth hover effects. Create zoom and pan controls with UK bounds limiting. Handle keyboard navigation for accessibility.",
+            "description": "Implement hover highlighting, click selection, and interactive map controls with proper event handling using Leaflet event system",
             "status": "pending",
+            "dependencies": [
+              3
+            ],
+            "details": "Add mouseover/mouseout event handlers for region highlighting using Leaflet's event system. Implement click handlers for region selection with visual feedback. Add CSS transitions for smooth hover effects. Create zoom and pan controls with UK bounds limiting using Leaflet's fitBounds. Handle keyboard navigation for accessibility.",
             "testStrategy": ""
           },
           {
             "id": 5,
             "title": "Create Tooltip Component with Dynamic Content",
-            "description": "Build responsive tooltip component that displays region information and key metrics on hover",
-            "dependencies": [
-              "5.2",
-              "5.4"
-            ],
-            "details": "Create reusable Tooltip component with proper positioning logic. Display region name and 2-3 key litter metrics. Implement smart positioning to avoid screen edges. Add loading states for async metric data. Style with consistent design system and proper contrast ratios.",
+            "description": "Build responsive tooltip component that displays region information and key metrics on hover using Leaflet's tooltip functionality",
             "status": "pending",
+            "dependencies": [
+              2,
+              4
+            ],
+            "details": "Create reusable Tooltip component using Leaflet's native tooltip system. Display region name and 2-3 key litter metrics. Implement smart positioning to avoid screen edges. Add loading states for async metric data. Style with consistent design system and proper contrast ratios using custom CSS classes.",
             "testStrategy": ""
           },
           {
             "id": 6,
             "title": "Optimize Performance for Large Boundary Datasets",
-            "description": "Implement performance optimizations including layer clustering, coordinate simplification, and efficient rendering",
-            "dependencies": [
-              "5.3"
-            ],
-            "details": "Implement coordinate simplification for detailed boundary data. Add layer clustering for better performance with many regions. Use viewport-based rendering to load only visible regions. Implement debouncing for hover events. Add map tile caching strategies.",
+            "description": "Implement performance optimizations including coordinate simplification and efficient rendering using Leaflet's performance features",
             "status": "pending",
+            "dependencies": [
+              3
+            ],
+            "details": "Implement coordinate simplification for detailed boundary data using Leaflet's simplification options. Use Leaflet's canvas renderer for better performance with many regions. Implement viewport-based rendering to load only visible regions. Add debouncing for hover events. Utilize Leaflet's built-in tile caching strategies.",
             "testStrategy": ""
           },
           {
             "id": 7,
             "title": "Handle Mobile Touch Interactions and Responsive Design",
-            "description": "Implement touch-optimized interactions and ensure responsive map behavior across all device sizes",
-            "dependencies": [
-              "5.4",
-              "5.5"
-            ],
-            "details": "Add touch event handlers for mobile devices. Implement pinch-to-zoom and touch-pan gestures. Adjust tooltip behavior for touch interactions (tap to show/hide). Ensure map controls are touch-friendly with appropriate sizing. Test responsive behavior on various screen sizes.",
+            "description": "Implement touch-optimized interactions and ensure responsive map behavior across all device sizes using Leaflet's mobile support",
             "status": "pending",
+            "dependencies": [
+              4,
+              5
+            ],
+            "details": "Configure Leaflet's built-in touch event handlers for mobile devices. Implement pinch-to-zoom and touch-pan gestures using Leaflet's touch interaction options. Adjust tooltip behavior for touch interactions (tap to show/hide). Ensure map controls are touch-friendly with appropriate sizing using Leaflet's mobile-optimized controls. Test responsive behavior on various screen sizes.",
             "testStrategy": ""
           }
         ]
@@ -254,68 +254,68 @@
       {
         "id": 6,
         "title": "Create Data Visualization Components Library",
-        "description": "Build reusable chart components for displaying litter data using Recharts, including bar charts, pie charts, and line charts",
-        "details": "Create chart component library using Recharts: HorizontalBarChart for top 5 litter items, PieChart for material/source breakdowns, LineChart for historical trends. Implement responsive chart sizing with aspect ratios. Add colorblind-safe palettes with patterns/textures. Create chart tooltip components with custom formatting. Add percentage and count display options. Implement year-over-year percentage change indicators with color coding (green for decrease, red for increase). Support data loading states and empty state handling. Add chart accessibility with ARIA labels and keyboard navigation.",
-        "testStrategy": "Test chart rendering with various data sizes and edge cases. Verify responsive behavior across screen sizes. Test accessibility features with screen readers. Validate color contrast ratios and colorblind accessibility.",
-        "priority": "medium",
+        "description": "Build reusable chart components for displaying litter data using shadcn/ui charts, including bar charts, pie charts, and line charts",
+        "status": "pending",
         "dependencies": [
           2
         ],
-        "status": "pending",
+        "priority": "medium",
+        "details": "Create chart component library using shadcn/ui charts: HorizontalBarChart for top 5 litter items, PieChart for material/source breakdowns, LineChart for historical trends. Implement responsive chart sizing with aspect ratios using ChartContainer. Add colorblind-safe palettes with patterns/textures using chart theming. Create chart tooltip components with custom formatting using ChartTooltip and ChartTooltipContent. Add percentage and count display options. Implement year-over-year percentage change indicators with color coding (green for decrease, red for increase). Support data loading states and empty state handling. Add chart accessibility with ARIA labels and keyboard navigation using built-in accessibility features.",
+        "testStrategy": "Test chart rendering with various data sizes and edge cases. Verify responsive behavior across screen sizes. Test accessibility features with screen readers. Validate color contrast ratios and colorblind accessibility.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Design Chart Component Architecture and Base Types",
-            "description": "Create the foundational architecture for the chart component library including TypeScript interfaces, base chart props, and component structure",
-            "dependencies": [],
-            "details": "Install and configure Recharts dependencies. Define TypeScript interfaces for chart data, props, and configuration options. Create base chart wrapper component with common functionality like responsive sizing, loading states, and error handling. Set up component directory structure in components/charts/. Define chart theme interface and color palette structure. Create utility functions for data transformation and formatting.",
+            "title": "Install shadcn/ui Charts and Design Component Architecture",
+            "description": "Install shadcn/ui chart components and create the foundational architecture for the chart component library including TypeScript interfaces",
             "status": "pending",
+            "dependencies": [],
+            "details": "Install shadcn/ui chart components (npx shadcn@latest add chart). Define TypeScript interfaces for chart data, props, and configuration options. Create base chart wrapper component using ChartContainer for responsive sizing and common functionality. Set up component directory structure in components/charts/. Define chart theme interface and color palette structure compatible with shadcn/ui theming. Create utility functions for data transformation and formatting.",
             "testStrategy": ""
           },
           {
             "id": 2,
-            "title": "Implement HorizontalBarChart Component",
-            "description": "Build the horizontal bar chart component for displaying top 5 litter items with customizable styling and tooltips",
-            "dependencies": [
-              "6.1"
-            ],
-            "details": "Create HorizontalBarChart component using Recharts Bar component. Implement custom tooltip with litter item names, counts, and percentages. Add responsive sizing with aspect ratio maintenance. Support both count and percentage display modes. Implement data sorting for top N items display. Add proper accessibility labels and ARIA descriptions. Include loading and empty state handling.",
+            "title": "Implement HorizontalBarChart Component with shadcn/ui",
+            "description": "Build the horizontal bar chart component using shadcn/ui chart primitives for displaying top 5 litter items",
             "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Create HorizontalBarChart component using shadcn/ui Bar chart components and ChartContainer. Implement custom tooltips with ChartTooltip and ChartTooltipContent for litter item names, counts, and percentages. Add responsive sizing with ChartContainer's built-in aspect ratio handling. Support both count and percentage display modes. Implement data sorting for top N items display. Add proper accessibility labels using shadcn/ui's built-in accessibility features.",
             "testStrategy": ""
           },
           {
             "id": 3,
-            "title": "Implement PieChart and LineChart Components",
-            "description": "Build pie chart for material/source breakdowns and line chart for historical trends with interactive features",
-            "dependencies": [
-              "6.1"
-            ],
-            "details": "Create PieChart component for material and source distribution with custom labels and tooltips. Implement LineChart component for historical trends with multiple data series support. Add interactive features like hover highlighting and legend toggling. Support year-over-year percentage change indicators with color coding. Implement responsive sizing and mobile-optimized interactions. Add proper data validation and edge case handling.",
+            "title": "Implement PieChart and LineChart Components with shadcn/ui",
+            "description": "Build pie chart and line chart components using shadcn/ui chart primitives for material/source breakdowns and historical trends",
             "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Create PieChart component using shadcn/ui Pie chart with ChartContainer for material and source distribution. Implement LineChart component using shadcn/ui Line chart for historical trends with multiple data series support. Use ChartTooltip and ChartTooltipContent for interactive tooltips. Support year-over-year percentage change indicators with color coding using shadcn/ui theming. Implement responsive sizing with ChartContainer and mobile-optimized interactions.",
             "testStrategy": ""
           },
           {
             "id": 4,
-            "title": "Implement Colorblind-Safe Theming and Accessibility",
-            "description": "Create colorblind-accessible color palettes with patterns/textures and implement comprehensive accessibility features",
-            "dependencies": [
-              "6.2",
-              "6.3"
-            ],
-            "details": "Design and implement colorblind-safe color palettes with distinct patterns and textures for chart elements. Add WCAG-compliant color contrast ratios. Implement keyboard navigation for chart interactions. Add screen reader support with comprehensive ARIA labels and descriptions. Create focus indicators for interactive elements. Support high contrast mode and user preference detection. Add pattern fills as fallback for color differentiation.",
+            "title": "Implement Colorblind-Safe Theming and Accessibility with shadcn/ui",
+            "description": "Create colorblind-accessible color palettes and implement comprehensive accessibility using shadcn/ui's theming system",
             "status": "pending",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Design and implement colorblind-safe color palettes using shadcn/ui chart theming with distinct patterns and textures. Configure chart color variables in CSS custom properties. Leverage shadcn/ui's built-in accessibility features including ARIA labels, keyboard navigation, and screen reader support. Ensure WCAG-compliant color contrast ratios using shadcn/ui's color system. Add pattern fills as fallback for color differentiation in chart components.",
             "testStrategy": ""
           },
           {
             "id": 5,
-            "title": "Implement Responsive Design and State Management",
-            "description": "Add comprehensive responsive sizing, loading states, and error handling across all chart components",
-            "dependencies": [
-              "6.2",
-              "6.3"
-            ],
-            "details": "Implement responsive chart sizing with proper aspect ratios across device breakpoints. Create loading skeleton components for data fetching states. Add error boundary and error state handling with user-friendly messages. Implement debounced resize handling for performance. Add chart export functionality (PNG/SVG). Create storybook stories for component documentation. Add comprehensive unit and integration tests for all chart components.",
+            "title": "Implement State Management and Component Documentation",
+            "description": "Add loading states, error handling, and comprehensive documentation for all shadcn/ui chart components",
             "status": "pending",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Implement loading skeleton components compatible with ChartContainer for data fetching states. Add error boundary and error state handling with user-friendly messages. Create comprehensive component documentation and Storybook stories. Add chart export functionality leveraging shadcn/ui chart's native capabilities. Implement debounced resize handling using ChartContainer's responsive features. Add comprehensive unit and integration tests for all chart components.",
             "testStrategy": ""
           }
         ]

@@ -1,0 +1,109 @@
+{
+	"meta": {
+		"generatedAt": "2025-08-15T10:36:48.734Z",
+		"tasksAnalyzed": 12,
+		"totalTasks": 12,
+		"analysisCount": 12,
+		"thresholdScore": 5,
+		"projectName": "Task Master",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 1,
+			"taskTitle": "Setup Database Connection and Environment Configuration",
+			"complexityScore": 4,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down into: environment setup (.env files), Prisma installation and configuration, schema generation from existing SQL, database connection testing, and Supabase client setup. The existing database schema is well-defined which simplifies implementation.",
+			"reasoning": "Medium complexity - database schema already exists, standard Prisma setup, but requires careful configuration of multiple tools (Prisma, Supabase, environment variables) and schema mapping from existing SQL."
+		},
+		{
+			"taskId": 2,
+			"taskTitle": "Install and Configure Core Dependencies",
+			"complexityScore": 3,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Divide into: React Query setup with QueryClient, mapping library selection and installation (Mapbox vs Leaflet), Recharts integration, and shadcn/ui component additions. Basic installation task with some configuration decisions.",
+			"reasoning": "Low-medium complexity - mostly package installations with some configuration. The project already has shadcn/ui configured, so adding components is straightforward. Main decision point is mapping library choice."
+		},
+		{
+			"taskId": 3,
+			"taskTitle": "Create Core Application Layout and Navigation Structure",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Split into: responsive CSS Grid layout implementation, collapsible sidebar component, engagement stats panel positioning, and header/branding components. Leverage existing Tailwind v4 and shadcn/ui setup.",
+			"reasoning": "Medium complexity - requires responsive design implementation using CSS Grid, multiple layout components, and proper integration with existing shadcn/ui. Existing Tailwind v4 setup helps but responsive layout requires careful planning."
+		},
+		{
+			"taskId": 4,
+			"taskTitle": "Implement UK Geographic Regions Data Management",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break into: API route creation for regions, Prisma query implementation for hierarchical data, ONS boundary data integration, GeoJSON processing and validation, caching strategy with React Query, and PostGIS operations setup.",
+			"reasoning": "High complexity - involves external API integration (ONS), complex hierarchical data queries, GeoJSON processing, and performance optimization. The existing database schema supports this but requires significant implementation work."
+		},
+		{
+			"taskId": 5,
+			"taskTitle": "Build Interactive UK Map Component",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Divide into: mapping library decision and setup, GeoJSON boundary rendering, interactive features (hover/click), tooltip component creation, performance optimization for large datasets, mobile touch handling, and TypeScript interface definition.",
+			"reasoning": "High complexity - core application component requiring mapping library integration, complex user interactions, performance considerations for large boundary datasets, and mobile optimization. Critical component that affects entire user experience."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Create Data Visualization Components Library",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into: chart component architecture design, individual chart implementations (bar, pie, line), responsive sizing and accessibility features, colorblind-safe theming, and loading/error states handling.",
+			"reasoning": "Medium-high complexity - multiple chart types to implement, accessibility requirements, responsive design, and integration with existing theme system. Recharts simplifies implementation but custom requirements add complexity."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Implement Filter System and State Management",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break into: filter context setup, region selector with search, time period controls, category filtering, URL synchronization, and localStorage persistence. Complex state management across multiple filter types.",
+			"reasoning": "High complexity - comprehensive state management system with multiple filter types, URL synchronization, persistence, and integration with React Query. Requires careful architecture to prevent performance issues."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Create API Routes for Litter Data Analytics",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide into: API route structure design, Prisma query optimization for aggregated data, request validation with Zod, caching implementation, and error handling/logging setup. Leverage existing database schema.",
+			"reasoning": "Medium-high complexity - multiple API endpoints with complex database queries using the existing aggregated tables. Requires optimization for performance and proper error handling, but well-defined schema reduces complexity."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Build Engagement Statistics Panel",
+			"complexityScore": 4,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Split into: panel component design, metric calculation logic, real-time updates with React Query, and responsive positioning/animations. Relatively straightforward UI component with data integration.",
+			"reasoning": "Medium complexity - UI component with data integration, responsive design, and real-time updates. Leverages existing API routes and React Query setup, making implementation more straightforward."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Implement Region Information Modal and Data Display",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break into: modal component setup with shadcn/ui Dialog, comprehensive data display layout, chart integration within modal, no-data state handling, and keyboard navigation/accessibility features.",
+			"reasoning": "Medium-high complexity - complex modal component integrating multiple chart types, data states, accessibility features, and responsive design. Builds on existing chart and data components but requires careful integration."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Add Accessibility Features and Mobile Optimization",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide into: ARIA implementation and keyboard navigation, color contrast and screen reader support, mobile touch optimization, responsive layout refinements, and accessibility testing/validation setup.",
+			"reasoning": "Medium complexity - comprehensive accessibility implementation across existing components, mobile optimization, and testing setup. Benefits from existing responsive design foundation but requires systematic implementation across all components."
+		},
+		{
+			"taskId": 12,
+			"taskTitle": "Performance Optimization and Production Deployment Setup",
+			"complexityScore": 5,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Split into: Next.js production optimization configuration, error boundary and monitoring setup, Vercel deployment configuration, Supabase production setup, and security/analytics implementation.",
+			"reasoning": "Medium complexity - production deployment and optimization tasks. Next.js provides many optimizations out-of-the-box, and Vercel deployment is straightforward. Main complexity comes from proper monitoring and security setup."
+		}
+	]
+}

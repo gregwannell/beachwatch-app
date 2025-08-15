@@ -1,0 +1,590 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Database Connection and Environment Configuration",
+        "description": "Configure Supabase database connection using the JavaScript client and environment variables for the Beachwatch Data Explorer",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Install and configure Supabase JavaScript client for direct database access. Set up environment variables for database connection (SUPABASE_URL, SUPABASE_ANON_KEY). Create lib/supabase.ts for client configuration. Install dependency: @supabase/supabase-js. Optionally generate TypeScript types from database schema using Supabase CLI. This approach provides direct, type-safe database access perfect for read-heavy analytics use cases with built-in connection pooling and caching.",
+        "testStrategy": "Verify database connection with a simple query test. Test Supabase client initialization and basic data fetching operations on regions table. Validate environment variables are properly loaded and client is configured correctly.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install Supabase JavaScript client",
+            "description": "Install @supabase/supabase-js dependency",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Run npm install @supabase/supabase-js to add the Supabase client library",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Configure environment variables",
+            "description": "Set up SUPABASE_URL and SUPABASE_ANON_KEY in environment configuration",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create or update .env.local with SUPABASE_URL and SUPABASE_ANON_KEY. Add these variables to .env.example for documentation. Ensure variables are properly typed in next.config.ts if needed",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create Supabase client configuration",
+            "description": "Create lib/supabase.ts with client setup",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create lib/supabase.ts file with createClient function from @supabase/supabase-js. Configure client with environment variables and appropriate options for Next.js Server Components",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Test database connection",
+            "description": "Verify Supabase client can connect and query the database",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create a simple test to verify database connection by querying the regions table. Test both client-side and server-side usage patterns",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Generate TypeScript types (optional)",
+            "description": "Generate TypeScript types from database schema",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Use Supabase CLI to generate TypeScript types from the database schema for type-safe database operations. Configure type generation in package.json scripts",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Install and Configure Core Dependencies",
+        "description": "Install required libraries for mapping, data visualization, state management, and UI components as specified in the PRD",
+        "details": "Install React Query (@tanstack/react-query) v5.x for server state management. Install Recharts v2.8.x for data visualization. Install Mapbox GL JS (@mapbox/mapbox-gl-js) v3.x or Leaflet with react-leaflet v4.x for mapping. Install Sonner v1.x for notifications. Add additional shadcn/ui components: Card, Button, Select, Checkbox, Slider, Tooltip, Dialog, Sidebar. Configure React Query with QueryClient and proper error boundaries.",
+        "testStrategy": "Verify all dependencies are properly installed and importable. Test React Query client initialization. Validate Recharts can render basic charts. Test mapping library initialization with sample data.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Create Core Application Layout and Navigation Structure",
+        "description": "Build the main application layout with responsive design, including map area, sidebar for filters, and engagement stats panel",
+        "details": "Create responsive layout component with CSS Grid: map occupying ~70% width on desktop, full width on mobile. Implement collapsible left sidebar for filters using shadcn/ui Sidebar component. Create fixed engagement stats panel on right side (desktop) or below map (mobile). Add proper responsive breakpoints using Tailwind CSS. Implement header with application title and branding. Use Inter font from next/font/google for typography. Apply environmental color scheme (blues/greens) with CSS custom properties.",
+        "testStrategy": "Test responsive behavior across desktop, tablet, and mobile viewports. Verify sidebar collapse/expand functionality. Test layout integrity with different content sizes.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Implement UK Geographic Regions Data Management",
+        "description": "Create data models, API routes, and services for managing UK geographic regions with ONS boundary data integration using Supabase JavaScript client",
+        "status": "pending",
+        "dependencies": [
+          1
+        ],
+        "priority": "high",
+        "details": "Create API routes in app/api/regions/ for fetching region data using Supabase client. Implement direct Supabase queries for hierarchical region structure (country > county > unitary authority) leveraging built-in REST API. Source UK boundary GeoJSON from ONS Geoportal API (https://geoportal.statistics.gov.uk/). Create region service functions for data transformation using Supabase's native GeoJSON handling. Implement caching strategy with React Query and Supabase's built-in connection pooling. Add region boundary coordinate validation using Supabase PostGIS functions. Leverage native PostGIS support for geographic operations without additional configuration complexity.",
+        "testStrategy": "Test region data fetching with various geographic levels using Supabase client. Validate GeoJSON structure and coordinate integrity with native PostGIS functions. Test region hierarchy queries for parent/child relationships using Supabase REST API. Verify API performance with large boundary datasets leveraging built-in connection pooling.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create API routes for regions data with Supabase client",
+            "description": "Implement Next.js API routes in app/api/regions/ using Supabase JavaScript client for fetching UK geographic regions data with proper error handling and response formatting",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create API endpoints using Supabase client: GET /api/regions for all regions, GET /api/regions/[id] for specific region, GET /api/regions/hierarchy for parent-child relationships. Implement proper TypeScript interfaces for Supabase response objects. Add input validation and error handling using Supabase error types. Configure rate limiting and CORS headers. Utilize Supabase's built-in connection pooling and automatic retries.",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Supabase queries for hierarchical region structure",
+            "description": "Build database queries using Supabase JavaScript client to handle hierarchical UK region data structure from country to unitary authority level",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Create Supabase queries for nested region relationships using select with joins. Implement functions using supabase.from(): findRegionsByParent, getRegionHierarchy, searchRegionsByName. Utilize Supabase's built-in filtering and ordering capabilities. Handle region type filtering (country, county, unitary authority) with Supabase query builders. Leverage automatic connection management and query optimization.",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Integrate ONS boundary data from Geoportal API",
+            "description": "Implement integration with ONS Geoportal API to fetch and process UK boundary data in GeoJSON format",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create service functions to fetch from ONS Geoportal API endpoints. Implement data transformation from ONS format to Supabase schema. Add retry logic and error handling for external API calls. Create functions for: fetchBoundaryData, transformONSData, validateBoundaryIntegrity. Handle API rate limits and timeouts. Prepare data for Supabase's native GeoJSON storage.",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement GeoJSON processing with Supabase PostGIS",
+            "description": "Build GeoJSON processing pipeline using Supabase's native PostGIS support for coordinate validation and geometry operations",
+            "status": "pending",
+            "dependencies": [
+              3
+            ],
+            "details": "Utilize Supabase's built-in PostGIS functions for GeoJSON validation. Implement coordinate bounds checking using native PostGIS ST functions through Supabase client. Add geometry simplification using PostGIS ST_Simplify for different zoom levels. Create functions leveraging Supabase PostGIS: validateGeoJSON, simplifyGeometry, calculateBounds, optimizeForZoom. Handle invalid geometries using PostGIS validation functions.",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Setup React Query caching with Supabase integration",
+            "description": "Implement comprehensive caching strategy using React Query integrated with Supabase's built-in caching and real-time capabilities",
+            "status": "pending",
+            "dependencies": [
+              2
+            ],
+            "details": "Configure React Query client to work with Supabase client queries. Implement query keys structure for hierarchical caching with Supabase data. Add prefetching strategies using Supabase's connection pooling. Create cache invalidation rules integrated with Supabase real-time subscriptions. Set up background refetching leveraging Supabase's automatic retry mechanisms and built-in performance optimizations.",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Leverage Supabase native PostGIS for geographic operations",
+            "description": "Implement geographic operations using Supabase's built-in PostGIS support for spatial queries and boundary calculations",
+            "status": "pending",
+            "dependencies": [
+              4
+            ],
+            "details": "Use Supabase's native PostGIS extension through JavaScript client. Implement geographic query functions using Supabase RPC calls: point-in-polygon, distance calculations, boundary intersections. Add geographic coordinate transformations using PostGIS functions via Supabase client. Create optimized queries using Supabase's PostGIS function support: ST_Contains, ST_Distance, ST_Intersects. Leverage automatic spatial indexing and query optimization.",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Build Interactive UK Map Component",
+        "description": "Develop the core interactive map component with region selection, hover effects, tooltips, and responsive design",
+        "details": "Choose between Mapbox GL JS (requires API key) or Leaflet (open source). Create MapComponent with TypeScript interfaces for region data. Implement region boundary rendering with GeoJSON. Add hover highlighting with CSS transitions. Create tooltip component showing region name and 2-3 key metrics on hover. Implement click handlers for region selection. Add zoom and pan controls with bounds limiting to UK. Optimize rendering performance for large boundary datasets using layer clustering or simplification. Handle touch interactions for mobile devices.",
+        "testStrategy": "Test map rendering performance with full UK boundary data. Verify hover and click interactions across different regions. Test mobile touch responsiveness and zoom controls. Validate tooltip positioning and content accuracy.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Evaluate and Set Up Mapping Library",
+            "description": "Research and choose between Mapbox GL JS and Leaflet, then install and configure the selected mapping library",
+            "dependencies": [],
+            "details": "Compare Mapbox GL JS (requires API key, better performance) vs Leaflet (open source, more flexible). Consider project requirements, budget constraints, and performance needs. Install chosen library with TypeScript support. Set up basic map container and initialization code.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Define TypeScript Interfaces for Region Data",
+            "description": "Create comprehensive TypeScript interfaces and types for region data, map properties, and component props",
+            "dependencies": [],
+            "details": "Define interfaces for RegionData, MapBounds, RegionProperties, TooltipData, and MapComponentProps. Include geometry types for GeoJSON features. Add type definitions for map events, hover states, and selection states. Ensure compatibility with mapping library types.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement GeoJSON Boundary Rendering",
+            "description": "Set up region boundary rendering using GeoJSON data with proper styling and layer management",
+            "dependencies": [
+              "5.1",
+              "5.2"
+            ],
+            "details": "Load UK region boundary GeoJSON data from ONS Geoportal API. Create map layers for different administrative levels. Implement region styling with appropriate colors and borders. Set up layer switching for different geographic levels (countries, counties, unitary authorities).",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Add Interactive Features - Hover and Click Handlers",
+            "description": "Implement hover highlighting, click selection, and interactive map controls with proper event handling",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Add mouseenter/mouseleave event handlers for region highlighting. Implement click handlers for region selection with visual feedback. Add CSS transitions for smooth hover effects. Create zoom and pan controls with UK bounds limiting. Handle keyboard navigation for accessibility.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create Tooltip Component with Dynamic Content",
+            "description": "Build responsive tooltip component that displays region information and key metrics on hover",
+            "dependencies": [
+              "5.2",
+              "5.4"
+            ],
+            "details": "Create reusable Tooltip component with proper positioning logic. Display region name and 2-3 key litter metrics. Implement smart positioning to avoid screen edges. Add loading states for async metric data. Style with consistent design system and proper contrast ratios.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Optimize Performance for Large Boundary Datasets",
+            "description": "Implement performance optimizations including layer clustering, coordinate simplification, and efficient rendering",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Implement coordinate simplification for detailed boundary data. Add layer clustering for better performance with many regions. Use viewport-based rendering to load only visible regions. Implement debouncing for hover events. Add map tile caching strategies.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Handle Mobile Touch Interactions and Responsive Design",
+            "description": "Implement touch-optimized interactions and ensure responsive map behavior across all device sizes",
+            "dependencies": [
+              "5.4",
+              "5.5"
+            ],
+            "details": "Add touch event handlers for mobile devices. Implement pinch-to-zoom and touch-pan gestures. Adjust tooltip behavior for touch interactions (tap to show/hide). Ensure map controls are touch-friendly with appropriate sizing. Test responsive behavior on various screen sizes.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Create Data Visualization Components Library",
+        "description": "Build reusable chart components for displaying litter data using Recharts, including bar charts, pie charts, and line charts",
+        "details": "Create chart component library using Recharts: HorizontalBarChart for top 5 litter items, PieChart for material/source breakdowns, LineChart for historical trends. Implement responsive chart sizing with aspect ratios. Add colorblind-safe palettes with patterns/textures. Create chart tooltip components with custom formatting. Add percentage and count display options. Implement year-over-year percentage change indicators with color coding (green for decrease, red for increase). Support data loading states and empty state handling. Add chart accessibility with ARIA labels and keyboard navigation.",
+        "testStrategy": "Test chart rendering with various data sizes and edge cases. Verify responsive behavior across screen sizes. Test accessibility features with screen readers. Validate color contrast ratios and colorblind accessibility.",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design Chart Component Architecture and Base Types",
+            "description": "Create the foundational architecture for the chart component library including TypeScript interfaces, base chart props, and component structure",
+            "dependencies": [],
+            "details": "Install and configure Recharts dependencies. Define TypeScript interfaces for chart data, props, and configuration options. Create base chart wrapper component with common functionality like responsive sizing, loading states, and error handling. Set up component directory structure in components/charts/. Define chart theme interface and color palette structure. Create utility functions for data transformation and formatting.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement HorizontalBarChart Component",
+            "description": "Build the horizontal bar chart component for displaying top 5 litter items with customizable styling and tooltips",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Create HorizontalBarChart component using Recharts Bar component. Implement custom tooltip with litter item names, counts, and percentages. Add responsive sizing with aspect ratio maintenance. Support both count and percentage display modes. Implement data sorting for top N items display. Add proper accessibility labels and ARIA descriptions. Include loading and empty state handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement PieChart and LineChart Components",
+            "description": "Build pie chart for material/source breakdowns and line chart for historical trends with interactive features",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Create PieChart component for material and source distribution with custom labels and tooltips. Implement LineChart component for historical trends with multiple data series support. Add interactive features like hover highlighting and legend toggling. Support year-over-year percentage change indicators with color coding. Implement responsive sizing and mobile-optimized interactions. Add proper data validation and edge case handling.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Colorblind-Safe Theming and Accessibility",
+            "description": "Create colorblind-accessible color palettes with patterns/textures and implement comprehensive accessibility features",
+            "dependencies": [
+              "6.2",
+              "6.3"
+            ],
+            "details": "Design and implement colorblind-safe color palettes with distinct patterns and textures for chart elements. Add WCAG-compliant color contrast ratios. Implement keyboard navigation for chart interactions. Add screen reader support with comprehensive ARIA labels and descriptions. Create focus indicators for interactive elements. Support high contrast mode and user preference detection. Add pattern fills as fallback for color differentiation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Responsive Design and State Management",
+            "description": "Add comprehensive responsive sizing, loading states, and error handling across all chart components",
+            "dependencies": [
+              "6.2",
+              "6.3"
+            ],
+            "details": "Implement responsive chart sizing with proper aspect ratios across device breakpoints. Create loading skeleton components for data fetching states. Add error boundary and error state handling with user-friendly messages. Implement debounced resize handling for performance. Add chart export functionality (PNG/SVG). Create storybook stories for component documentation. Add comprehensive unit and integration tests for all chart components.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Filter System and State Management",
+        "description": "Build comprehensive filtering system with region selector, time period controls, and litter category filters using React Query",
+        "details": "Create filter context using React Context API for UI state. Implement region selector with search functionality using shadcn/ui Select and Command components. Build time period selector supporting single year and year ranges with slider component. Create category checkboxes for litter type/source filtering. Add filter reset functionality. Implement URL search params synchronization for shareable links. Use React Query for server state management with proper cache invalidation. Add debounced filter updates to prevent excessive API calls. Store filter state in localStorage for session persistence.",
+        "testStrategy": "Test filter combinations and state synchronization. Verify URL sharing functionality works correctly. Test filter persistence across browser sessions. Validate performance with rapid filter changes.",
+        "priority": "high",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Filter Context and State Management Setup",
+            "description": "Set up React Context API for filter state management with TypeScript interfaces",
+            "dependencies": [],
+            "details": "Create FilterContext with React.createContext and FilterProvider component. Define TypeScript interfaces for filter state including region, time period, and category selections. Implement useFilters custom hook for context consumption. Set up initial filter state structure with proper typing. Create filter reducer for complex state updates.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Region Selector with Search Functionality",
+            "description": "Build region selector component with search capabilities using shadcn/ui components",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Create RegionSelector component using shadcn/ui Select and Command components. Implement search functionality with fuzzy matching for region names. Add hierarchical display showing country > county > unitary authority. Include clear selection option and multiple selection support. Add loading states for region data fetching.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build Time Period Controls and Date Range Selector",
+            "description": "Create time period selector supporting single year and year ranges with slider component",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement TimePeriodSelector using shadcn/ui Slider for year range selection. Support both single year and year range modes with toggle. Add preset buttons for common periods (Last Year, Last 5 Years, All Time). Display selected period clearly with formatted date strings. Include validation for logical date ranges.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create Category Filtering with Litter Type Checkboxes",
+            "description": "Build category checkbox system for litter type and source filtering",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Create CategoryFilter component with grouped checkboxes for litter types and sources. Implement select all/none functionality for each group. Add search/filter capability within categories. Include visual indicators for active filters. Support nested category hierarchies with parent/child relationships.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement URL Search Params Synchronization",
+            "description": "Add URL synchronization for shareable filter states and browser navigation",
+            "dependencies": [
+              "7.2",
+              "7.3",
+              "7.4"
+            ],
+            "details": "Implement useSearchParams hook for URL state synchronization. Create URL serialization/deserialization for filter state. Support browser back/forward navigation with filter states. Generate shareable URLs with encoded filter parameters. Add URL validation and fallback for invalid parameters.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Add Filter Persistence and Performance Optimization",
+            "description": "Implement localStorage persistence and debounced updates with React Query integration",
+            "dependencies": [
+              "7.5"
+            ],
+            "details": "Add localStorage persistence for filter state across sessions. Implement debounced filter updates to prevent excessive API calls. Integrate with React Query for server state management and cache invalidation. Add filter reset functionality clearing all selections. Implement performance optimizations for rapid filter changes with useMemo and useCallback.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Create API Routes for Litter Data Analytics",
+        "description": "Build Next.js API routes for fetching aggregated litter data with proper filtering, caching, and error handling using Supabase JavaScript client",
+        "status": "pending",
+        "dependencies": [
+          1,
+          7
+        ],
+        "priority": "high",
+        "details": "Create API routes in app/api/: /analytics/region/{id} for region-specific data, /analytics/trends for historical data, /analytics/materials and /analytics/sources for breakdowns. Implement direct Supabase client queries for pre-aggregated data from annual_*_aggregates tables. Leverage Supabase's built-in REST API performance optimizations and automatic query optimization. Implement request validation using Zod schemas with Supabase's type safety. Add response caching with Next.js revalidation and Supabase's native caching. Handle edge cases like no data available for regions. Support batch queries for multiple regions. Add rate limiting for API protection. Implement proper error handling and logging using Supabase's connection pooling and automatic connection management.",
+        "testStrategy": "Test API routes with various filter combinations using Supabase client. Verify response times meet performance requirements (<200ms) with Supabase's optimizations. Test error handling for invalid requests and database failures. Validate data accuracy against Supabase queries.",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design API Route Structure and Endpoints",
+            "description": "Create the foundational API route structure with proper Next.js App Router organization and endpoint definitions",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create API route files in app/api/analytics/: region/[id]/route.ts for region-specific data, trends/route.ts for historical trends, materials/route.ts for material breakdown, and sources/route.ts for source breakdown. Define TypeScript interfaces for request parameters and response schemas. Implement route handlers with proper HTTP method support (GET). Set up proper Next.js dynamic route configuration for region ID parameter. Create base response formatting utilities.",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Supabase Client Queries for Aggregated Data",
+            "description": "Build optimized Supabase client queries to fetch data from pre-aggregated tables with built-in performance optimizations",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Create Supabase client query functions for annual_*_aggregates tables using direct REST API calls. Implement region-specific queries with geographic filtering leveraging Supabase's PostGIS integration. Build trend analysis queries for historical data comparison using Supabase's automatic query optimization. Create material and source breakdown queries with proper aggregation using Supabase's built-in aggregation functions. Leverage Supabase's native connection pooling and automatic query optimization. Implement batch query support for multiple regions using Supabase's bulk operations. Take advantage of Supabase's automatic caching strategies for analytics workloads.",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Request Validation with Zod Schemas and Supabase Type Safety",
+            "description": "Create comprehensive request validation using Zod schemas combined with Supabase's type safety features",
+            "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Define Zod schemas for each API endpoint's query parameters and request body. Create validation schemas for region IDs, date ranges, filter parameters, and pagination options. Implement validation middleware for consistent error responses. Add input sanitization and type coercion. Create custom validation rules for geographic coordinates and date ranges. Implement schema composition for shared validation logic. Integrate with Supabase's TypeScript type generation for enhanced type safety. Add validation error formatting for clear client feedback.",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Set Up Response Caching with Next.js and Supabase Native Caching",
+            "description": "Implement Next.js response caching combined with Supabase's built-in caching and connection pooling",
+            "status": "pending",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement Next.js ISR (Incremental Static Regeneration) for cacheable responses. Set up revalidation strategies with appropriate cache durations based on data update frequency. Add cache headers for browser and CDN optimization. Implement conditional requests with ETag support. Leverage Supabase's native caching strategies for database queries. Take advantage of Supabase's automatic connection pooling for improved performance. Create cache invalidation logic for data updates. Add response compression and pagination for large datasets. Implement rate limiting using Next.js middleware or external service integration.",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create Error Handling and Logging System with Supabase Integration",
+            "description": "Implement comprehensive error handling, logging, and monitoring for all API routes using Supabase's connection management",
+            "status": "pending",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create centralized error handling middleware with proper HTTP status codes. Implement structured logging for API requests, errors, and performance metrics. Add error categorization (validation, database, system errors). Create custom error classes for different failure scenarios including Supabase-specific errors. Implement request/response logging with sanitization for sensitive data. Add monitoring hooks for error tracking and performance metrics. Handle edge cases like empty datasets, invalid regions, and database connectivity issues using Supabase's automatic connection management. Create user-friendly error messages while logging detailed technical information. Leverage Supabase's built-in error handling and retry mechanisms.",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Build Engagement Statistics Panel",
+        "description": "Create the engagement statistics panel showing survey counts, volunteer numbers, and total beach length surveyed",
+        "details": "Create EngagementStatsPanel component with responsive design. Display key metrics: number of surveys, volunteer count, total surveyed beach length. Implement real-time updates when filters change using React Query. Add metric comparison with previous period (year-over-year changes). Create loading skeletons for better UX. Add thousand/million number formatting (e.g., 1.2K, 1.5M). Use card-based layout with icons from Lucide React. Position fixed on right side (desktop) or below map (mobile). Include subtle animations for metric updates.",
+        "testStrategy": "Test panel updates when filter changes occur. Verify responsive positioning across different screen sizes. Test metric calculation accuracy and formatting. Validate loading states and error handling.",
+        "priority": "medium",
+        "dependencies": [
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Region Information Modal and Data Display",
+        "description": "Create detailed region information modal with comprehensive litter data visualization and year-over-year comparisons",
+        "details": "Create RegionInfoModal component using shadcn/ui Dialog. Display region name, geographic hierarchy, and data availability status. Show top 5 litter items with horizontal bar chart. Display material and source breakdown pie charts. Add average litter per 100m with trend indicators. Include historical trend line chart for selected time periods. Implement year-over-year percentage change displays with color coding. Handle regions with no data with clear messaging and alternative suggestions. Add modal close functionality and keyboard navigation. Implement modal state management with URL synchronization.",
+        "testStrategy": "Test modal functionality across different regions and data states. Verify chart accuracy and responsive design within modal. Test keyboard navigation and accessibility features. Validate no-data state handling.",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up RegionInfoModal component with shadcn/ui Dialog",
+            "description": "Create the base modal component structure using shadcn/ui Dialog with proper TypeScript interfaces and modal state management",
+            "dependencies": [],
+            "details": "Create RegionInfoModal component in components/ui/. Import and configure shadcn/ui Dialog, DialogContent, DialogHeader, DialogTitle, and DialogTrigger components. Define TypeScript interfaces for region data props. Implement basic modal open/close state management. Add modal overlay and proper z-index stacking. Set up responsive modal sizing for desktop and mobile. Include proper ARIA attributes for accessibility.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Design and implement modal layout with region information display",
+            "description": "Create the comprehensive data display layout showing region hierarchy, geographic info, and data availability status",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Design modal layout with header showing region name and close button. Create sections for geographic hierarchy (country > county > region). Add data availability indicators with status badges. Implement responsive grid layout for desktop and mobile. Add proper spacing and typography using Tailwind classes. Include loading states and skeleton components for async data. Handle long region names with text truncation.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Integrate charts and data visualizations within modal",
+            "description": "Add horizontal bar chart for top 5 litter items, pie charts for material/source breakdown, and historical trend charts",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Integrate existing chart components into modal layout. Create horizontal bar chart component for top 5 litter items with proper scaling. Add material breakdown pie chart with legend. Implement source breakdown pie chart with color coding. Create historical trend line chart with time period selector. Add year-over-year percentage change displays with color-coded indicators (green/red for increase/decrease). Ensure charts are responsive within modal constraints.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement no-data state handling and alternative suggestions",
+            "description": "Handle regions with no data by displaying clear messaging and suggesting nearby regions with available data",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Create EmptyState component for regions without litter data. Display clear messaging explaining data unavailability. Implement logic to suggest nearby regions with available data based on geographic proximity. Add buttons to navigate to suggested regions. Include data collection information and links to contribute data. Style empty state with appropriate icons and typography. Handle partial data scenarios where some metrics are available.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add keyboard navigation, accessibility features, and URL synchronization",
+            "description": "Implement complete keyboard navigation, accessibility features, and URL state management for modal",
+            "dependencies": [
+              "10.1",
+              "10.3"
+            ],
+            "details": "Add keyboard event handlers for Escape key to close modal, Tab navigation between interactive elements, and Enter/Space for selections. Implement focus management with focus trap within modal. Add ARIA labels and roles for screen reader support. Create URL synchronization to share modal state with query parameters. Implement browser back button handling to close modal. Add focus restoration when modal closes. Test with screen readers and keyboard-only navigation.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Add Accessibility Features and Mobile Optimization",
+        "description": "Implement comprehensive accessibility features, mobile optimization, and performance enhancements for the application",
+        "details": "Implement ARIA labels and roles for all interactive elements. Add keyboard navigation support for map, filters, and charts. Ensure color contrast ratios meet WCAG 2.1 AA standards. Add screen reader support with proper semantic HTML. Implement focus management and visual focus indicators. Optimize touch targets for mobile (minimum 44px). Add swipe gestures for mobile map navigation. Implement mobile-optimized layout with collapsible sections. Add loading indicators and skeleton screens. Optimize image loading with Next.js Image component. Implement service worker for offline capability (future enhancement).",
+        "testStrategy": "Test with screen readers (NVDA, JAWS, VoiceOver). Verify keyboard-only navigation functionality. Test on various mobile devices and screen sizes. Validate color contrast with accessibility tools. Test touch interactions and gesture support.",
+        "priority": "medium",
+        "dependencies": [
+          10
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Performance Optimization and Production Deployment Setup",
+        "description": "Implement production-ready optimizations, error handling, monitoring, and deployment configuration for Vercel and Supabase",
+        "details": "Configure Next.js production optimizations: image optimization, bundle analysis, and code splitting. Implement proper error boundaries with user-friendly error pages. Add performance monitoring with Web Vitals tracking. Set up Sentry or similar for error tracking (optional). Configure Vercel deployment with proper environment variables. Set up Supabase production database with proper security rules. Add database connection pooling and query optimization. Implement proper CSP headers and security configurations. Add sitemap.xml and robots.txt. Configure analytics tracking (Google Analytics 4). Add proper TypeScript strict mode configurations.",
+        "testStrategy": "Test production build performance with Lighthouse audits. Verify error handling in production environment. Test deployment process and rollback capabilities. Validate security headers and CSP configurations. Monitor Core Web Vitals metrics.",
+        "priority": "medium",
+        "dependencies": [
+          11
+        ],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-15T10:33:31.832Z",
+      "updated": "2025-08-15T10:33:31.833Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

@@ -3,27 +3,18 @@
 ## Overview
 This command helps you create well-formatted commits with conventional commit messages and emoji.
 
-## Usage
-To create a commit, just type:
-```
-/commit
-```
-Or with options:
-```
-/commit --no-verify
-```
-## What This Command Does
-1. Unless specified with `--no-verify`, automatically runs pre-commit checks:
+## Behaviour
+- Unless specified with `--no-verify`, automatically runs pre-commit checks:
    - `npm lint` to ensure code quality
    - `npm build` to verify the build succeeds
    - `npm generate:docs` to update documentation
-2. Formats modified files using Prettier
-3. Checks which files are staged with `git status`
-4. If 0 files are staged, automatically adds all modified and new files with `git add`
-5. Performs a `git diff` to understand what changes are being committed
-6. Analyses changes and automatically splits into logical commits when appropriate
-7. Each commit focuses on a single logical change or feature
-8. For each commit (or the single commit if not split), creates a commit message using emoji conventional commit format
+- Formats modified files using Prettier
+- Checks which files are staged with `git status`
+- If 0 files are staged, automatically adds all modified and new files with `git add`
+- Performs a `git diff` to understand what changes are being committed
+- Analyses changes and automatically splits into logical commits when appropriate
+- Each commit focuses on a single logical change or feature
+- For each commit (or the single commit if not split), creates a commit message using emoji conventional commit format
 
 ## Guidelines for Automatic Commit Splitting
 - Split commits by feature, component, or concern
@@ -32,7 +23,7 @@ Or with options:
 - Ensure each commit can be understood independently
 - Multiple unrelated changes should be split into separate commits
 
-## Commit formatting
+## Best Practices
 - **Conventional commit format**: Use the format `<type>: <description>` where type is one of:
   - `feat`: A new feature
   - `fix`: A bug fix
@@ -142,7 +133,7 @@ Example of splitting commits:
 
 ## Important Notes
 
-- By default, pre-commit checks (`pnpm lint`, `pnpm build`, `pnpm generate:docs`) will run to ensure code quality
+- By default, pre-commit checks (`npm lint`, `npm build`, `npm generate:docs`) will run to ensure code quality unless `-- no-verify`
 - If these checks fail, you'll be asked if you want to proceed with the commit anyway or fix the issues first
 - If specific files are already staged, the command will only commit those files
 - If no files are staged, it will automatically stage all modified and new files

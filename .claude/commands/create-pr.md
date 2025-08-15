@@ -1,13 +1,19 @@
 # Create Pull Request Command
 
+## Overview
 Create a new branch, commit changes, and submit a pull request.
 
 ## Behavior
+- Unless specified with `--no-verify`, automatically runs pre-commit checks:
+   - `npm lint` to ensure code quality
+   - `npm build` to verify the build succeeds
+   - `npm generate:docs` to update documentation
 - Creates a new branch based on current changes
 - Formats modified files using Prettier
 - Analyses changes and automatically splits into logical commits when appropriate
 - Each commit focuses on a single logical change or feature
 - Creates descriptive commit messages for each logical unit
+- For each commit (or the single commit if not split), creates a commit message using emoji conventional commit format
 - Pushes branch to remote
 - Creates pull request with proper summary and test plan
 

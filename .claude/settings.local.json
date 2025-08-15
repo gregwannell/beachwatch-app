@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "mcp__supabase__list_tables",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__taskmaster-ai__complexity_report",
+      "mcp__taskmaster-ai__expand_task",
+      "mcp__taskmaster-ai__next_task",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__supabase__search_docs",
+      "mcp__taskmaster-ai__update_task",
+      "Bash(git add:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

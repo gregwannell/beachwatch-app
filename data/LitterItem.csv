@@ -1,0 +1,149 @@
+﻿id,item_name,short_name,material,source
+1,Plastic/Polystyrene: 4/6 pack yokes,4/6 pack yokes,Plastic/Polystyrene,Public
+2,Plastic/Polystyrene: Bagged dog faeces,Bagged dog faeces,Plastic/Polystyrene,Public
+3,Plastic/Polystyrene: Bags (e.g. Shopping),Plastic bags (e.g. Shopping),Plastic/Polystyrene,Public
+4,Plastic/Polystyrene: Bags: Mesh (e.g. vegetable),Mesh plastic bags (e.g. vegetable),Plastic/Polystyrene,Shipping
+5,Plastic/Polystyrene: Bags: Small (e.g. freezer/vegetable),Small plastic bags (e.g. freezer/vegetable),Plastic/Polystyrene,Public
+6,Plastic/Polystyrene: Bait containers/packaging,Bait containers/packaging,Plastic/Polystyrene,Fishing
+7,Plastic/Polystyrene: Biobeads,Biobeads,Plastic/Polystyrene,Fishing
+8,Plastic/Polystyrene: Biofilm support media,Biofilm support media,Plastic/Polystyrene,Non-sourced
+9,Plastic/Polystyrene: Bottles/containers: Cleaner,Plastic bottles/containers (cleaner),Plastic/Polystyrene,Shipping
+10,Plastic/Polystyrene: Bottles/containers: Drinks,Plastic bottles/containers (drink),Plastic/Polystyrene,Public
+11,Plastic/Polystyrene: Bottles/containers/drums: Other,Plastic bottles/containers/drums (other),Plastic/Polystyrene,Non-sourced
+12,Plastic/Polystyrene: Bottles/containers: Toiletries/cosmetics,Plastic bottles/containers (Toiletries/cosmetics),Plastic/Polystyrene,Public
+13,Plastic/Polystyrene: Buckets,Buckets,Plastic/Polystyrene,Non-sourced
+14,Plastic/Polystyrene: Caps / lids,Plastic caps / lids,Plastic/Polystyrene,Public
+15,Plastic/Polystyrene: Caps/lids non - drink and unknown origin,Plastic caps / lids of unknown origin,Plastic/Polystyrene,Non-sourced
+16,Plastic/Polystyrene: Car parts,Car parts,Plastic/Polystyrene,Fly-tipped
+17,Plastic/Polystyrene: Cigarette lighters / tobacco pouches,Cigarette lighters / tobacco pouches,Plastic/Polystyrene,Public
+18,Plastic/Polystyrene: Cigarette stubs,Cigarette stubs,Plastic/Polystyrene,Public
+19,Plastic/Polystyrene: Combs / hair brushes / sunglasses,Combs / hair brushes / sunglasses,Plastic/Polystyrene,Public
+20,Plastic/Polystyrene: Commercial salt packaging,Commercial salt packaging,Plastic/Polystyrene,Fishing
+21,Plastic/Polystyrene: Containers: Food (inc. fast food),Containers: Food (inc. fast food),Plastic/Polystyrene,Public
+22,Plastic/Polystyrene: Crates,Crates,Plastic/Polystyrene,Shipping
+23,Plastic/Polystyrene: Cups,Plastic cups,Plastic/Polystyrene,Public
+24,Plastic/Polystyrene: Cups - foamed polystyrene,Plastic foamed polystyrene cups,Plastic/Polystyrene,Public
+25,Plastic/Polystyrene: Cups - plastic,Plastic polystyrene cups,Plastic/Polystyrene,Public
+26,Plastic/Polystyrene: Cutlery / trays / straws,Cutlery / trays / straws,Plastic/Polystyrene,Public
+27,Plastic/Polystyrene: Fertiliser / animal feed bags,Fertiliser / animal feed bags,Plastic/Polystyrene,Non-sourced
+28,Plastic/Polystyrene: Fibreglass,Fibreglass,Plastic/Polystyrene,Non-sourced
+29,Plastic/Polystyrene: Fish boxes,Fish boxes,Plastic/Polystyrene,Fishing
+30,Plastic/Polystyrene: Fish boxes - foamed polystyrene,Fish boxes - foamed polystyrene,Plastic/Polystyrene,Fishing
+31,Plastic/Polystyrene: Fish boxes - plastic,Fish boxes - plastic,Plastic/Polystyrene,Fishing
+32,Plastic/Polystyrene: Fishing line (angling),Fishing line (angling),Plastic/Polystyrene,Fishing
+33,Plastic/Polystyrene: Fishing net and net pieces 0 - 50cm,Fishing net and net pieces: 0-50cm,Plastic/Polystyrene,Fishing
+34,Plastic/Polystyrene: Fishing net and net pieces 50cm+,Fishing net and net pieces: 50cm+,Plastic/Polystyrene,Fishing
+35,Plastic/Polystyrene: Floats / buoys,Floats / buoys,Plastic/Polystyrene,Fishing
+36,Plastic/Polystyrene: Floats / buoys not from fisheries,Floats / buoys,Plastic/Polystyrene,Shipping
+37,Plastic/Polystyrene: Foamed polystyrene fragments 0 - 2.5cm,Foamed polystyrene fragments: 0-2.5cm,Plastic/Polystyrene,Non-sourced
+38,Plastic/Polystyrene: Foamed polystyrene fragments 2.5 - 50cm,Foamed polystyrene fragments: 2.5-50cm,Plastic/Polystyrene,Non-sourced
+39,Plastic/Polystyrene: Foamed polystyrene fragments 50cm+,Foamed polystyrene fragments: 50cm+,Plastic/Polystyrene,Non-sourced
+40,Plastic/Polystyrene: Foam / sponge / insulation,Foam / sponge / insulation,Plastic/Polystyrene,Non-sourced
+41,Plastic/Polystyrene: Food containers incl. fast food containers - foamed polystyrene,Food containers incl. fast food containers - foamed polystyrene,Plastic/Polystyrene,Public
+42,Plastic/Polystyrene: Food containers incl. fast food containers - plastic,Food containers incl. fast food containers - plastic,Plastic/Polystyrene,Public
+43,Plastic/Polystyrene: Gloves (e.g. washing up),Gloves (e.g. washing up),Plastic/Polystyrene,Non-sourced
+44,Plastic/Polystyrene: Gloves (industrial/professional),Gloves (industrial/professional),Plastic/Polystyrene,Fishing
+45,Plastic/Polystyrene: Hard hats,Hard hats,Plastic/Polystyrene,Shipping
+46,Plastic/Polystyrene: Injection gun cartridges (e.g. sealant),Injection gun cartridges (e.g. sealant),Plastic/Polystyrene,Shipping
+47,Plastic/Polystyrene: Jerry cans,Jerry cans,Plastic/Polystyrene,Fishing
+48,Plastic/Polystyrene: Light/glow sticks (tubes with fluid),Light/glow sticks (tubes with fluid),Plastic/Polystyrene,Non-sourced
+49,Plastic/Polystyrene: Lobster/crab pots & tops,Lobster/crab pots & tops,Plastic/Polystyrene,Fishing
+50,Plastic/Polystyrene: Lobster & fish tags,Lobster & fish tags,Plastic/Polystyrene,Fishing
+51,Plastic/Polystyrene: Nurdles,Nurdles,Plastic/Polystyrene,Non-sourced
+52,Plastic/Polystyrene: Octopus pots,Octopus pots,Plastic/Polystyrene,Fishing
+53,Plastic/Polystyrene: Oil containers/drums 0 - 50cm,Oil containers/drums: 0-50cm,Plastic/Polystyrene,Shipping
+54,Plastic/Polystyrene: Oil containers/drums 50cm+,Oil containers/drums: 50cm+,Plastic/Polystyrene,Shipping
+55,Plastic/Polystyrene: String / cord / rope: thickness 1cm+,String / cord / rope: thickness 1 cm +,Plastic/Polystyrene,Shipping
+56,Plastic/Polystyrene: Other plastic fisheries related items not covered by other categories,Other fisheries related items,Plastic/Polystyrene,Fishing
+57,Plastic/Polystyrene: Other plastic string and filaments exclusively from fishery (e.g.small net cuttings),Other string and filaments from fisheries,Plastic/Polystyrene,Fishing
+58,Plastic/Polystyrene: Oyster nets/mussel bags (inc. plastic stoppers),Oyster nets/mussel bags,Plastic/Polystyrene,Fishing
+59,Plastic/Polystyrene: Oysters trays (round from oyster cultures),Oysters trays (round from oyster cultures),Plastic/Polystyrene,Fishing
+60,Plastic/Polystyrene: Packaging/plastic sheeting (industrial),Packaging/plastic sheeting (industrial),Plastic/Polystyrene,Shipping
+61,"Plastic/Polystyrene: Packets (crisp, sweet, lolly (inc sticks), sandwich)","Packets (crisp, sweet, lolly (inc sticks), sandwich)",Plastic/Polystyrene,Public
+62,Plastic/Polystyrene: Pens & pen lids,Pens & pen lids,Plastic/Polystyrene,Public
+63,Plastic/Polystyrene: Plastic fragments: 0 - 2.5cm,Plastic fragments: 0-2.5cm,Plastic/Polystyrene,Non-sourced
+64,Plastic/Polystyrene: Plastic fragments: 2.5 - 50cm,Plastic fragments: 2.5-50cm,Plastic/Polystyrene,Non-sourced
+65,Plastic/Polystyrene: Plastic fragments: 50cm+,Plastic fragments: 50cm+,Plastic/Polystyrene,Non-sourced
+66,Plastic/Polystyrene: Plastic/polystyrene pieces 0 - 2.5cm,Plastic/polystyrene pieces 0-2.5cm,Plastic/Polystyrene,Non-sourced
+67,Plastic/Polystyrene: Plastic/polystyrene pieces 2.5 - 50cm,Plastic/polystyrene pieces 2.5-50cm,Plastic/Polystyrene,Non-sourced
+68,Plastic/Polystyrene: Plastic/polystyrene pieces 50cm+,Plastic/polystyrene pieces 50cm+,Plastic/Polystyrene,Non-sourced
+69,Plastic/Polystyrene: Sheeting from mussel culture (Tahitians),Sheeting from mussel culture (Tahitians),Plastic/Polystyrene,Fishing
+70,Plastic/Polystyrene: Shoes / sandals,Shoes / sandals,Plastic/Polystyrene,Public
+71,Plastic/Polystyrene: Shotgun cartridges,Shotgun cartridges,Plastic/Polystyrene,Public
+72,Plastic/Polystyrene: Shotgun Wads,Shotgun wads,Plastic/Polystyrene,Public
+73,Plastic/Polystyrene: Strapping bands,Strapping bands,Plastic/Polystyrene,Shipping
+74,Plastic/Polystyrene: String and filaments exclusively from dolly ropes,String and filaments exclusively from dolly ropes,Plastic/Polystyrene,Fishing
+75,Plastic/Polystyrene: String/cord (thickness 0 - 1cm),String/cord (thickness 0-1cm),Plastic/Polystyrene,Fishing
+76,Plastic/Polystyrene: Tangled dolly rope,Tangled dolly rope,Plastic/Polystyrene,Fishing
+77,Plastic/Polystyrene: Tangled nets/cord/rope and string without dolly rope or mixed with dolly rope,Tangled nets/cord/rope and string without dolly rope or mixed with dolly rope,Plastic/Polystyrene,Fishing
+78,Plastic/Polystyrene: Tangled nets/cord/rope/string,Tangled nets/cord/rope/string,Plastic/Polystyrene,Fishing
+79,Plastic/Polystyrene: Tear - off plastic bags (bag ends),Bag ends (from tear-off plastic bags),Plastic/Polystyrene,Non-sourced
+80,Plastic/Polystyrene: Toys/party poppers/fireworks/dummies,Toys/party poppers/fireworks/dummies,Plastic/Polystyrene,Public
+81,Other plastic/polystyrene items (total),Other plastic/polystyrene items,Plastic/Polystyrene,Non-sourced
+82,"Rubber: Balloons (inc. string, valves, ribbon)","Balloons (inc. string, valves, ribbon)",Rubber,Public
+83,Rubber: Boots,Boots,Rubber,Fishing
+84,Rubber: Tyres & engine belts,Tyres & engine belts,Rubber,Fly-tipped
+85,Rubber: Tyres used as fenders,Tyres used as fenders,Rubber,Fishing
+86,Other rubber items (total),Other rubber items,Rubber,Non-sourced
+87,Cloth: Clothing / shoes / towels,Clothing / shoes / towels,Cloth,Public
+88,Cloth: Furnishings,Furnishings,Cloth,Fly-tipped
+89,Cloth: Sacking,Sacking,Cloth,Non-sourced
+90,Cloth: Shoes (leather),Shoes (leather),Cloth,Public
+91,Other cloth items (total),Other cloth items,Cloth,Non-sourced
+92,Paper/Cardboard: Bags,Paper bags,Paper/Cardboard,Public
+93,Paper/Cardboard: Cardboard,Cardboard,Paper/Cardboard,Non-sourced
+94,Paper/Cardboard: Cartons (purepak e.g. milk),Cartons (purepak e.g. milk),Paper/Cardboard,Shipping
+95,Paper/Cardboard: Cartons (tetrapak e.g. juice),Cartons (tetrapak e.g. juice),Paper/Cardboard,Public
+96,Paper/Cardboard: Cigarette packets,Cigarette packets,Paper/Cardboard,Public
+97,Paper/Cardboard: Cups,Cardboard cups,Paper/Cardboard,Public
+98,Paper/Cardboard: Newspapers / magazines,Newspapers / magazines,Paper/Cardboard,Public
+99,Other paper/cardboard items (total),Other paper/cardboard items,Paper/Cardboard,Non-sourced
+100,Wood (machined): Corks,Corks,Wood,Public
+101,Wood (machined): Crab/lobster pots & tops,Crab/lobster pots & tops,Wood,Fishing
+102,Wood (machined): Crates,Crates,Wood,Shipping
+103,Wood (machined): Fish boxes,Fish boxes,Wood,Fishing
+104,Wood (machined): Lolly sticks / chip forks,Lolly sticks / chip forks,Wood,Public
+105,Wood (machined): Paint brushes,Paint brushes,Wood,Non-sourced
+106,Wood (machined): Pallets,Pallets,Wood,Shipping
+107,Other wooden items (50cm+) (total),Other wooden items (50cm+),Wood,Non-sourced
+108,Other wooden items (0 - 50cm) (total),Other wooden items (0-50cm),Wood,Non-sourced
+109,Metal: Aerosol / spray cans,Aerosol / spray cans,Metal,Shipping
+110,Metal: Appliances,Metal Apppliances,Metal,Fly-tipped
+111,Metal: BBQs (disposable),BBQs (disposable),Metal,Public
+112,Metal: Cans (drink),Metal drink can,Metal,Public
+113,Metal: Cans (food),Metal food can,Metal,Shipping
+114,Metal: Caps / lids,Metal caps/lids,Metal,Public
+115,Metal: Fishing weights / hooks / lures,Fishing weights / hooks / lures,Metal,Fishing
+116,Metal: Foil wrappers,Foil wrappers,Metal,Public
+117,Metal: Lobster / crab pots & tops,Metal lobster/crab pots & tops,Metal,Fishing
+118,Metal: Oil drums,Oil drums,Metal,Shipping
+119,Metal: Paint tins,Paint tins,Metal,Non-sourced
+120,Metal: Scrap (industrial),Scrap metal,Metal,Fly-tipped
+121,Metal: Wire / mesh / barbed wire,Wire / mesh / barbed wire,Metal,Non-sourced
+122,Other metal items (50cm+) (total),Other metal items (50cm+),Metal,Non-sourced
+123,Other metal items (0 - 50cm) (total),Other metal items (0-50cm),Metal,Non-sourced
+124,Glass: Bottles,Glass bottles,Glass,Public
+125,Glass: Jars incl. fragments of jars,Jars incl. fragments of jars,Glass,Non-sourced
+126,Glass: Light bulbs / tubes,Light bulbs / tubes,Glass,Shipping
+127,Other glass items (total),Other glass items,Glass,Non-sourced
+128,Pottery/Ceramics: Construction material e.g. tiles,Construction material e.g. tiles,Pottery/ceramics,Fly-tipped
+129,Pottery/Ceramics: Octopus pots,Octopus pots,Pottery/ceramics,Fishing
+130,Other pottery/ceramic items (total),Other pottery/ceramic items,Pottery/ceramics,Non-sourced
+131,Sanitary: Condoms,Condoms,Rubber,Sewage related debris (SRD)
+132,Sanitary: Cotton bud sticks,Cotton bud sticks,Plastic/Polystyrene,Sewage related debris (SRD)
+133,Sanitary: Cotton bud sticks - cardboard,Cotton bud sticks - cardboard,Paper/Cardboard,Sewage related debris (SRD)
+134,Sanitary: Cotton bud sticks - plastic,Cotton bud sticks - plastic,Plastic/Polystyrene,Sewage related debris (SRD)
+135,Sanitary: Tampons & applicators,Tampons & applicators,Plastic/Polystyrene,Sewage related debris (SRD)
+136,Sanitary: Toilet fresheners,Toilet fresheners,Plastic/Polystyrene,Sewage related debris (SRD)
+137,Sanitary: Towels / panty liners / backing strips,Towels / panty liners / backing strips,Plastic/Polystyrene,Sewage related debris (SRD)
+138,Sanitary: Wet wipes,Wet wipes,Plastic/Polystyrene,Sewage related debris (SRD)
+139,Other sanitary items (total),Other sanitary items,Plastic/Polystyrene,Sewage related debris (SRD)
+140,Medical: Containers/tubes (inc. pill packets),Containers/tubes (inc. pill packets),Plastic/Polystyrene,Medical
+141,Medical: Single use face mask - plastic,Single use face mask - plastic,Plastic/Polystyrene,Medical
+142,Medical: Single use gloves - plastic,Single use gloves - plastic,Rubber,Medical
+143,Medical: Syringes & needles,Syringes & needles,Plastic/Polystyrene,Medical
+144,Other medical items (total),Other medical items,Plastic/Polystyrene,Medical
+145,Pollutants: Paraffin or wax pieces 0 - 1cm,Paraffin or wax pieces (0-1cm),Pollutant M,Pollutant S
+146,Pollutants: Paraffin or wax pieces 10cm+,Paraffin or wax pieces (10cm+),Pollutant M,Pollutant S
+147,Pollutants: Paraffin or wax pieces 1 - 10cm,Paraffin or wax pieces (1-10cm),Pollutant M,Pollutant S
+148,Other pollutants (total),Other pollutants,Pollutant M,Pollutant S

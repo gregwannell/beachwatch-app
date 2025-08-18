@@ -133,6 +133,7 @@ Example of splitting commits:
 
 ## Important Notes
 
+- By default NEVER include "co-authored by claude code" or any mention of claude code in the commit message
 - By default, pre-commit checks (`npm lint`, `npm build`, `npm generate:docs`) will run to ensure code quality unless `-- no-verify`
 - If these checks fail, you'll be asked if you want to proceed with the commit anyway or fix the issues first
 - If specific files are already staged, the command will only commit those files

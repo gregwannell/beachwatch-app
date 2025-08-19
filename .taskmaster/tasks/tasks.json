@@ -265,20 +265,20 @@
       {
         "id": 6,
         "title": "Create Data Visualization Components Library",
-        "description": "Build reusable chart components for displaying litter data using shadcn/ui charts, including bar charts, pie charts, and line charts",
-        "status": "pending",
+        "description": "Build essential reusable chart components for displaying litter data using shadcn/ui charts, focusing on HorizontalBarChart for top 5 litter items and PieChart components for material and source breakdowns",
+        "status": "done",
         "dependencies": [
           2
         ],
         "priority": "medium",
-        "details": "Create chart component library using shadcn/ui charts: HorizontalBarChart for top 5 litter items, PieChart for material/source breakdowns, LineChart for historical trends. Implement responsive chart sizing with aspect ratios using ChartContainer. Add colorblind-safe palettes with patterns/textures using chart theming. Create chart tooltip components with custom formatting using ChartTooltip and ChartTooltipContent. Add percentage and count display options. Implement year-over-year percentage change indicators with color coding (green for decrease, red for increase). Support data loading states and empty state handling. Add chart accessibility with ARIA labels and keyboard navigation using built-in accessibility features.",
+        "details": "Create simplified chart component library using shadcn/ui charts: HorizontalBarChart for top 5 litter items and PieChart for material/source breakdowns. Implement responsive chart sizing with aspect ratios using ChartContainer. Add colorblind-safe palettes with patterns/textures using chart theming. Create chart tooltip components with custom formatting using ChartTooltip and ChartTooltipContent. Add percentage and count display options. Support data loading states and empty state handling. Add chart accessibility with ARIA labels and keyboard navigation using built-in accessibility features. LineChart and historical trends functionality will be implemented in a future iteration.",
         "testStrategy": "Test chart rendering with various data sizes and edge cases. Verify responsive behavior across screen sizes. Test accessibility features with screen readers. Validate color contrast ratios and colorblind accessibility.",
         "subtasks": [
           {
             "id": 1,
             "title": "Install shadcn/ui Charts and Design Component Architecture",
             "description": "Install shadcn/ui chart components and create the foundational architecture for the chart component library including TypeScript interfaces",
-            "status": "pending",
+            "status": "done",
             "dependencies": [],
             "details": "Install shadcn/ui chart components (npx shadcn@latest add chart). Define TypeScript interfaces for chart data, props, and configuration options. Create base chart wrapper component using ChartContainer for responsive sizing and common functionality. Set up component directory structure in components/charts/. Define chart theme interface and color palette structure compatible with shadcn/ui theming. Create utility functions for data transformation and formatting.",
             "testStrategy": ""
@@ -287,7 +287,7 @@
             "id": 2,
             "title": "Implement HorizontalBarChart Component with shadcn/ui",
             "description": "Build the horizontal bar chart component using shadcn/ui chart primitives for displaying top 5 litter items",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               1
             ],
@@ -296,20 +296,20 @@
           },
           {
             "id": 3,
-            "title": "Implement PieChart and LineChart Components with shadcn/ui",
-            "description": "Build pie chart and line chart components using shadcn/ui chart primitives for material/source breakdowns and historical trends",
-            "status": "pending",
+            "title": "Implement PieChart Component with shadcn/ui",
+            "description": "Build pie chart component using shadcn/ui chart primitives for material and source distribution breakdowns",
+            "status": "done",
             "dependencies": [
               1
             ],
-            "details": "Create PieChart component using shadcn/ui Pie chart with ChartContainer for material and source distribution. Implement LineChart component using shadcn/ui Line chart for historical trends with multiple data series support. Use ChartTooltip and ChartTooltipContent for interactive tooltips. Support year-over-year percentage change indicators with color coding using shadcn/ui theming. Implement responsive sizing with ChartContainer and mobile-optimized interactions.",
+            "details": "Create PieChart component using shadcn/ui Pie chart with ChartContainer for material and source distribution. Use ChartTooltip and ChartTooltipContent for interactive tooltips showing percentages and counts. Implement responsive sizing with ChartContainer and mobile-optimized interactions. Support switching between material type and source breakdowns using the same component. Add legend component with proper spacing and alignment using shadcn/ui styling.",
             "testStrategy": ""
           },
           {
             "id": 4,
             "title": "Implement Colorblind-Safe Theming and Accessibility with shadcn/ui",
             "description": "Create colorblind-accessible color palettes and implement comprehensive accessibility using shadcn/ui's theming system",
-            "status": "pending",
+            "status": "done",
             "dependencies": [
               2,
               3
@@ -320,13 +320,13 @@
           {
             "id": 5,
             "title": "Implement State Management and Component Documentation",
-            "description": "Add loading states, error handling, and comprehensive documentation for all shadcn/ui chart components",
-            "status": "pending",
+            "description": "Add loading states, error handling, and basic documentation for the essential shadcn/ui chart components",
+            "status": "done",
             "dependencies": [
               2,
               3
             ],
-            "details": "Implement loading skeleton components compatible with ChartContainer for data fetching states. Add error boundary and error state handling with user-friendly messages. Create comprehensive component documentation and Storybook stories. Add chart export functionality leveraging shadcn/ui chart's native capabilities. Implement debounced resize handling using ChartContainer's responsive features. Add comprehensive unit and integration tests for all chart components.",
+            "details": "Implement loading skeleton components compatible with ChartContainer for data fetching states. Add error boundary and error state handling with user-friendly messages. Create basic component documentation with usage examples. Implement debounced resize handling using ChartContainer's responsive features. Add essential unit tests for both chart components focusing on rendering and basic interactions.",
             "testStrategy": ""
           }
         ]
@@ -594,7 +594,7 @@
     ],
     "metadata": {
       "created": "2025-08-15T10:33:31.832Z",
-      "updated": "2025-08-19T14:34:12.077Z",
+      "updated": "2025-08-19T15:26:22.645Z",
       "description": "Tasks for master context"
     }
   }

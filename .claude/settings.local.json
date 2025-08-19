@@ -23,7 +23,10 @@
       "Bash(npm run lint)",
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
-      "mcp__taskmaster-ai__update_subtask"
+      "mcp__taskmaster-ai__update_subtask",
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_click"
     ]
   },
   "enableAllProjectMcpServers": true,

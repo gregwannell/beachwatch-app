@@ -1,5 +1,25 @@
+'use client'
+
 import { MainLayout } from '@/components/layout/main-layout'
 import { Card } from '@/components/ui/card'
+import { useMapRegions } from '@/hooks/use-map-regions'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+import dynamic from 'next/dynamic'
+
+// Dynamic import to prevent SSR issues with Leaflet
+const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full flex items-center justify-center">
+      <div className="space-y-4 text-center">
+        <div className="text-2xl">🗺️</div>
+        <Skeleton className="h-8 w-48 mx-auto" />
+        <p className="text-sm text-muted-foreground">Loading interactive map...</p>
+      </div>
+    </div>
+  )
+})
 
 function FilterSidebar() {
   return (
@@ -65,31 +85,59 @@ function StatsPanel() {
 }
 
 export default function Home() {
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
+  const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
+  
+  // Fetch map regions data
+  const { data: regions = [], isLoading, error } = useMapRegions({
+    includeGeometry: true,
+    onlyWithData: false
+  })
+
+  const handleRegionClick = (regionId: number) => {
+    setSelectedRegionId(regionId)
+    // TODO: Open region info modal when implemented
+  }
+
+  const handleRegionHover = (regionId: number | null) => {
+    setHoveredRegionId(regionId)
+  }
+
   return (
     <MainLayout 
       sidebar={<FilterSidebar />}
       statsPanel={<StatsPanel />}
     >
-      <div className="h-full flex flex-col items-center justify-center bg-gradient-to-br from-ocean-50 to-forest-50 dark:from-ocean-950 dark:to-forest-950">
-        <div className="text-center space-y-4 max-w-md mx-auto px-6">
-          <div className="text-6xl mb-4">🏖️</div>
-          <h2 className="text-2xl font-bold text-ocean-700 dark:text-ocean-300">
-            Interactive Beach Map
-          </h2>
-          <p className="text-muted-foreground">
-            The interactive map component will be integrated here, displaying UK beach litter survey data with filtering and visualization capabilities.
-          </p>
-          <div className="grid grid-cols-2 gap-4 mt-6 text-sm">
-            <div className="p-3 bg-ocean-100/50 dark:bg-ocean-900/20 rounded-lg border border-ocean-200/50 dark:border-ocean-800/50">
-              <div className="font-semibold text-ocean-700 dark:text-ocean-300">✅ Layout Ready</div>
-              <div className="text-xs text-muted-foreground mt-1">Responsive grid system</div>
-            </div>
-            <div className="p-3 bg-forest-100/50 dark:bg-forest-900/20 rounded-lg border border-forest-200/50 dark:border-forest-800/50">
-              <div className="font-semibold text-forest-700 dark:text-forest-300">✅ Sidebar System</div>
-              <div className="text-xs text-muted-foreground mt-1">Collapsible panels</div>
+      <div className="h-full w-full">
+        {isLoading ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="space-y-4 text-center">
+              <Skeleton className="h-8 w-48 mx-auto" />
+              <Skeleton className="h-4 w-32 mx-auto" />
+              <div className="mt-8">
+                <Skeleton className="h-96 w-full" />
+              </div>
             </div>
           </div>
-        </div>
+        ) : error ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="text-4xl">⚠️</div>
+              <h3 className="text-lg font-medium">Failed to load map data</h3>
+              <p className="text-muted-foreground text-sm">
+                {error.message || 'Unable to fetch region data'}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <UKMap
+            regions={regions}
+            selectedRegionId={selectedRegionId}
+            onRegionClick={handleRegionClick}
+            onRegionHover={handleRegionHover}
+            className="h-full w-full"
+          />
+        )}
       </div>
     </MainLayout>
   )

@@ -10,6 +10,35 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+// GeoJSON geometry types for JSONB geometry fields
+export interface GeoJSONPolygon {
+  type: 'Polygon'
+  coordinates: number[][][]
+}
+
+export interface GeoJSONMultiPolygon {
+  type: 'MultiPolygon'
+  coordinates: number[][][][]
+}
+
+export type RegionGeometry = GeoJSONPolygon | GeoJSONMultiPolygon
+
+// Coordinate types
+export type Coordinates = [number, number] // [longitude, latitude]
+export type CoordinateRing = Coordinates[]
+export type PolygonCoordinates = CoordinateRing[]
+
+// Boundary data interface
+export interface BoundaryData {
+  geometry: RegionGeometry | null
+  bounds?: {
+    north: number
+    south: number
+    east: number
+    west: number
+  }
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -17,30 +46,234 @@ export interface Database {
         Row: {
           id: number
           name: string
-          level: string
           parent_id: number | null
+          type: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
+          code: string
+          geometry: RegionGeometry | null
+          has_data: boolean
           created_at: string
           updated_at: string
-          // Add more fields as they exist in your database
         }
         Insert: {
           id?: number
           name: string
-          level: string
           parent_id?: number | null
+          type: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
+          code: string
+          geometry?: RegionGeometry | null
+          has_data?: boolean
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: number
           name?: string
-          level?: string
           parent_id?: number | null
+          type?: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
+          code?: string
+          geometry?: RegionGeometry | null
+          has_data?: boolean
           created_at?: string
           updated_at?: string
         }
       }
-      // Add other tables as they exist in your database
+      materials: {
+        Row: {
+          id: number
+          material: string
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          material: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          material?: string
+          created_at?: string
+        }
+      }
+      sources: {
+        Row: {
+          id: number
+          source: string
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          source: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          source?: string
+          created_at?: string
+        }
+      }
+      litter_items: {
+        Row: {
+          id: number
+          item_name: string
+          short_name: string | null
+          material: string | null
+          source: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          item_name: string
+          short_name?: string | null
+          material?: string | null
+          source?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          item_name?: string
+          short_name?: string | null
+          material?: string | null
+          source?: string | null
+          created_at?: string
+        }
+      }
+      annual_region_aggregates: {
+        Row: {
+          id: number
+          name_id: number
+          year: string
+          total_surveys: number
+          total_volunteers: number
+          total_volunteer_min: number
+          total_length_m: number
+          additional_area_cleaned_m: number
+          total_bags: number
+          total_weight_kg: number
+          total_litter: number
+          avg_per_100m: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          name_id: number
+          year: string
+          total_surveys?: number
+          total_volunteers?: number
+          total_volunteer_min?: number
+          total_length_m?: number
+          additional_area_cleaned_m?: number
+          total_bags?: number
+          total_weight_kg?: number
+          total_litter?: number
+          avg_per_100m?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          name_id?: number
+          year?: string
+          total_surveys?: number
+          total_volunteers?: number
+          total_volunteer_min?: number
+          total_length_m?: number
+          additional_area_cleaned_m?: number
+          total_bags?: number
+          total_weight_kg?: number
+          total_litter?: number
+          avg_per_100m?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      annual_material_aggregates: {
+        Row: {
+          id: number
+          aggregate_id: number
+          material_id: number
+          total: number
+          avg_per_100m: number
+          presence: number
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          aggregate_id: number
+          material_id: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          aggregate_id?: number
+          material_id?: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+      }
+      annual_source_aggregates: {
+        Row: {
+          id: number
+          aggregate_id: number
+          source_id: number
+          total: number
+          avg_per_100m: number
+          presence: number
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          aggregate_id: number
+          source_id: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          aggregate_id?: number
+          source_id?: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+      }
+      annual_litter_aggregates: {
+        Row: {
+          id: number
+          aggregate_id: number
+          litter_item_id: number
+          total: number
+          avg_per_100m: number
+          presence: number
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          aggregate_id: number
+          litter_item_id: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          aggregate_id?: number
+          litter_item_id?: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

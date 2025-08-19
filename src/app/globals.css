@@ -41,6 +41,28 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-ocean-50: var(--ocean-50);
+  --color-ocean-100: var(--ocean-100);
+  --color-ocean-200: var(--ocean-200);
+  --color-ocean-300: var(--ocean-300);
+  --color-ocean-400: var(--ocean-400);
+  --color-ocean-500: var(--ocean-500);
+  --color-ocean-600: var(--ocean-600);
+  --color-ocean-700: var(--ocean-700);
+  --color-ocean-800: var(--ocean-800);
+  --color-ocean-900: var(--ocean-900);
+  --color-ocean-950: var(--ocean-950);
+  --color-forest-50: var(--forest-50);
+  --color-forest-100: var(--forest-100);
+  --color-forest-200: var(--forest-200);
+  --color-forest-300: var(--forest-300);
+  --color-forest-400: var(--forest-400);
+  --color-forest-500: var(--forest-500);
+  --color-forest-600: var(--forest-600);
+  --color-forest-700: var(--forest-700);
+  --color-forest-800: var(--forest-800);
+  --color-forest-900: var(--forest-900);
+  --color-forest-950: var(--forest-950);
 }
 
 :root {
@@ -76,6 +98,32 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Ocean color scheme */
+  --ocean-50: oklch(0.98 0.02 220);
+  --ocean-100: oklch(0.94 0.05 220);
+  --ocean-200: oklch(0.87 0.10 220);
+  --ocean-300: oklch(0.78 0.15 220);
+  --ocean-400: oklch(0.65 0.18 220);
+  --ocean-500: oklch(0.55 0.20 220);
+  --ocean-600: oklch(0.45 0.18 220);
+  --ocean-700: oklch(0.35 0.15 220);
+  --ocean-800: oklch(0.25 0.12 220);
+  --ocean-900: oklch(0.15 0.08 220);
+  --ocean-950: oklch(0.08 0.04 220);
+
+  /* Forest color scheme */
+  --forest-50: oklch(0.98 0.02 140);
+  --forest-100: oklch(0.94 0.05 140);
+  --forest-200: oklch(0.87 0.10 140);
+  --forest-300: oklch(0.78 0.15 140);
+  --forest-400: oklch(0.65 0.18 140);
+  --forest-500: oklch(0.55 0.20 140);
+  --forest-600: oklch(0.45 0.18 140);
+  --forest-700: oklch(0.35 0.15 140);
+  --forest-800: oklch(0.25 0.12 140);
+  --forest-900: oklch(0.15 0.08 140);
+  --forest-950: oklch(0.08 0.04 140);
 }
 
 .dark {
@@ -110,6 +158,32 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Dark mode ocean colors */
+  --ocean-50: oklch(0.08 0.04 220);
+  --ocean-100: oklch(0.15 0.08 220);
+  --ocean-200: oklch(0.25 0.12 220);
+  --ocean-300: oklch(0.35 0.15 220);
+  --ocean-400: oklch(0.45 0.18 220);
+  --ocean-500: oklch(0.55 0.20 220);
+  --ocean-600: oklch(0.65 0.18 220);
+  --ocean-700: oklch(0.78 0.15 220);
+  --ocean-800: oklch(0.87 0.10 220);
+  --ocean-900: oklch(0.94 0.05 220);
+  --ocean-950: oklch(0.98 0.02 220);
+
+  /* Dark mode forest colors */
+  --forest-50: oklch(0.08 0.04 140);
+  --forest-100: oklch(0.15 0.08 140);
+  --forest-200: oklch(0.25 0.12 140);
+  --forest-300: oklch(0.35 0.15 140);
+  --forest-400: oklch(0.45 0.18 140);
+  --forest-500: oklch(0.55 0.20 140);
+  --forest-600: oklch(0.65 0.18 140);
+  --forest-700: oklch(0.78 0.15 140);
+  --forest-800: oklch(0.87 0.10 140);
+  --forest-900: oklch(0.94 0.05 140);
+  --forest-950: oklch(0.98 0.02 140);
 }
 
 @layer base {

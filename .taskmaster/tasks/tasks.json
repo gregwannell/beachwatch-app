@@ -360,7 +360,7 @@
             "dependencies": [
               "7.1"
             ],
-            "details": "Create RegionSelector component using shadcn/ui Select and Command components. Implement search functionality with fuzzy matching for region names. Add hierarchical display showing country > county > unitary authority. Include clear selection option and multiple selection support. Add loading states for region data fetching.",
+            "details": "Create RegionSelector component using shadcn/ui Select and Command components. Implement search functionality with fuzzy matching for region names. Add hierarchical display showing UK > country > county and unitary authority. Include clear selection option and multiple selection support. Add loading states for region data fetching.",
             "status": "pending",
             "testStrategy": ""
           },

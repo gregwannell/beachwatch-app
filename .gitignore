@@ -60,4 +60,8 @@ node_modules/
 
 # Task files
 # tasks.json
-# tasks/ 
+# tasks/
+
+# Database import files with credentials
+*.load
+import-data.bat 

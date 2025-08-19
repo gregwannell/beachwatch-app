@@ -15,7 +15,13 @@
       "mcp__taskmaster-ai__set_task_status",
       "Bash(npm install:*)",
       "Bash(git commit:*)",
-      "mcp__supabase__get_advisors"
+      "mcp__supabase__get_advisors",
+      "mcp__supabase__execute_sql",
+      "Bash(mkdir:*)",
+      "Bash(move:*)",
+      "Bash(mv:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run build:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

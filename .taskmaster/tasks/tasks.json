@@ -389,68 +389,56 @@
       {
         "id": 8,
         "title": "Create API Routes for Litter Data Analytics",
-        "description": "Build Next.js API routes for fetching aggregated litter data with proper filtering, caching, and error handling using Supabase JavaScript client with correct field names and relationships",
-        "status": "pending",
+        "description": "Build simple Next.js API routes for fetching aggregated litter data following existing app patterns, with basic error handling and caching using Supabase JavaScript client",
+        "status": "done",
         "dependencies": [
           1,
           7
         ],
         "priority": "high",
-        "details": "Create API routes in app/api/: /analytics/region/{id} for region-specific data, /analytics/trends for historical data, /analytics/materials and /analytics/sources for breakdowns. Implement direct Supabase client queries for pre-aggregated data from annual_*_aggregates tables using correct field names: `name_id` for region relationships, `additional_area_cleaned_m` for area calculations, and `aggregate_id` for linking to central fact table. Target production database with 2,288 annual_region_aggregates rows. Leverage Supabase's built-in REST API performance optimizations and automatic query optimization. Implement request validation using Zod schemas with Supabase's type safety. Add response caching with Next.js revalidation and Supabase's native caching. Handle edge cases like no data available for regions. Support batch queries for multiple regions. Add rate limiting for API protection. Implement proper error handling and logging using Supabase's connection pooling and automatic connection management.",
-        "testStrategy": "Test API routes with various filter combinations using Supabase client and correct field names. Verify response times meet performance requirements (<200ms) with Supabase's optimizations. Test error handling for invalid requests and database failures. Validate data accuracy against Supabase queries using production schema with 2,288 aggregate rows.",
+        "details": "Create basic API routes in app/api/analytics/: /region/[id] for region-specific data, /trends for historical data, /materials and /sources for breakdowns. Follow existing patterns from materials/regions routes. Implement simple Supabase client queries for annual_*_aggregates tables using correct field names: `name_id` for region relationships, `additional_area_cleaned_m` for area calculations, and `aggregate_id` for linking. Use basic Next.js revalidate for caching. Add simple parameter validation and basic error handling. Keep it simple and functional for the 2,288 aggregate rows in the database.",
+        "testStrategy": "Test API routes with basic filter combinations. Verify responses return correct data using Supabase client. Test simple error handling for invalid requests. Validate data accuracy against database queries.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Design API Route Structure and Endpoints",
-            "description": "Create the foundational API route structure with proper Next.js App Router organization and endpoint definitions using correct database field names",
-            "status": "pending",
+            "title": "Create Basic API Route Structure",
+            "description": "Set up simple API route files following existing app patterns with basic Next.js App Router organization",
+            "status": "done",
             "dependencies": [],
-            "details": "Create API route files in app/api/analytics/: region/[id]/route.ts for region-specific data, trends/route.ts for historical trends, materials/route.ts for material breakdown, and sources/route.ts for source breakdown. Define TypeScript interfaces for request parameters and response schemas using correct field names: `name_id` for region relationships, `additional_area_cleaned_m` for area calculations, and `aggregate_id` for central fact table linking. Implement route handlers with proper HTTP method support (GET). Set up proper Next.js dynamic route configuration for region ID parameter. Create base response formatting utilities that account for production database structure with 2,288 annual_region_aggregates rows.",
+            "details": "Create API route files in app/api/analytics/: region/[id]/route.ts, trends/route.ts, materials/route.ts, and sources/route.ts. Follow existing patterns from materials and regions routes. Define basic TypeScript interfaces for responses using correct field names: `name_id`, `additional_area_cleaned_m`, and `aggregate_id`. Implement simple GET handlers with basic parameter extraction. Keep structure simple and consistent with existing codebase.",
             "testStrategy": ""
           },
           {
             "id": 2,
-            "title": "Implement Supabase Client Queries for Aggregated Data",
-            "description": "Build optimized Supabase client queries to fetch data from pre-aggregated tables using correct field names and established relationships",
-            "status": "pending",
+            "title": "Implement Basic Supabase Queries",
+            "description": "Create simple Supabase client queries for fetching data from aggregated tables using correct field names",
+            "status": "done",
             "dependencies": [
               1
             ],
-            "details": "Create Supabase client query functions for annual_*_aggregates tables using correct field names: `name_id` for region joins, `additional_area_cleaned_m` for area-based calculations, and `aggregate_id` for linking to central fact table. Implement region-specific queries with geographic filtering leveraging established relationships in production database with 2,288 aggregate rows. Build trend analysis queries for historical data comparison using Supabase's automatic query optimization. Create material and source breakdown queries with proper aggregation using Supabase's built-in aggregation functions. Leverage Supabase's native connection pooling and automatic query optimization. Implement batch query support for multiple regions using Supabase's bulk operations. Take advantage of Supabase's automatic caching strategies for analytics workloads.",
+            "details": "Build straightforward Supabase queries for annual_*_aggregates tables using correct field names: `name_id` for region joins, `additional_area_cleaned_m` for area calculations, and `aggregate_id` for central table linking. Create simple select queries with basic filtering. Follow existing query patterns from the app. Handle region-specific data fetching and basic trend analysis. Keep queries simple and focused on essential functionality.",
             "testStrategy": ""
           },
           {
             "id": 3,
-            "title": "Implement Request Validation with Zod Schemas and Supabase Type Safety",
-            "description": "Create comprehensive request validation using Zod schemas with correct field names and database relationships",
-            "status": "pending",
+            "title": "Add Basic Parameter Validation and Error Handling",
+            "description": "Implement simple parameter validation and basic error handling following existing app patterns",
+            "status": "done",
             "dependencies": [
               1
             ],
-            "details": "Define Zod schemas for each API endpoint's query parameters and request body using correct field names from production schema. Create validation schemas for region IDs (using `name_id` field), date ranges, filter parameters, and pagination options. Validate `additional_area_cleaned_m` calculations and `aggregate_id` references. Implement validation middleware for consistent error responses. Add input sanitization and type coercion. Create custom validation rules for geographic coordinates and date ranges. Implement schema composition for shared validation logic. Integrate with Supabase's TypeScript type generation for enhanced type safety with production database structure. Add validation error formatting for clear client feedback.",
+            "details": "Add basic parameter validation for region IDs, date ranges, and filter options. Use simple JavaScript validation rather than complex schema libraries. Implement basic error responses with appropriate HTTP status codes. Handle common cases like invalid region IDs and missing parameters. Follow existing error handling patterns from materials/regions routes. Keep validation simple and focused on preventing basic errors.",
             "testStrategy": ""
           },
           {
             "id": 4,
-            "title": "Set Up Response Caching with Next.js and Supabase Native Caching",
-            "description": "Implement Next.js response caching combined with Supabase's built-in caching optimized for production database size",
-            "status": "pending",
+            "title": "Implement Simple Caching with Next.js Revalidate",
+            "description": "Add basic response caching using Next.js revalidate following existing app caching patterns",
+            "status": "done",
             "dependencies": [
               2
             ],
-            "details": "Implement Next.js ISR (Incremental Static Regeneration) for cacheable responses optimized for 2,288 aggregate rows. Set up revalidation strategies with appropriate cache durations based on data update frequency and production database size. Add cache headers for browser and CDN optimization. Implement conditional requests with ETag support. Leverage Supabase's native caching strategies for database queries with aggregate tables. Take advantage of Supabase's automatic connection pooling for improved performance with established relationships. Create cache invalidation logic for data updates using `aggregate_id` tracking. Add response compression and pagination for large datasets. Implement rate limiting using Next.js middleware or external service integration.",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Create Error Handling and Logging System with Supabase Integration",
-            "description": "Implement comprehensive error handling and logging for all API routes using correct field names and relationship validation",
-            "status": "pending",
-            "dependencies": [
-              3,
-              4
-            ],
-            "details": "Create centralized error handling middleware with proper HTTP status codes and field-specific error messages for `name_id`, `additional_area_cleaned_m`, and `aggregate_id` validation failures. Implement structured logging for API requests, errors, and performance metrics with production database context. Add error categorization (validation, database, system errors) including relationship constraint violations. Create custom error classes for different failure scenarios including Supabase-specific errors and missing aggregate relationships. Implement request/response logging with sanitization for sensitive data. Add monitoring hooks for error tracking and performance metrics with production database scale considerations. Handle edge cases like empty datasets, invalid regions using `name_id` lookups, and database connectivity issues using Supabase's automatic connection management. Create user-friendly error messages while logging detailed technical information about field validation failures. Leverage Supabase's built-in error handling and retry mechanisms for aggregate table queries.",
+            "details": "Implement basic caching using Next.js revalidate with appropriate time intervals for analytics data. Add simple cache headers for browser caching. Follow existing caching patterns from the app. Set reasonable revalidate times based on data update frequency. Keep caching strategy simple and effective for the app's scale with 2,288 aggregate rows.",
             "testStrategy": ""
           }
         ]
@@ -568,7 +556,7 @@
     ],
     "metadata": {
       "created": "2025-08-15T10:33:31.832Z",
-      "updated": "2025-08-20T09:54:57.844Z",
+      "updated": "2025-08-20T10:20:19.427Z",
       "description": "Tasks for master context"
     }
   }

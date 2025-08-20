@@ -1,0 +1,11 @@
+# Task ID: 3
+# Title: Create Core Application Layout and Navigation Structure
+# Status: done
+# Dependencies: 2
+# Priority: high
+# Description: Build the main application layout with responsive design, including map area, sidebar for filters, and engagement stats panel
+# Details:
+Create responsive layout component with CSS Grid: map occupying ~70% width on desktop, full width on mobile. Implement collapsible left sidebar for filters using shadcn/ui Sidebar component. Create fixed engagement stats panel on right side (desktop) or below map (mobile). Add proper responsive breakpoints using Tailwind CSS. Implement header with application title and branding. Use Inter font from next/font/google for typography. Apply environmental color scheme (blues/greens) with CSS custom properties.
+
+# Test Strategy:
+Test responsive behavior across desktop, tablet, and mobile viewports. Verify sidebar collapse/expand functionality. Test layout integrity with different content sizes.

@@ -6,6 +6,8 @@ import { useMapRegions } from '@/hooks/use-map-regions'
 import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
+import { FilterSidebar } from '@/components/filters/filter-sidebar'
+import { FilterState } from '@/types/filter-types'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -21,27 +23,6 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
   )
 })
 
-function FilterSidebar() {
-  return (
-    <div className="p-4 space-y-4">
-      <h3 className="font-medium text-sm text-muted-foreground mb-3">
-        Data Filters
-      </h3>
-      <Card className="p-3">
-        <h4 className="font-semibold text-sm mb-2">Date Range</h4>
-        <p className="text-xs text-muted-foreground">Filter controls coming soon</p>
-      </Card>
-      <Card className="p-3">
-        <h4 className="font-semibold text-sm mb-2">Location</h4>
-        <p className="text-xs text-muted-foreground">Region selection coming soon</p>
-      </Card>
-      <Card className="p-3">
-        <h4 className="font-semibold text-sm mb-2">Litter Types</h4>
-        <p className="text-xs text-muted-foreground">Category filters coming soon</p>
-      </Card>
-    </div>
-  )
-}
 
 function StatsPanel() {
   return (
@@ -88,6 +69,20 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   
+  // Filter state management
+  const [filters, setFilters] = useState<FilterState>({
+    region: { selectedRegionId: null },
+    yearRange: {
+      startYear: 2024,
+      endYear: 2024,
+      mode: 'single'
+    },
+    categories: {
+      materials: [],
+      sources: [],
+    }
+  })
+  
   // Fetch map regions data
   const { data: regions = [], isLoading, error } = useMapRegions({
     includeGeometry: true,
@@ -96,16 +91,28 @@ export default function Home() {
 
   const handleRegionClick = (regionId: number) => {
     setSelectedRegionId(regionId)
-    // TODO: Open region info modal when implemented
+    // Also update the filter when a region is clicked on the map
+    setFilters(prev => ({
+      ...prev,
+      region: { selectedRegionId: regionId }
+    }))
   }
 
   const handleRegionHover = (regionId: number | null) => {
     setHoveredRegionId(regionId)
   }
 
+  // Sync the selected region between filters and map
+  const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId
+
   return (
     <MainLayout 
-      sidebar={<FilterSidebar />}
+      sidebar={
+        <FilterSidebar 
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+      }
       statsPanel={<StatsPanel />}
     >
       <div className="h-full w-full">
@@ -132,7 +139,7 @@ export default function Home() {
         ) : (
           <UKMap
             regions={regions}
-            selectedRegionId={selectedRegionId}
+            selectedRegionId={effectiveSelectedRegionId}
             onRegionClick={handleRegionClick}
             onRegionHover={handleRegionHover}
             className="h-full w-full"

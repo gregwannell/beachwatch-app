@@ -1,0 +1,73 @@
+# Task ID: 4
+# Title: Implement UK Geographic Regions Data Management
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Create data models, API routes, and services for managing UK geographic regions with jsonb geometry data integration using Supabase JavaScript client
+# Details:
+Create API routes in app/api/regions/ for fetching region data using Supabase client. Implement direct Supabase queries for hierarchical region structure (country > county > unitary authority) leveraging built-in REST API. Create region service functions for data transformation handling existing jsonb geometry fields containing GeoJSON Polygon objects. Implement caching strategy with React Query and Supabase's built-in connection pooling. Add region boundary coordinate validation for jsonb polygon data. Handle geometry field structure: {"type": "Polygon", "coordinates": [[[lng, lat], [lng, lat], ...]]}. IMPORTANT: Use correct database schema field names - `name_id` in annual_region_aggregates table, `additional_area_cleaned_m` (not additional_areas_cleaned_m), and `parent_id` in regions table (not parent_region_id). Work with existing jsonb geometry field data for all 226 UK regions with complete boundary coverage across 4 hierarchy levels.
+
+# Test Strategy:
+Test region data fetching with various geographic levels using Supabase client. Validate jsonb GeoJSON Polygon structure and coordinate integrity. Test region hierarchy queries for parent/child relationships using Supabase REST API. Verify API performance with large boundary datasets leveraging built-in connection pooling. Test queries against production schema using correct field names (name_id, additional_area_cleaned_m, parent_id). Test jsonb polygon coordinate processing for map rendering with existing complete boundary data.
+
+# Subtasks:
+## 1. Create API routes for regions data with Supabase client [done]
+### Dependencies: None
+### Description: Implement Next.js API routes in app/api/regions/ using Supabase JavaScript client for fetching UK geographic regions data with jsonb geometry handling and proper error handling
+### Details:
+Create API endpoints using Supabase client: GET /api/regions for all regions, GET /api/regions/[id] for specific region, GET /api/regions/hierarchy for parent-child relationships. Implement proper TypeScript interfaces for Supabase response objects including jsonb geometry field structure. Add input validation and error handling using Supabase error types. Configure rate limiting and CORS headers. Utilize Supabase's built-in connection pooling and automatic retries. Use correct schema field names: `parent_id` for region hierarchy queries. Handle jsonb geometry data extraction and parsing for API responses with existing boundary data.
+<info added on 2025-08-19T11:20:31.785Z>
+Implementation completed successfully. All three main API endpoints created with comprehensive query parameters and proper error handling. TypeScript interfaces integrated with Supabase client. Rate limiting, caching headers, and geometry validation implemented using existing utility functions. All schema field names correctly used including parent_id, name_id, and additional_area_cleaned_m for proper database integration.
+</info added on 2025-08-19T11:20:31.785Z>
+
+## 2. Implement Supabase queries for hierarchical region structure [done]
+### Dependencies: 4.1
+### Description: Build database queries using Supabase JavaScript client to handle hierarchical UK region data structure with jsonb geometry data extraction from existing boundary data
+### Details:
+Create Supabase queries for nested region relationships using select with joins on `parent_id` field. Implement functions using supabase.from(): findRegionsByParent, getRegionHierarchy, searchRegionsByName. Include jsonb geometry field selection in queries for existing boundary data. Utilize Supabase's built-in filtering and ordering capabilities. Handle region type filtering (country, county, unitary authority) with Supabase query builders. Leverage automatic connection management and query optimization. Ensure queries use correct field name `parent_id` for hierarchy relationships and properly extract jsonb polygon data from the complete existing dataset.
+<info added on 2025-08-19T14:11:21.239Z>
+**Implementation Complete - Comprehensive Supabase Region Queries System**
+
+Successfully implemented full hierarchical region query system with RegionQueries class in region-queries.ts featuring findRegionsByParent, getRegionHierarchy, searchRegionsByName, getRegionPath, getRegionsByType, getRegionStatistics, and validateHierarchy functions. All queries properly use parent_id field and include efficient hierarchy building with Maps for O(1) lookups, descendant counting, and circular reference detection.
+
+Created corresponding React Query hooks in use-region-queries.ts with complete cache management, query key factories, prefetch helpers, and mutation support. System includes comprehensive error handling, performance optimization, and flexible query options (includeGeometry, includeChildren, includeParent, includeAggregates, maxDepth, orderBy). Enhanced RegionWithRelations interface provides full type safety for hierarchical data structures.
+
+All queries leverage Supabase's built-in REST API, connection pooling, and query builders for optimal performance with the existing UK regions dataset containing jsonb geometry fields.
+</info added on 2025-08-19T14:11:21.239Z>
+
+## 3. Implement jsonb GeoJSON processing for coordinate validation [done]
+### Dependencies: None
+### Description: Build GeoJSON processing pipeline for jsonb polygon data validation and coordinate processing without PostGIS geometry types using existing boundary data
+### Details:
+Implement JavaScript-based coordinate validation for existing jsonb polygon data. Create functions to validate GeoJSON Polygon structure stored in jsonb fields. Add coordinate bounds checking using standard JavaScript geometry calculations. Implement polygon simplification algorithms for different zoom levels. Create functions: validateJsonbPolygon, simplifyPolygonCoordinates, calculatePolygonBounds, optimizeForZoom. Handle invalid geometries with JavaScript validation functions. Work directly with coordinate arrays from jsonb structure of existing complete boundary dataset.
+<info added on 2025-08-19T11:23:16.969Z>
+Implementation completed successfully with comprehensive geometry processing capabilities. Created three core modules: geometry-utils.ts with validation functions (validateJsonbPolygon/MultiPolygon, calculatePolygonBounds, simplifyPolygonCoordinates with Douglas-Peucker algorithm, optimizeForZoom, UK coordinate bounds checking), spatial-operations.ts with advanced algorithms (pointInPolygon using ray casting, calculateDistance with Haversine formula, calculatePolygonArea with Shoelace formula, findIntersections, createBuffer, executeSpatialQuery, CoordinateTransformations class), and region-geometry-service.ts as service layer (validateGeometry, processGeometry with metadata calculation, validateRegionFromDB, spatial query functions, batch processing). All functions implemented in pure JavaScript without PostGIS dependency, handle existing jsonb polygon structure correctly, include comprehensive error handling with coordinate bounds validation, ring closure checks, duplicate detection, and performance warnings for large geometries.
+</info added on 2025-08-19T11:23:16.969Z>
+
+## 4. Setup React Query caching with Supabase integration [done]
+### Dependencies: 4.2
+### Description: Implement comprehensive caching strategy using React Query integrated with Supabase's built-in caching and real-time capabilities for jsonb geometry data
+### Details:
+Configure React Query client to work with Supabase client queries including jsonb geometry data from existing boundaries. Implement query keys structure for hierarchical caching with Supabase data. Add prefetching strategies using Supabase's connection pooling. Create cache invalidation rules integrated with Supabase real-time subscriptions. Set up background refetching leveraging Supabase's automatic retry mechanisms and built-in performance optimizations. Handle jsonb polygon data serialization in cache for all 226 regions.
+<info added on 2025-08-19T14:14:21.687Z>
+Successfully completed React Query caching implementation with comprehensive Supabase integration. Enhanced query-client.ts with Supabase-optimized configurations including custom retry logic for PGRST errors, exponential backoff with jitter, extended garbage collection for geometry data, and custom geometry serialization with validation. Implemented SupabaseQueryClient class with advanced caching methods including setGeometryCache with priority-based stale times, prefetchRegionHierarchy for progressive loading, invalidateRegionQueries with smart cascade invalidation, startBackgroundSync for automatic refreshing, optimizeMemoryUsage for large datasets, and getCacheStats for monitoring. Created supabase-query-provider.tsx with real-time subscriptions to regions and aggregates tables, automatic cache invalidation on database changes, background synchronization with configurable intervals, memory optimization with cleanup, connection status monitoring, and development debug component. Added cache-strategies.ts with production-ready CACHE_STRATEGIES for different data types, CachePreloadingStrategies for essential data and exploration workflows, CacheOptimizer with usage analysis and predictive prefetching, and CacheWarming for deployment optimization. The implementation properly handles jsonb polygon data serialization in cache, provides real-time cache invalidation synchronized with database changes, implements progressive loading for large boundary datasets, and efficiently manages all 226 UK regions with complete geometry coverage.
+</info added on 2025-08-19T14:14:21.687Z>
+
+## 5. Implement spatial operations with JavaScript for jsonb polygon data [done]
+### Dependencies: 4.3
+### Description: Implement geographic operations using JavaScript algorithms for spatial queries and boundary calculations on existing jsonb polygon data
+### Details:
+Implement JavaScript-based spatial operations for existing jsonb polygon data. Create geographic query functions using coordinate calculations: point-in-polygon, distance calculations, boundary intersections. Add geographic coordinate transformations using standard projection formulas. Create optimized functions for jsonb polygon operations: pointInPolygon, calculateDistance, findIntersections. Use efficient algorithms for coordinate-based spatial queries without PostGIS dependencies on complete existing boundary dataset.
+
+## 6. Update database queries to use correct schema field names [done]
+### Dependencies: 4.2
+### Description: Ensure all queries and data models use the correct production database schema field names identified in analysis
+### Details:
+Update all Supabase queries and TypeScript interfaces to use correct field names: `name_id` instead of `region_id` in annual_region_aggregates table queries, `additional_area_cleaned_m` instead of `additional_areas_cleaned_m` in area calculations, and `parent_id` instead of `parent_region_id` in regions table hierarchy queries. Verify all database interactions use production schema naming conventions. Update any existing type definitions and API response interfaces to match actual database structure including jsonb geometry field handling for existing boundary data.
+
+## 7. Create TypeScript interfaces for jsonb geometry handling [done]
+### Dependencies: 4.1
+### Description: Define comprehensive TypeScript interfaces and types for working with existing jsonb polygon geometry data throughout the application
+### Details:
+Create TypeScript interfaces for existing jsonb geometry structure: RegionGeometry, PolygonCoordinates, BoundaryData. Define types for coordinate pairs [longitude, latitude] and coordinate arrays. Add validation functions with proper type guards for jsonb polygon data. Create utility types for map rendering components that consume jsonb geometry. Implement type-safe functions for coordinate extraction and transformation. Ensure type compatibility across API routes, React components, and map libraries for all 226 existing regions with complete boundary coverage.
+

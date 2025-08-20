@@ -1,0 +1,11 @@
+# Task ID: 2
+# Title: Install and Configure Core Dependencies
+# Status: done
+# Dependencies: 1
+# Priority: high
+# Description: Install required libraries for mapping, data visualization, state management, and UI components as specified in the PRD
+# Details:
+Install React Query (@tanstack/react-query) v5.x for server state management. Install shadcn/ui charts component using 'npx shadcn@latest add chart' for data visualization (this automatically includes recharts as a dependency). Install Leaflet with react-leaflet v4.x for mapping (open source alternative to Mapbox). Install Sonner v1.x for notifications. Add additional shadcn/ui components: Card, Button, Select, Checkbox, Slider, Tooltip, Dialog, Sidebar. Configure React Query with QueryClient and proper error boundaries.
+
+# Test Strategy:
+Verify all dependencies are properly installed and importable. Test React Query client initialization. Validate shadcn/ui charts can render basic charts. Test Leaflet initialization with sample data.

@@ -4,14 +4,15 @@ import { validateRegionGeometry, createBoundaryData } from '@/lib/geometry-utils
 import type { Tables } from '@/lib/database.types'
 
 interface RouteParams {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params
   try {
     const supabase = createServerClient()
     const { searchParams } = new URL(request.url)
-    const regionId = parseInt(params.id)
+    const regionId = parseInt(id)
     
     if (isNaN(regionId)) {
       return NextResponse.json(

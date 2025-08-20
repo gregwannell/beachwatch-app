@@ -334,81 +334,55 @@
       {
         "id": 7,
         "title": "Implement Filter System and State Management",
-        "description": "Build comprehensive filtering system with region selector, time period controls, and litter category filters using React Query",
-        "details": "Create filter context using React Context API for UI state. Implement region selector with search functionality using shadcn/ui Select and Command components. Build time period selector supporting single year and year ranges with slider component. Create category checkboxes for litter type/source filtering. Add filter reset functionality. Implement URL search params synchronization for shareable links. Use React Query for server state management with proper cache invalidation. Add debounced filter updates to prevent excessive API calls. Store filter state in localStorage for session persistence.",
-        "testStrategy": "Test filter combinations and state synchronization. Verify URL sharing functionality works correctly. Test filter persistence across browser sessions. Validate performance with rapid filter changes.",
-        "priority": "high",
+        "description": "Build simplified filtering system with region selector, time period controls, and litter category filters using local state management",
+        "status": "done",
         "dependencies": [
           3,
           6
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Create simple filter state using useState hooks for UI state management. Implement RegionSelect component with search functionality using shadcn/ui Select and Command components. Build YearRangePicker component supporting single year and year ranges using slider or input components. Create CategoryCheckboxes component for litter type and source filtering. Add simple reset functionality to clear all filters. Integrate with existing React Query hooks for data fetching without additional complexity. Focus on core functionality without URL synchronization, localStorage persistence, or advanced debouncing - leveraging React Query's built-in caching for performance.",
+        "testStrategy": "Test filter combinations and proper state updates. Verify filter reset functionality works correctly. Test integration with React Query data fetching. Validate filter performance with React Query caching.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Create Filter Context and State Management Setup",
-            "description": "Set up React Context API for filter state management with TypeScript interfaces",
+            "title": "Create RegionSelect Filter Component",
+            "description": "Build region selector using shadcn/ui Select with basic search functionality",
+            "details": "Create RegionSelect component using existing shadcn/ui Select and Command components. Add basic search filtering for region names. Display regions in hierarchical format (Country > County). Handle selection changes and pass to parent component via props. No complex state management - just controlled component pattern.",
+            "status": "done",
             "dependencies": [],
-            "details": "Create FilterContext with React.createContext and FilterProvider component. Define TypeScript interfaces for filter state including region, time period, and category selections. Implement useFilters custom hook for context consumption. Set up initial filter state structure with proper typing. Create filter reducer for complex state updates.",
-            "status": "pending",
-            "testStrategy": ""
+            "parentTaskId": 7
           },
           {
             "id": 2,
-            "title": "Implement Region Selector with Search Functionality",
-            "description": "Build region selector component with search capabilities using shadcn/ui components",
-            "dependencies": [
-              "7.1"
-            ],
-            "details": "Create RegionSelector component using shadcn/ui Select and Command components. Implement search functionality with fuzzy matching for region names. Add hierarchical display showing UK > country > county and unitary authority. Include clear selection option and multiple selection support. Add loading states for region data fetching.",
-            "status": "pending",
-            "testStrategy": ""
+            "title": "Create YearRangePicker Component",
+            "description": "Build simple year range selector using slider or input components",
+            "details": "Create YearRangePicker component using shadcn/ui Slider or Input components. Support single year and year range selection. Add preset buttons for common periods (Last 5 Years, All Time). Handle min/max validation based on available data years. Use controlled component pattern with props for value changes.",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
           },
           {
             "id": 3,
-            "title": "Build Time Period Controls and Date Range Selector",
-            "description": "Create time period selector supporting single year and year ranges with slider component",
-            "dependencies": [
-              "7.1"
-            ],
-            "details": "Implement TimePeriodSelector using shadcn/ui Slider for year range selection. Support both single year and year range modes with toggle. Add preset buttons for common periods (Last Year, Last 5 Years, All Time). Display selected period clearly with formatted date strings. Include validation for logical date ranges.",
-            "status": "pending",
-            "testStrategy": ""
+            "title": "Create CategoryCheckboxes Component",
+            "description": "Build litter category filtering with checkbox groups for types and sources",
+            "details": "Create CategoryCheckboxes component using shadcn/ui Checkbox components. Organize categories into logical groups (material types, sources). Add select all/none functionality per group. Handle checkbox state changes and pass selected categories to parent via props. Keep it simple with controlled component pattern.",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 7
           },
           {
             "id": 4,
-            "title": "Create Category Filtering with Litter Type Checkboxes",
-            "description": "Build category checkbox system for litter type and source filtering",
+            "title": "Integrate Filter Components with React Query",
+            "description": "Replace placeholder filters in page.tsx and connect to data fetching with reset functionality",
+            "details": "Update the FilterSidebar in page.tsx to use the new filter components. Add useState hooks for filter state management. Connect filter changes to React Query hooks for data fetching. Implement simple reset functionality to clear all filters. Update map and charts to respond to filter state changes. Keep implementation simple with direct prop passing.",
+            "status": "done",
             "dependencies": [
-              "7.1"
+              1,
+              2,
+              3
             ],
-            "details": "Create CategoryFilter component with grouped checkboxes for litter types and sources. Implement select all/none functionality for each group. Add search/filter capability within categories. Include visual indicators for active filters. Support nested category hierarchies with parent/child relationships.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 5,
-            "title": "Implement URL Search Params Synchronization",
-            "description": "Add URL synchronization for shareable filter states and browser navigation",
-            "dependencies": [
-              "7.2",
-              "7.3",
-              "7.4"
-            ],
-            "details": "Implement useSearchParams hook for URL state synchronization. Create URL serialization/deserialization for filter state. Support browser back/forward navigation with filter states. Generate shareable URLs with encoded filter parameters. Add URL validation and fallback for invalid parameters.",
-            "status": "pending",
-            "testStrategy": ""
-          },
-          {
-            "id": 6,
-            "title": "Add Filter Persistence and Performance Optimization",
-            "description": "Implement localStorage persistence and debounced updates with React Query integration",
-            "dependencies": [
-              "7.5"
-            ],
-            "details": "Add localStorage persistence for filter state across sessions. Implement debounced filter updates to prevent excessive API calls. Integrate with React Query for server state management and cache invalidation. Add filter reset functionality clearing all selections. Implement performance optimizations for rapid filter changes with useMemo and useCallback.",
-            "status": "pending",
-            "testStrategy": ""
+            "parentTaskId": 7
           }
         ]
       },
@@ -594,7 +568,7 @@
     ],
     "metadata": {
       "created": "2025-08-15T10:33:31.832Z",
-      "updated": "2025-08-19T15:26:22.645Z",
+      "updated": "2025-08-20T09:54:57.844Z",
       "description": "Tasks for master context"
     }
   }

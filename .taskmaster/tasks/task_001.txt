@@ -1,0 +1,43 @@
+# Task ID: 1
+# Title: Setup Database Connection and Environment Configuration
+# Status: done
+# Dependencies: None
+# Priority: high
+# Description: Configure Supabase database connection using the JavaScript client and environment variables for the Beachwatch Data Explorer
+# Details:
+Install and configure Supabase JavaScript client for direct database access. Set up environment variables for database connection (SUPABASE_URL, SUPABASE_ANON_KEY). Create lib/supabase.ts for client configuration. Install dependency: @supabase/supabase-js. Optionally generate TypeScript types from database schema using Supabase CLI. This approach provides direct, type-safe database access perfect for read-heavy analytics use cases with built-in connection pooling and caching.
+
+# Test Strategy:
+Verify database connection with a simple query test. Test Supabase client initialization and basic data fetching operations on regions table. Validate environment variables are properly loaded and client is configured correctly.
+
+# Subtasks:
+## 1. Install Supabase JavaScript client [done]
+### Dependencies: None
+### Description: Install @supabase/supabase-js dependency
+### Details:
+Run npm install @supabase/supabase-js to add the Supabase client library
+
+## 2. Configure environment variables [done]
+### Dependencies: None
+### Description: Set up SUPABASE_URL and SUPABASE_ANON_KEY in environment configuration
+### Details:
+Create or update .env.local with SUPABASE_URL and SUPABASE_ANON_KEY. Add these variables to .env.example for documentation. Ensure variables are properly typed in next.config.ts if needed
+
+## 3. Create Supabase client configuration [done]
+### Dependencies: None
+### Description: Create lib/supabase.ts with client setup
+### Details:
+Create lib/supabase.ts file with createClient function from @supabase/supabase-js. Configure client with environment variables and appropriate options for Next.js Server Components
+
+## 4. Test database connection [done]
+### Dependencies: None
+### Description: Verify Supabase client can connect and query the database
+### Details:
+Create a simple test to verify database connection by querying the regions table. Test both client-side and server-side usage patterns
+
+## 5. Generate TypeScript types (optional) [done]
+### Dependencies: None
+### Description: Generate TypeScript types from database schema
+### Details:
+Use Supabase CLI to generate TypeScript types from the database schema for type-safe database operations. Configure type generation in package.json scripts
+

@@ -1,0 +1,58 @@
+# Task ID: 5
+# Title: Build Interactive UK Map Component
+# Status: done
+# Dependencies: 3, 4
+# Priority: high
+# Description: Develop the core interactive map component using Leaflet with region selection, hover effects, tooltips, and responsive design
+# Details:
+Use Leaflet (open source, no API key required) with react-leaflet for the mapping implementation. Create MapComponent with TypeScript interfaces for region data. Implement region boundary rendering with GeoJSON. Add hover highlighting with CSS transitions. Create tooltip component showing region name and 2-3 key metrics on hover. Implement click handlers for region selection. Add zoom and pan controls with bounds limiting to UK. Optimize rendering performance for large boundary datasets using layer clustering or simplification. Handle touch interactions for mobile devices.
+
+# Test Strategy:
+Test map rendering performance with full UK boundary data. Verify hover and click interactions across different regions. Test mobile touch responsiveness and zoom controls. Validate tooltip positioning and content accuracy.
+
+# Subtasks:
+## 1. Install and Configure Leaflet with React-Leaflet [done]
+### Dependencies: None
+### Description: Install Leaflet and react-leaflet packages, then set up basic map configuration with TypeScript support
+### Details:
+Install leaflet and react-leaflet packages with TypeScript definitions (@types/leaflet). Configure basic map container and initialization code using react-leaflet components. Set up CSS imports for Leaflet styles. Create initial MapComponent with proper TypeScript typing.
+
+## 2. Define TypeScript Interfaces for Region Data [done]
+### Dependencies: None
+### Description: Create comprehensive TypeScript interfaces and types for region data, map properties, and component props
+### Details:
+Define interfaces for RegionData, MapBounds, RegionProperties, TooltipData, and MapComponentProps. Include geometry types for GeoJSON features. Add type definitions for map events, hover states, and selection states. Ensure compatibility with Leaflet and react-leaflet types.
+
+## 3. Implement GeoJSON Boundary Rendering [done]
+### Dependencies: 5.1, 5.2
+### Description: Set up region boundary rendering using GeoJSON data with proper styling and layer management using Leaflet's GeoJSON layer
+### Details:
+Load UK region boundary GeoJSON data from ONS Geoportal API. Create GeoJSON layers using react-leaflet's GeoJSON component for different administrative levels. Implement region styling with appropriate colors and borders. Set up layer switching for different geographic levels (countries, counties, unitary authorities).
+
+## 4. Add Interactive Features - Hover and Click Handlers [done]
+### Dependencies: 5.3
+### Description: Implement hover highlighting, click selection, and interactive map controls with proper event handling using Leaflet event system
+### Details:
+Add mouseover/mouseout event handlers for region highlighting using Leaflet's event system. Implement click handlers for region selection with visual feedback. Add CSS transitions for smooth hover effects. Create zoom and pan controls with UK bounds limiting using Leaflet's fitBounds. Handle keyboard navigation for accessibility.
+
+## 5. Create Tooltip Component with Dynamic Content [done]
+### Dependencies: 5.2, 5.4
+### Description: Build responsive tooltip component that displays region information and key metrics on hover using Leaflet's tooltip functionality
+### Details:
+Create reusable Tooltip component using Leaflet's native tooltip system. Display region name and 2-3 key litter metrics. Implement smart positioning to avoid screen edges. Add loading states for async metric data. Style with consistent design system and proper contrast ratios using custom CSS classes.
+
+## 6. Optimize Performance for Large Boundary Datasets [done]
+### Dependencies: 5.3
+### Description: Implement performance optimizations including coordinate simplification and efficient rendering using Leaflet's performance features
+### Details:
+Implement coordinate simplification for detailed boundary data using Leaflet's simplification options. Use Leaflet's canvas renderer for better performance with many regions. Implement viewport-based rendering to load only visible regions. Add debouncing for hover events. Utilize Leaflet's built-in tile caching strategies.
+
+## 7. Handle Mobile Touch Interactions and Responsive Design [done]
+### Dependencies: 5.4, 5.5
+### Description: Implement touch-optimized interactions and ensure responsive map behavior across all device sizes using Leaflet's mobile support
+### Details:
+Configure Leaflet's built-in touch event handlers for mobile devices. Implement pinch-to-zoom and touch-pan gestures using Leaflet's touch interaction options. Adjust tooltip behavior for touch interactions (tap to show/hide). Ensure map controls are touch-friendly with appropriate sizing using Leaflet's mobile-optimized controls. Test responsive behavior on various screen sizes.
+<info added on 2025-08-19T15:10:01.820Z>
+Implementation completed successfully and integrated into main application. Resolved SSR issues with Next.js dynamic imports, added loading states and error handling, and integrated React Query for data fetching. Database connection validated with 226 regions containing JSONB MultiPolygon geometries, RLS configured for public read access. Confirmed smooth rendering performance with complex geometry data from /api/regions endpoint. Touch interactions, mobile responsiveness, and region selection state management fully implemented and tested across desktop (1200x800) and mobile (375x667) viewports. Map controls and zoom functionality working correctly on all devices. Interactive UK map now operational with real database data, ready for next development phase.
+</info added on 2025-08-19T15:10:01.820Z>
+

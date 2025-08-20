@@ -27,7 +27,9 @@
       "mcp__puppeteer__puppeteer_navigate",
       "mcp__puppeteer__puppeteer_screenshot",
       "mcp__puppeteer__puppeteer_click",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(npx shadcn@latest add:*)",
+      "mcp__taskmaster-ai__add_subtask",
+      "Bash(npx tsc:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

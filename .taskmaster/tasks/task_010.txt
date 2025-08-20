@@ -1,0 +1,43 @@
+# Task ID: 10
+# Title: Implement Region Information Modal and Data Display
+# Status: pending
+# Dependencies: 5, 6, 8
+# Priority: high
+# Description: Create detailed region information modal with comprehensive litter data visualization and year-over-year comparisons
+# Details:
+Create RegionInfoModal component using shadcn/ui Dialog. Display region name, geographic hierarchy, and data availability status. Show top 5 litter items with horizontal bar chart. Display material and source breakdown pie charts. Add average litter per 100m with trend indicators. Include historical trend line chart for selected time periods. Implement year-over-year percentage change displays with color coding. Handle regions with no data with clear messaging and alternative suggestions. Add modal close functionality and keyboard navigation. Implement modal state management with URL synchronization.
+
+# Test Strategy:
+Test modal functionality across different regions and data states. Verify chart accuracy and responsive design within modal. Test keyboard navigation and accessibility features. Validate no-data state handling.
+
+# Subtasks:
+## 1. Set up RegionInfoModal component with shadcn/ui Dialog [pending]
+### Dependencies: None
+### Description: Create the base modal component structure using shadcn/ui Dialog with proper TypeScript interfaces and modal state management
+### Details:
+Create RegionInfoModal component in components/ui/. Import and configure shadcn/ui Dialog, DialogContent, DialogHeader, DialogTitle, and DialogTrigger components. Define TypeScript interfaces for region data props. Implement basic modal open/close state management. Add modal overlay and proper z-index stacking. Set up responsive modal sizing for desktop and mobile. Include proper ARIA attributes for accessibility.
+
+## 2. Design and implement modal layout with region information display [pending]
+### Dependencies: 10.1
+### Description: Create the comprehensive data display layout showing region hierarchy, geographic info, and data availability status
+### Details:
+Design modal layout with header showing region name and close button. Create sections for geographic hierarchy (country > county > region). Add data availability indicators with status badges. Implement responsive grid layout for desktop and mobile. Add proper spacing and typography using Tailwind classes. Include loading states and skeleton components for async data. Handle long region names with text truncation.
+
+## 3. Integrate charts and data visualizations within modal [pending]
+### Dependencies: 10.2
+### Description: Add horizontal bar chart for top 5 litter items, pie charts for material/source breakdown, and historical trend charts
+### Details:
+Integrate existing chart components into modal layout. Create horizontal bar chart component for top 5 litter items with proper scaling. Add material breakdown pie chart with legend. Implement source breakdown pie chart with color coding. Create historical trend line chart with time period selector. Add year-over-year percentage change displays with color-coded indicators (green/red for increase/decrease). Ensure charts are responsive within modal constraints.
+
+## 4. Implement no-data state handling and alternative suggestions [pending]
+### Dependencies: 10.2
+### Description: Handle regions with no data by displaying clear messaging and suggesting nearby regions with available data
+### Details:
+Create EmptyState component for regions without litter data. Display clear messaging explaining data unavailability. Implement logic to suggest nearby regions with available data based on geographic proximity. Add buttons to navigate to suggested regions. Include data collection information and links to contribute data. Style empty state with appropriate icons and typography. Handle partial data scenarios where some metrics are available.
+
+## 5. Add keyboard navigation, accessibility features, and URL synchronization [pending]
+### Dependencies: 10.1, 10.3
+### Description: Implement complete keyboard navigation, accessibility features, and URL state management for modal
+### Details:
+Add keyboard event handlers for Escape key to close modal, Tab navigation between interactive elements, and Enter/Space for selections. Implement focus management with focus trap within modal. Add ARIA labels and roles for screen reader support. Create URL synchronization to share modal state with query parameters. Implement browser back button handling to close modal. Add focus restoration when modal closes. Test with screen readers and keyboard-only navigation.
+

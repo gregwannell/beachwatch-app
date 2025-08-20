@@ -1,0 +1,37 @@
+# Task ID: 7
+# Title: Implement Filter System and State Management
+# Status: pending
+# Dependencies: 3, 6
+# Priority: high
+# Description: Build simplified filtering system with region selector, time period controls, and litter category filters using local state management
+# Details:
+Create simple filter state using useState hooks for UI state management. Implement RegionSelect component with search functionality using shadcn/ui Select and Command components. Build YearRangePicker component supporting single year and year ranges using slider or input components. Create CategoryCheckboxes component for litter type and source filtering. Add simple reset functionality to clear all filters. Integrate with existing React Query hooks for data fetching without additional complexity. Focus on core functionality without URL synchronization, localStorage persistence, or advanced debouncing - leveraging React Query's built-in caching for performance.
+
+# Test Strategy:
+Test filter combinations and proper state updates. Verify filter reset functionality works correctly. Test integration with React Query data fetching. Validate filter performance with React Query caching.
+
+# Subtasks:
+## 1. Create RegionSelect Filter Component [pending]
+### Dependencies: None
+### Description: Build region selector using shadcn/ui Select with basic search functionality
+### Details:
+Create RegionSelect component using existing shadcn/ui Select and Command components. Add basic search filtering for region names. Display regions in hierarchical format (Country > County). Handle selection changes and pass to parent component via props. No complex state management - just controlled component pattern.
+
+## 2. Create YearRangePicker Component [pending]
+### Dependencies: None
+### Description: Build simple year range selector using slider or input components
+### Details:
+Create YearRangePicker component using shadcn/ui Slider or Input components. Support single year and year range selection. Add preset buttons for common periods (Last 5 Years, All Time). Handle min/max validation based on available data years. Use controlled component pattern with props for value changes.
+
+## 3. Create CategoryCheckboxes Component [pending]
+### Dependencies: None
+### Description: Build litter category filtering with checkbox groups for types and sources
+### Details:
+Create CategoryCheckboxes component using shadcn/ui Checkbox components. Organize categories into logical groups (material types, sources). Add select all/none functionality per group. Handle checkbox state changes and pass selected categories to parent via props. Keep it simple with controlled component pattern.
+
+## 4. Integrate Filter Components with React Query [pending]
+### Dependencies: 7.1, 7.2, 7.3
+### Description: Replace placeholder filters in page.tsx and connect to data fetching with reset functionality
+### Details:
+Update the FilterSidebar in page.tsx to use the new filter components. Add useState hooks for filter state management. Connect filter changes to React Query hooks for data fetching. Implement simple reset functionality to clear all filters. Update map and charts to respond to filter state changes. Keep implementation simple with direct prop passing.
+

@@ -1,0 +1,11 @@
+# Task ID: 9
+# Title: Build Engagement Statistics Panel
+# Status: pending
+# Dependencies: 6, 8
+# Priority: medium
+# Description: Create the engagement statistics panel showing survey counts, volunteer numbers, and total beach length surveyed
+# Details:
+Create EngagementStatsPanel component with responsive design. Display key metrics: number of surveys, volunteer count, total surveyed beach length. Implement real-time updates when filters change using React Query. Add metric comparison with previous period (year-over-year changes). Create loading skeletons for better UX. Add thousand/million number formatting (e.g., 1.2K, 1.5M). Use card-based layout with icons from Lucide React. Position fixed on right side (desktop) or below map (mobile). Include subtle animations for metric updates.
+
+# Test Strategy:
+Test panel updates when filter changes occur. Verify responsive positioning across different screen sizes. Test metric calculation accuracy and formatting. Validate loading states and error handling.

@@ -3,11 +3,13 @@
 import { MainLayout } from '@/components/layout/main-layout'
 import { Card } from '@/components/ui/card'
 import { useMapRegions } from '@/hooks/use-map-regions'
+import { useRegionInfo } from '@/hooks/use-region-info'
 import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { FilterState } from '@/types/filter-types'
+import { RegionInfoPanel } from '@/components/region-info-panel'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -68,6 +70,7 @@ function StatsPanel() {
 export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
+  const [isRegionPanelOpen, setIsRegionPanelOpen] = useState(false)
   
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
@@ -89,13 +92,35 @@ export default function Home() {
     onlyWithData: false
   })
 
+  // Fetch region info for the panel
+  const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
+    selectedRegionId,
+    isRegionPanelOpen
+  )
+
   const handleRegionClick = (regionId: number) => {
     setSelectedRegionId(regionId)
+    setIsRegionPanelOpen(true)
     // Also update the filter when a region is clicked on the map
     setFilters(prev => ({
       ...prev,
       region: { selectedRegionId: regionId }
     }))
+  }
+
+  const handleRegionPanelClose = () => {
+    setIsRegionPanelOpen(false)
+    // Keep the selected region for visual feedback on map, but close panel
+  }
+
+  const handleRegionSelect = (regionId: string) => {
+    const numericRegionId = parseInt(regionId)
+    setSelectedRegionId(numericRegionId)
+    setFilters(prev => ({
+      ...prev,
+      region: { selectedRegionId: numericRegionId }
+    }))
+    // Keep panel open to show the new region's data
   }
 
   const handleRegionHover = (regionId: number | null) => {
@@ -137,13 +162,23 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <UKMap
-            regions={regions}
-            selectedRegionId={effectiveSelectedRegionId}
-            onRegionClick={handleRegionClick}
-            onRegionHover={handleRegionHover}
-            className="h-full w-full"
-          />
+          <>
+            <UKMap
+              regions={regions}
+              selectedRegionId={effectiveSelectedRegionId}
+              onRegionClick={handleRegionClick}
+              onRegionHover={handleRegionHover}
+              className="h-full w-full"
+            />
+            
+            <RegionInfoPanel
+              isOpen={isRegionPanelOpen}
+              onClose={handleRegionPanelClose}
+              regionData={regionData || undefined}
+              isLoading={isRegionLoading}
+              onRegionSelect={handleRegionSelect}
+            />
+          </>
         )}
       </div>
     </MainLayout>

@@ -460,69 +460,69 @@
       {
         "id": 10,
         "title": "Implement Region Information Modal and Data Display",
-        "description": "Create detailed region information modal with comprehensive litter data visualization and year-over-year comparisons",
-        "details": "Create RegionInfoModal component using shadcn/ui Dialog. Display region name, geographic hierarchy, and data availability status. Show top 5 litter items with horizontal bar chart. Display material and source breakdown pie charts. Add average litter per 100m with trend indicators. Include historical trend line chart for selected time periods. Implement year-over-year percentage change displays with color coding. Handle regions with no data with clear messaging and alternative suggestions. Add modal close functionality and keyboard navigation. Implement modal state management with URL synchronization.",
-        "testStrategy": "Test modal functionality across different regions and data states. Verify chart accuracy and responsive design within modal. Test keyboard navigation and accessibility features. Validate no-data state handling.",
-        "priority": "high",
+        "description": "Create detailed region information side panel with comprehensive litter data visualization and year-over-year comparisons",
+        "status": "pending",
         "dependencies": [
           5,
           6,
           8
         ],
-        "status": "pending",
+        "priority": "high",
+        "details": "Create RegionInfoPanel component using shadcn/ui Sheet for slide-in panel. Display region name, geographic hierarchy, and data availability status. Show top 5 litter items with horizontal bar chart. Display material and source breakdown pie charts. Add average litter per 100m with simple year-over-year percentage change badge in header (green for improvement/decrease, red for worsening/increase, gray for no change). Handle regions with no data with clear messaging and alternative suggestions. Add scrollable panel design that doesn't interrupt map interaction. Focus on clean, responsive layout optimized for side panel viewing.",
+        "testStrategy": "Test panel functionality across different regions and data states. Verify chart accuracy and responsive design within panel constraints. Test scrolling behavior and panel state management. Validate no-data state handling and badge color coding accuracy.",
         "subtasks": [
           {
             "id": 1,
-            "title": "Set up RegionInfoModal component with shadcn/ui Dialog",
-            "description": "Create the base modal component structure using shadcn/ui Dialog with proper TypeScript interfaces and modal state management",
-            "dependencies": [],
-            "details": "Create RegionInfoModal component in components/ui/. Import and configure shadcn/ui Dialog, DialogContent, DialogHeader, DialogTitle, and DialogTrigger components. Define TypeScript interfaces for region data props. Implement basic modal open/close state management. Add modal overlay and proper z-index stacking. Set up responsive modal sizing for desktop and mobile. Include proper ARIA attributes for accessibility.",
+            "title": "Set up RegionInfoPanel component with shadcn/ui Sheet",
+            "description": "Create the base side panel component structure using shadcn/ui Sheet with proper TypeScript interfaces and panel state management",
             "status": "pending",
+            "dependencies": [],
+            "details": "Create RegionInfoPanel component in components/ui/. Import and configure shadcn/ui Sheet, SheetContent, SheetHeader, SheetTitle, and SheetTrigger components. Define TypeScript interfaces for region data props. Implement basic panel open/close state management. Configure panel to slide in from right side. Set up responsive panel sizing for desktop and mobile. Include proper ARIA attributes for accessibility. Ensure panel doesn't interfere with map interactions.\n<info added on 2025-08-20T10:35:04.495Z>\nComponent updated to use shadcn/ui Sheet implementation with right-side slide-in panel configured to avoid map interaction conflicts. Sheet configuration ensures proper z-index layering and responsive behavior across devices.\n</info added on 2025-08-20T10:35:04.495Z>",
             "testStrategy": ""
           },
           {
             "id": 2,
-            "title": "Design and implement modal layout with region information display",
-            "description": "Create the comprehensive data display layout showing region hierarchy, geographic info, and data availability status",
-            "dependencies": [
-              "10.1"
-            ],
-            "details": "Design modal layout with header showing region name and close button. Create sections for geographic hierarchy (country > county > region). Add data availability indicators with status badges. Implement responsive grid layout for desktop and mobile. Add proper spacing and typography using Tailwind classes. Include loading states and skeleton components for async data. Handle long region names with text truncation.",
+            "title": "Design scrollable panel layout with region information display",
+            "description": "Create the comprehensive scrollable data display layout showing region hierarchy, geographic info, data availability status, and header badge",
             "status": "pending",
+            "dependencies": [
+              1
+            ],
+            "details": "Design panel layout with header showing region name, year-over-year change badge, and close button. Implement year-over-year percentage change badge with color coding (green for improvement/decrease, red for worsening/increase, gray for no change). Create scrollable sections for geographic hierarchy (country > county > region). Add data availability indicators with status badges. Implement responsive layout optimized for side panel width. Add proper spacing and typography using Tailwind classes. Include loading states and skeleton components for async data. Handle long region names with text truncation.",
             "testStrategy": ""
           },
           {
             "id": 3,
-            "title": "Integrate charts and data visualizations within modal",
-            "description": "Add horizontal bar chart for top 5 litter items, pie charts for material/source breakdown, and historical trend charts",
-            "dependencies": [
-              "10.2"
-            ],
-            "details": "Integrate existing chart components into modal layout. Create horizontal bar chart component for top 5 litter items with proper scaling. Add material breakdown pie chart with legend. Implement source breakdown pie chart with color coding. Create historical trend line chart with time period selector. Add year-over-year percentage change displays with color-coded indicators (green/red for increase/decrease). Ensure charts are responsive within modal constraints.",
+            "title": "Integrate charts and data visualizations within scrollable panel",
+            "description": "Add horizontal bar chart for top 5 litter items and pie charts for material/source breakdown optimized for panel width",
             "status": "pending",
+            "dependencies": [
+              2
+            ],
+            "details": "Integrate existing chart components into scrollable panel layout. Create horizontal bar chart component for top 5 litter items with proper scaling for panel width. Add material breakdown pie chart with legend optimized for side panel viewing. Implement source breakdown pie chart with color coding suitable for narrower layout. Ensure charts are responsive within panel width constraints. Add proper spacing between chart sections for optimal scrolling experience. Remove trend line charts and complex historical visualizations.\n<info added on 2025-08-20T10:35:23.718Z>\nConfirmed chart optimization strategy for panel layout. Implemented horizontal bar chart with responsive width scaling for top 5 litter items display. Added compact pie chart components for material and source breakdown with optimized legends for narrow panel viewing. Removed all trend line and complex historical visualization components to maintain panel performance. Charts now properly scale within panel width constraints with appropriate responsive breakpoints. Applied consistent spacing between chart sections to ensure smooth scrolling experience within the side panel layout.\n</info added on 2025-08-20T10:35:23.718Z>",
             "testStrategy": ""
           },
           {
             "id": 4,
             "title": "Implement no-data state handling and alternative suggestions",
-            "description": "Handle regions with no data by displaying clear messaging and suggesting nearby regions with available data",
-            "dependencies": [
-              "10.2"
-            ],
-            "details": "Create EmptyState component for regions without litter data. Display clear messaging explaining data unavailability. Implement logic to suggest nearby regions with available data based on geographic proximity. Add buttons to navigate to suggested regions. Include data collection information and links to contribute data. Style empty state with appropriate icons and typography. Handle partial data scenarios where some metrics are available.",
+            "description": "Handle regions with no data by displaying clear messaging and suggesting nearby regions with available data within the panel",
             "status": "pending",
+            "dependencies": [
+              2
+            ],
+            "details": "Create EmptyState component for regions without litter data optimized for panel layout. Display clear messaging explaining data unavailability. Implement logic to suggest nearby regions with available data based on geographic proximity. Add buttons to navigate to suggested regions within the panel interface. Include data collection information and links to contribute data. Style empty state with appropriate icons and typography suitable for side panel. Handle partial data scenarios where some metrics are available.",
             "testStrategy": ""
           },
           {
             "id": 5,
-            "title": "Add keyboard navigation, accessibility features, and URL synchronization",
-            "description": "Implement complete keyboard navigation, accessibility features, and URL state management for modal",
-            "dependencies": [
-              "10.1",
-              "10.3"
-            ],
-            "details": "Add keyboard event handlers for Escape key to close modal, Tab navigation between interactive elements, and Enter/Space for selections. Implement focus management with focus trap within modal. Add ARIA labels and roles for screen reader support. Create URL synchronization to share modal state with query parameters. Implement browser back button handling to close modal. Add focus restoration when modal closes. Test with screen readers and keyboard-only navigation.",
+            "title": "Add keyboard navigation and accessibility features for panel",
+            "description": "Implement keyboard navigation, accessibility features, and focus management for the side panel interface",
             "status": "pending",
+            "dependencies": [
+              1,
+              3
+            ],
+            "details": "Add keyboard event handlers for Escape key to close panel, Tab navigation between interactive elements within panel, and Enter/Space for selections. Implement focus management with focus trap within panel when open. Add ARIA labels and roles for screen reader support specific to panel interface. Implement focus restoration when panel closes. Ensure panel doesn't interfere with map keyboard navigation when closed. Test with screen readers and keyboard-only navigation. Remove URL synchronization functionality.\n<info added on 2025-08-20T10:35:40.051Z>\nUpdated keyboard navigation implementation to focus on core accessibility features without URL synchronization. Removed URL state management functionality. Simplified keyboard handlers to include Escape key for panel closing and Tab navigation within panel boundaries. Maintained focus trap implementation within open panel. Ensured proper focus restoration to triggering element when panel closes. Verified panel keyboard navigation remains isolated from map controls when panel is closed, preventing interference with map keyboard interactions.\n</info added on 2025-08-20T10:35:40.051Z>",
             "testStrategy": ""
           }
         ]

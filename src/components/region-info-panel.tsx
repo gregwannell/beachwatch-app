@@ -11,8 +11,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { HorizontalBarChart, PieChart } from "@/components/charts"
 import type { BarChartData, PieChartData } from "@/components/charts/types"
-import { Database, MapPin, ExternalLink, Info } from "lucide-react"
+import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { formatNumber, formatBeachLength } from "@/lib/format-number"
 
 export interface SuggestedRegion {
   id: string
@@ -48,6 +49,16 @@ export interface RegionData {
     }>
     averageLitterPer100m: number
     yearOverYearChange?: number
+  }
+  engagementData?: {
+    surveyCount: number
+    volunteerCount: number  
+    totalBeachLength: number
+    yearOverYearChanges?: {
+      surveys: number
+      volunteers: number
+      beachLength: number
+    }
   }
 }
 
@@ -270,6 +281,72 @@ function EmptyState({
   )
 }
 
+function EngagementStats({ engagementData, regionName }: { 
+  engagementData: NonNullable<RegionData['engagementData']>
+  regionName: string 
+}) {
+  const metrics = [
+    {
+      icon: BarChart3,
+      label: "Surveys",
+      value: formatNumber(engagementData.surveyCount),
+      change: engagementData.yearOverYearChanges?.surveys,
+      description: `${engagementData.surveyCount} surveys conducted`
+    },
+    {
+      icon: Users,
+      label: "Volunteers",
+      value: formatNumber(engagementData.volunteerCount),
+      change: engagementData.yearOverYearChanges?.volunteers,
+      description: `${engagementData.volunteerCount} volunteers participated`
+    },
+    {
+      icon: Ruler,
+      label: "Beach Length",
+      value: formatBeachLength(engagementData.totalBeachLength),
+      change: engagementData.yearOverYearChanges?.beachLength,
+      description: `${formatBeachLength(engagementData.totalBeachLength)} of coastline surveyed`
+    }
+  ]
+
+  return (
+    <div className="space-y-4" role="region" aria-label={`Engagement statistics for ${regionName}`}>
+      <h3 className="text-sm font-medium text-muted-foreground">Engagement Statistics</h3>
+      
+      <div className="grid grid-cols-1 gap-4">
+        {metrics.map((metric) => {
+          const Icon = metric.icon
+          return (
+            <div 
+              key={metric.label}
+              className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+              role="group"
+              aria-label={metric.description}
+            >
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0 p-2 rounded-md bg-primary/10">
+                  <Icon className="w-4 h-4 text-primary" aria-hidden="true" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium">{metric.label}</span>
+                    {metric.change !== undefined && (
+                      <YearOverYearBadge change={metric.change} />
+                    )}
+                  </div>
+                  <span className="text-lg font-semibold" aria-label={metric.description}>
+                    {metric.value}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
@@ -366,6 +443,14 @@ export function RegionInfoPanel({
                 hasData={regionData.hasData} 
                 litterData={regionData.litterData} 
               />
+              
+              {/* Show engagement statistics if available */}
+              {regionData.hasData && regionData.engagementData && (
+                <EngagementStats 
+                  engagementData={regionData.engagementData}
+                  regionName={regionData.name}
+                />
+              )}
               
               {/* Show charts if data is available */}
               {regionData.hasData && regionData.litterData ? (

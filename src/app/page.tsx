@@ -1,7 +1,6 @@
 'use client'
 
 import { MainLayout } from '@/components/layout/main-layout'
-import { Card } from '@/components/ui/card'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
 import { useState } from 'react'
@@ -26,46 +25,6 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
 })
 
 
-function StatsPanel() {
-  return (
-    <div className="p-4 space-y-4">
-      <Card className="p-4">
-        <h4 className="font-semibold text-sm mb-2">Survey Stats</h4>
-        <div className="space-y-2 text-xs">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Total Surveys:</span>
-            <span className="font-medium">1,247</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Beaches Covered:</span>
-            <span className="font-medium">423</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Items Logged:</span>
-            <span className="font-medium">89,234</span>
-          </div>
-        </div>
-      </Card>
-      <Card className="p-4">
-        <h4 className="font-semibold text-sm mb-2">Top Items</h4>
-        <div className="space-y-2 text-xs">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Plastic bottles:</span>
-            <span className="font-medium">12,456</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Cigarette butts:</span>
-            <span className="font-medium">8,923</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Food wrappers:</span>
-            <span className="font-medium">7,134</span>
-          </div>
-        </div>
-      </Card>
-    </div>
-  )
-}
 
 export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
@@ -138,7 +97,6 @@ export default function Home() {
           onFiltersChange={setFilters}
         />
       }
-      statsPanel={<StatsPanel />}
     >
       <div className="h-full w-full">
         {isLoading ? (

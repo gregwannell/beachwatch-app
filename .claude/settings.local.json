@@ -30,7 +30,8 @@
       "Bash(npx shadcn@latest add:*)",
       "mcp__taskmaster-ai__add_subtask",
       "Bash(npx tsc:*)",
-      "mcp__taskmaster-ai__get_task"
+      "mcp__taskmaster-ai__get_task",
+      "mcp__puppeteer__puppeteer_evaluate"
     ]
   },
   "enableAllProjectMcpServers": true,

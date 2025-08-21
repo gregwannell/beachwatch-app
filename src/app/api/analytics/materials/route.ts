@@ -78,7 +78,9 @@ export async function GET(request: NextRequest) {
     
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
-      aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value!)
+      if (regionValidation.isValid && regionValidation.value) {
+        aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value)
+      }
     }
     
     const validatedYears = yearValidation.years
@@ -93,6 +95,7 @@ export async function GET(request: NextRequest) {
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
     
     if (aggregateError) {
+      console.error('Aggregate IDs query error:', aggregateError)
       const dbError = handleDatabaseError(aggregateError)
       return NextResponse.json(
         createErrorResponse(dbError.message),
@@ -115,19 +118,10 @@ export async function GET(request: NextRequest) {
     
     const aggregateIdsList = aggregateIds.map(agg => agg.id)
     
-    // Build materials aggregates query
+    // Build materials aggregates query - simplified for debugging
     let materialsQuery = supabase
       .from('annual_material_aggregates')
-      .select(`
-        material_id,
-        total,
-        avg_per_100m,
-        presence,
-        materials (
-          id,
-          material
-        )
-      `)
+      .select('material_id, total, avg_per_100m, presence')
       .in('aggregate_id', aggregateIdsList)
       .order('total', { ascending: false })
     
@@ -145,9 +139,22 @@ export async function GET(request: NextRequest) {
       )
     }
     
+    // Get unique material IDs and fetch material names
+    const materialIds = [...new Set(materialAggregates?.map(agg => agg.material_id) || [])]
+    
+    const { data: materials_lookup, error: materialsLookupError } = await supabase
+      .from('materials')
+      .select('id, material')
+      .in('id', materialIds)
+    
+    if (materialsLookupError) {
+      console.error('Materials lookup error:', materialsLookupError)
+    }
+    
+    const materialsMap = new Map(materials_lookup?.map(m => [m.id, m.material]) || [])
+    
     // Group and sum by material
     const materialGroups: { [materialId: number]: { 
-      material: any, 
       total: number, 
       avgPer100m: number[], 
       presence: number[] 
@@ -157,7 +164,6 @@ export async function GET(request: NextRequest) {
       const materialId = agg.material_id
       if (!materialGroups[materialId]) {
         materialGroups[materialId] = {
-          material: agg.materials,
           total: 0,
           avgPer100m: [],
           presence: []
@@ -169,10 +175,10 @@ export async function GET(request: NextRequest) {
     })
     
     // Calculate final breakdown
-    const materials: MaterialBreakdown[] = Object.values(materialGroups).map(group => ({
+    const materials: MaterialBreakdown[] = Object.entries(materialGroups).map(([materialId, group]) => ({
       material: {
-        id: group.material?.id || 0,
-        name: group.material?.material || 'Unknown'
+        id: parseInt(materialId),
+        name: materialsMap.get(parseInt(materialId)) || 'Unknown'
       },
       total: group.total,
       avgPer100m: Math.round((group.avgPer100m.reduce((sum, val) => sum + val, 0) / group.avgPer100m.length) * 100) / 100,

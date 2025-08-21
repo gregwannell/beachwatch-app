@@ -36,6 +36,10 @@ export function UKMap({
   const onEachRegion = (feature: any, layer: any) => {
     const regionId = feature.properties.id
     const hasData = feature.properties.has_data
+    const regionType = feature.properties.type
+    
+    // Determine if this region can be drilled down
+    const canDrillDown = regionType === 'Country' || regionType === 'Crown Dependency'
     
     layer.on({
       click: () => {
@@ -51,11 +55,17 @@ export function UKMap({
           fillOpacity: 0.7,
           weight: 2
         })
+        // Set cursor style based on whether region can be drilled down
+        const mapContainer = e.target._map.getContainer()
+        mapContainer.style.cursor = canDrillDown ? 'pointer' : 'default'
         onRegionHover?.(regionId)
       },
       mouseout: (e: any) => {
         // Reset style (desktop)
         e.target.setStyle(getRegionStyle(regionId, hasData))
+        // Reset cursor
+        const mapContainer = e.target._map.getContainer()
+        mapContainer.style.cursor = ''
         onRegionHover?.(null)
       }
     })
@@ -94,7 +104,8 @@ export function UKMap({
                 properties: { 
                   id: region.id, 
                   name: region.name,
-                  has_data: region.has_data
+                  has_data: region.has_data,
+                  type: region.type
                 },
                 geometry: region.geometry
               }}

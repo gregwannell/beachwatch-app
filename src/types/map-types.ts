@@ -7,6 +7,7 @@ export interface MapRegion {
   name: string
   geometry: RegionGeometry | null
   has_data: boolean
+  type: string
 }
 
 // Props for the main map component

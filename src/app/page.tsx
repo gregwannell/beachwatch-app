@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { FilterState } from '@/types/filter-types'
 import { RegionInfoPanel } from '@/components/region-info-panel'
+import { Button } from '@/components/ui/button'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -31,6 +32,10 @@ export default function Home() {
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isRegionPanelOpen, setIsRegionPanelOpen] = useState(false)
   
+  // Hierarchy navigation state
+  const [parentRegionId, setParentRegionId] = useState<number | null>(null)
+  const [parentRegionName, setParentRegionName] = useState<string | null>(null)
+  
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
     region: { selectedRegionId: null },
@@ -48,7 +53,8 @@ export default function Home() {
   // Fetch map regions data
   const { data: regions = [], isLoading, error } = useMapRegions({
     includeGeometry: true,
-    onlyWithData: false
+    onlyWithData: false,
+    parentId: parentRegionId
   })
 
   // Fetch region info for the panel
@@ -58,18 +64,42 @@ export default function Home() {
   )
 
   const handleRegionClick = (regionId: number) => {
-    setSelectedRegionId(regionId)
-    setIsRegionPanelOpen(true)
-    // Also update the filter when a region is clicked on the map
-    setFilters(prev => ({
-      ...prev,
-      region: { selectedRegionId: regionId }
-    }))
+    // Find the clicked region to check its type
+    const clickedRegion = regions.find(r => r.id === regionId)
+    
+    if (!clickedRegion) return
+    
+    // Check if this region can be drilled down (Countries and Crown Dependencies have children)
+    const canDrillDown = clickedRegion.type === 'Country' || clickedRegion.type === 'Crown Dependency'
+    
+    if (canDrillDown) {
+      // Drill down to show children (counties/unitary authorities)
+      setParentRegionId(regionId)
+      setParentRegionName(clickedRegion.name)
+      setSelectedRegionId(null) // Clear selection when drilling down
+      setIsRegionPanelOpen(false)
+    } else {
+      // Open region info panel for county/unitary authority
+      setSelectedRegionId(regionId)
+      setIsRegionPanelOpen(true)
+      // Also update the filter when a region is clicked on the map
+      setFilters(prev => ({
+        ...prev,
+        region: { selectedRegionId: regionId }
+      }))
+    }
   }
 
   const handleRegionPanelClose = () => {
     setIsRegionPanelOpen(false)
     // Keep the selected region for visual feedback on map, but close panel
+  }
+
+  const handleBackToCountries = () => {
+    setParentRegionId(null) // This will default to parentId=1 in the hook
+    setParentRegionName(null)
+    setSelectedRegionId(null)
+    setIsRegionPanelOpen(false)
   }
 
   const handleRegionSelect = (regionId: string) => {
@@ -121,6 +151,20 @@ export default function Home() {
           </div>
         ) : (
           <>
+            {/* Back button when viewing counties */}
+            {parentRegionId && (
+              <div className="absolute top-4 left-4 z-[10000] pointer-events-auto">
+                <Button 
+                  onClick={handleBackToCountries}
+                  variant="secondary"
+                  size="sm"
+                  className="bg-white shadow-lg border border-gray-300 hover:bg-gray-50 text-gray-900 font-medium"
+                >
+                  ← Back to Countries
+                </Button>
+              </div>
+            )}
+            
             <UKMap
               regions={regions}
               selectedRegionId={effectiveSelectedRegionId}

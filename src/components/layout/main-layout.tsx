@@ -3,15 +3,23 @@
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ChevronRight, ChevronLeft } from 'lucide-react'
 
 interface MainLayoutProps {
   children: React.ReactNode
   sidebar?: React.ReactNode
   statsPanel?: React.ReactNode
+  statsPanelCollapsed?: boolean
+  onStatsPanelToggle?: () => void
 }
 
-export function MainLayout({ children, sidebar, statsPanel }: MainLayoutProps) {
+export function MainLayout({ 
+  children, 
+  sidebar, 
+  statsPanel,
+  statsPanelCollapsed = false,
+  onStatsPanelToggle
+}: MainLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
@@ -37,7 +45,13 @@ export function MainLayout({ children, sidebar, statsPanel }: MainLayoutProps) {
 
       {/* Main Grid Layout */}
       <div className="container-fluid p-0">
-        <div className="grid h-[calc(100vh-3.5rem)] grid-cols-1 md:grid-cols-[280px_1fr_320px] lg:grid-cols-[320px_1fr_360px]">
+        <div className={cn(
+          "grid h-[calc(100vh-3.5rem)] grid-cols-1 transition-all duration-300 ease-in-out",
+          // Mobile: always single column
+          "md:grid-cols-[280px_1fr_320px] lg:grid-cols-[320px_1fr_360px]",
+          // When stats panel is collapsed, adjust the grid
+          statsPanelCollapsed && "md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]"
+        )}>
           {/* Left Sidebar - Filters */}
           <aside
             className={cn(
@@ -91,10 +105,25 @@ export function MainLayout({ children, sidebar, statsPanel }: MainLayoutProps) {
           </main>
 
           {/* Right Sidebar - Stats Panel */}
-          <aside className="border-l bg-sidebar hidden md:block">
+          <aside className={cn(
+            "border-l bg-sidebar transition-all duration-300 ease-in-out hidden md:block relative",
+            statsPanelCollapsed && "hidden"
+          )}>
             <div className="flex h-full flex-col">
               <div className="border-b p-4">
-                <h2 className="font-semibold text-sm">Engagement Stats</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold text-sm">Region Statistics</h2>
+                  {onStatsPanelToggle && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onStatsPanelToggle}
+                      className="h-8 w-8 p-0"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
               <div className="flex-1 overflow-auto">
                 {statsPanel || (
@@ -107,6 +136,20 @@ export function MainLayout({ children, sidebar, statsPanel }: MainLayoutProps) {
               </div>
             </div>
           </aside>
+
+          {/* Collapsed Stats Panel Toggle Button */}
+          {statsPanelCollapsed && onStatsPanelToggle && (
+            <div className="fixed right-0 top-1/2 -translate-y-1/2 z-10 hidden md:block">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={onStatsPanelToggle}
+                className="rounded-l-md rounded-r-none h-12 w-8 p-0 shadow-lg border-r-0"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

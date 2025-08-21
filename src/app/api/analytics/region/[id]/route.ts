@@ -24,14 +24,15 @@ interface RegionAnalyticsData {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerClient()
     const { searchParams } = new URL(request.url)
+    const resolvedParams = await params
     
     // Enhanced parameter validation
-    const regionValidation = validateRegionId(params.id)
+    const regionValidation = validateRegionId(resolvedParams.id)
     if (!regionValidation.isValid) {
       return NextResponse.json(
         createErrorResponse(regionValidation.error!),

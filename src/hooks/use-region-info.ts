@@ -146,7 +146,8 @@ export function useRegionInfo(regionId: number | null, enabled: boolean = true) 
         return {
           id: region.id.toString(),
           name: region.name,
-          level: region.type === 'County Unitary' ? 'county' : 'region',
+          level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' : 
+                 region.type === 'County Unitary' ? 'county' : 'region',
           parentId: region.parent_id?.toString(),
           parentName: parent?.name,
           hasData: false,
@@ -203,7 +204,8 @@ export function useRegionInfo(regionId: number | null, enabled: boolean = true) 
       return {
         id: region.id.toString(),
         name: region.name,
-        level: region.type === 'County Unitary' ? 'county' : 'region',
+        level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' : 
+               region.type === 'County Unitary' ? 'county' : 'region',
         parentId: region.parent_id?.toString(),
         parentName: parent?.name,
         hasData: true,

@@ -5,8 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { HorizontalBarChart, PieChart } from "@/components/charts"
-import type { BarChartData, PieChartData } from "@/components/charts/types"
+import { HorizontalBarChart, InteractivePieChart } from "@/components/charts"
+import type { BarChartData } from "@/components/charts/types"
+import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
@@ -355,18 +356,16 @@ export function RegionStatsContent({
           {/* Material Breakdown */}
           {regionData.litterData.materialBreakdown.length > 0 && (
             <section className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Material Breakdown
-              </h3>
-              <PieChart
-                data={regionData.litterData.materialBreakdown.map(item => ({
+              <InteractivePieChart
+                data={regionData.litterData.materialBreakdown.map((item, index) => ({
                   name: item.material,
                   value: item.count,
-                  percentage: item.percentage
-                }) as PieChartData)}
-                height={180}
-                showLegend={true}
-                showPercentage={true}
+                  percentage: item.percentage,
+                  fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                }))}
+                title="Material Breakdown"
+                description="Breakdown by material type"
+                height={250}
                 className="w-full"
               />
             </section>
@@ -375,18 +374,16 @@ export function RegionStatsContent({
           {/* Source Breakdown */}
           {regionData.litterData.sourceBreakdown.length > 0 && (
             <section className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Source Breakdown
-              </h3>
-              <PieChart
-                data={regionData.litterData.sourceBreakdown.map(item => ({
+              <InteractivePieChart
+                data={regionData.litterData.sourceBreakdown.map((item, index) => ({
                   name: item.source,
                   value: item.count,
-                  percentage: item.percentage
-                }) as PieChartData)}
-                height={180}
-                showLegend={true}
-                showPercentage={true}
+                  percentage: item.percentage,
+                  fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                }))}
+                title="Source Breakdown"
+                description="Breakdown by source type"
+                height={250}
                 className="w-full"
               />
             </section>

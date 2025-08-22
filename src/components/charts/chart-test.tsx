@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { HorizontalBarChart, PieChart } from "./index"
-import type { BarChartData, PieChartData } from "./types"
+import { HorizontalBarChart, InteractivePieChart } from "./index"
+import type { BarChartData } from "./types"
+import { chartColors } from "./chart-config"
 
 /**
  * Simple test component to verify chart functionality
@@ -16,11 +17,11 @@ export function ChartTest() {
     { name: "Test Item 3", value: 50, category: "Category C" },
   ]
 
-  const pieData: PieChartData[] = [
-    { name: "Section A", value: 40 },
-    { name: "Section B", value: 30 },
-    { name: "Section C", value: 20 },
-    { name: "Section D", value: 10 },
+  const pieData = [
+    { name: "Section A", value: 40, fill: Object.values(chartColors)[0] },
+    { name: "Section B", value: 30, fill: Object.values(chartColors)[1] },
+    { name: "Section C", value: 20, fill: Object.values(chartColors)[2] },
+    { name: "Section D", value: 10, fill: Object.values(chartColors)[3] },
   ]
 
   const [testLoading, setTestLoading] = React.useState(false)
@@ -48,10 +49,11 @@ export function ChartTest() {
           
           <div>
             <h3 className="text-lg font-medium mb-3">Pie Chart</h3>
-            <PieChart
+            <InteractivePieChart
               data={pieData}
+              title="Test Pie Chart"
+              description="Testing interactive functionality"
               height={250}
-              showLegend={true}
             />
           </div>
         </div>
@@ -105,8 +107,10 @@ export function ChartTest() {
           
           <div>
             <h3 className="text-lg font-medium mb-3">Empty State (Pie)</h3>
-            <PieChart
+            <InteractivePieChart
               data={[]}
+              title="Empty Test Chart"
+              description="Testing empty state"
               height={200}
             />
           </div>

@@ -1,13 +1,13 @@
 import type { ChartConfig } from "@/components/ui/chart"
 
-// Colorblind-safe color palette using existing CSS variables
-// These colors are designed to be distinguishable for all types of color vision
+// Modern, vibrant color palette inspired by shadcn charts
+// These colors are designed to be visually appealing and distinguishable
 export const chartColors = {
-  primary: "hsl(var(--chart-1))",    // Orange-ish - distinct for deuteranopia/protanopia
-  secondary: "hsl(var(--chart-2))",  // Blue - safe for all types
-  tertiary: "hsl(var(--chart-3))",   // Purple/violet - good contrast
-  quaternary: "hsl(var(--chart-4))", // Green-yellow - distinguishable 
-  quinary: "hsl(var(--chart-5))",    // Red-orange - colorblind safe
+  primary: "hsl(221, 83%, 53%)",    // Bright blue like the reference
+  secondary: "hsl(212, 95%, 68%)",  // Light blue
+  tertiary: "hsl(262, 83%, 58%)",   // Purple
+  quaternary: "hsl(142, 76%, 36%)", // Green
+  quinary: "hsl(346, 87%, 43%)",    // Red/pink
 } as const
 
 // Pattern definitions for additional accessibility

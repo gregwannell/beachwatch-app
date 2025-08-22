@@ -8,9 +8,6 @@ export interface BarChartData extends ChartDataItem {
   category: string
 }
 
-export interface PieChartData extends ChartDataItem {
-  fill?: string
-}
 
 export interface ChartProps {
   data: ChartDataItem[]
@@ -28,9 +25,5 @@ export interface BarChartProps extends ChartProps {
   maxItems?: number
 }
 
-export interface PieChartProps extends ChartProps {
-  data: PieChartData[]
-  showLegend?: boolean
-}
 
 export type ChartDisplayMode = 'count' | 'percentage' | 'both'

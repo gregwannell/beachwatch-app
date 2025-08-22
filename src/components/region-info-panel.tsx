@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { HorizontalBarChart, PieChart } from "@/components/charts"
-import type { BarChartData, PieChartData } from "@/components/charts/types"
+import { HorizontalBarChart, InteractivePieChart } from "@/components/charts"
+import type { BarChartData } from "@/components/charts/types"
+import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
@@ -489,19 +490,20 @@ export function RegionInfoPanel({
                         Material Breakdown
                       </h3>
                       <div role="img" aria-labelledby="material-heading" aria-describedby="material-description">
-                        <PieChart
-                          data={regionData.litterData.materialBreakdown.map(item => ({
+                        <InteractivePieChart
+                          data={regionData.litterData.materialBreakdown.map((item, index) => ({
                             name: item.material,
                             value: item.count,
-                            percentage: item.percentage
-                          }) as PieChartData)}
+                            percentage: item.percentage,
+                            fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                          }))}
+                          title="Material Breakdown"
+                          description="Breakdown by material type"
                           height={200}
-                          showLegend={true}
-                          showPercentage={true}
                           className="w-full"
                         />
                         <p id="material-description" className="sr-only">
-                          Pie chart showing the distribution of litter by material type in {regionData.name}
+                          Interactive pie chart showing the distribution of litter by material type in {regionData.name}
                         </p>
                       </div>
                     </section>
@@ -514,19 +516,20 @@ export function RegionInfoPanel({
                         Source Breakdown
                       </h3>
                       <div role="img" aria-labelledby="source-heading" aria-describedby="source-description">
-                        <PieChart
-                          data={regionData.litterData.sourceBreakdown.map(item => ({
+                        <InteractivePieChart
+                          data={regionData.litterData.sourceBreakdown.map((item, index) => ({
                             name: item.source,
                             value: item.count,
-                            percentage: item.percentage
-                          }) as PieChartData)}
+                            percentage: item.percentage,
+                            fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                          }))}
+                          title="Source Breakdown"
+                          description="Breakdown by source type"
                           height={200}
-                          showLegend={true}
-                          showPercentage={true}
                           className="w-full"
                         />
                         <p id="source-description" className="sr-only">
-                          Pie chart showing the distribution of litter by source type in {regionData.name}
+                          Interactive pie chart showing the distribution of litter by source type in {regionData.name}
                         </p>
                       </div>
                     </section>

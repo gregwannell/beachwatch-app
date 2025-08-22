@@ -5,7 +5,7 @@ export * from './utils'
 
 // Components
 export { HorizontalBarChart } from './horizontal-bar-chart'
-export { PieChart } from './pie-chart'
+export { InteractivePieChart } from './interactive-pie-chart'
 
 // State management
 export { ChartSkeleton } from './chart-skeleton'

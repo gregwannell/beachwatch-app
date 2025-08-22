@@ -57,6 +57,14 @@ export default function Home() {
     parentId: parentRegionId
   })
 
+  // Debug logging
+  console.log('Map debug:', { 
+    regionsCount: regions.length, 
+    isLoading, 
+    error: error?.message,
+    firstRegion: regions[0]
+  })
+
   // Fetch region info for the sidebar
   const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
     selectedRegionId,

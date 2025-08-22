@@ -32,7 +32,12 @@
       "Bash(npx tsc:*)",
       "mcp__taskmaster-ai__get_task",
       "mcp__puppeteer__puppeteer_evaluate",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "mcp__shadcn-ui-server__list_shadcn_components",
+      "mcp__shadcn-ui-server__get_component_details",
+      "mcp__shadcn-ui-server__get_component_examples",
+      "mcp__browsermcp__browser_screenshot",
+      "mcp__browsermcp__browser_navigate"
     ]
   },
   "enableAllProjectMcpServers": true,

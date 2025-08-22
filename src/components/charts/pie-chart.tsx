@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Pie, PieChart as RechartsPieChart, Cell, ResponsiveContainer } from "recharts"
+import { Pie, PieChart as RechartsPieChart, Cell } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,
@@ -27,6 +27,42 @@ export function PieChart({
   error,
   onRetry,
 }: PieChartProps) {
+  const processedData = React.useMemo(() => {
+    if (!data || data.length === 0) return []
+    return calculatePercentages(data)
+  }, [data])
+
+  const chartConfig = React.useMemo(() => {
+    const itemNames = processedData.map(item => item.name)
+    return createChartConfig(itemNames)
+  }, [processedData])
+
+  const colors = Object.values(chartColors)
+
+  const dataWithColors = React.useMemo(() => {
+    return processedData.map((item, index) => ({
+      ...item,
+      fill: colors[index % colors.length],
+    }))
+  }, [processedData, colors])
+
+  const formatTooltip = React.useCallback(
+    (value: number, name: string, props: { payload?: { name: string } }) => {
+      const item = processedData.find(d => d.name === props.payload?.name)
+      if (!item) return null
+
+      const count = formatChartValue(item.value)
+      const percentage = formatChartValue(item.percentage || 0, true)
+      
+      if (showPercentage && item.percentage !== undefined) {
+        return [`${count} (${percentage})`, item.name]
+      }
+      
+      return [count, item.name]
+    },
+    [processedData, showPercentage]
+  )
+
   // Handle loading state
   if (loading) {
     return (
@@ -62,40 +98,6 @@ export function PieChart({
       />
     )
   }
-  const processedData = React.useMemo(() => {
-    return calculatePercentages(data)
-  }, [data])
-
-  const chartConfig = React.useMemo(() => {
-    const itemNames = processedData.map(item => item.name)
-    return createChartConfig(itemNames)
-  }, [processedData])
-
-  const colors = Object.values(chartColors)
-
-  const dataWithColors = React.useMemo(() => {
-    return processedData.map((item, index) => ({
-      ...item,
-      fill: colors[index % colors.length],
-    }))
-  }, [processedData, colors])
-
-  const formatTooltip = React.useCallback(
-    (value: any, name: any, props: any) => {
-      const item = processedData.find(d => d.name === props.payload?.name)
-      if (!item) return null
-
-      const count = formatChartValue(item.value)
-      const percentage = formatChartValue(item.percentage || 0, true)
-      
-      if (showPercentage && item.percentage !== undefined) {
-        return [`${count} (${percentage})`, item.name]
-      }
-      
-      return [count, item.name]
-    },
-    [processedData, showPercentage]
-  )
 
   const ariaLabel = generateChartAriaLabel(processedData, 'pie')
   const description = generateChartDescription(processedData, showPercentage)

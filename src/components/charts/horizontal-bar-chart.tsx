@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,
@@ -26,6 +26,30 @@ export function HorizontalBarChart({
   error,
   onRetry,
 }: BarChartProps) {
+  const processedData = React.useMemo(() => {
+    if (!data || data.length === 0) return []
+    const sorted = sortTopItems(data, maxItems)
+    return calculatePercentages(sorted)
+  }, [data, maxItems])
+
+  const chartConfig = React.useMemo(() => {
+    const itemNames = processedData.map(item => item.name)
+    return createChartConfig(itemNames)
+  }, [processedData])
+
+  const formatTooltip = React.useCallback(
+    (value: number, name: string, props: { payload?: { name: string } }) => {
+      const item = processedData.find(d => d.name === props.payload?.name)
+      if (!item) return null
+
+      const displayValue = showPercentage ? item.percentage : value
+      const formattedValue = formatChartValue(displayValue || 0, showPercentage)
+      
+      return [formattedValue, item.name]
+    },
+    [processedData, showPercentage]
+  )
+
   // Handle loading state
   if (loading) {
     return (
@@ -61,28 +85,6 @@ export function HorizontalBarChart({
       />
     )
   }
-  const processedData = React.useMemo(() => {
-    const sorted = sortTopItems(data, maxItems)
-    return calculatePercentages(sorted)
-  }, [data, maxItems])
-
-  const chartConfig = React.useMemo(() => {
-    const itemNames = processedData.map(item => item.name)
-    return createChartConfig(itemNames)
-  }, [processedData])
-
-  const formatTooltip = React.useCallback(
-    (value: any, name: any, props: any) => {
-      const item = processedData.find(d => d.name === props.payload?.name)
-      if (!item) return null
-
-      const displayValue = showPercentage ? item.percentage : value
-      const formattedValue = formatChartValue(displayValue || 0, showPercentage)
-      
-      return [formattedValue, item.name]
-    },
-    [processedData, showPercentage]
-  )
 
   const ariaLabel = generateChartAriaLabel(processedData, 'bar')
   const description = generateChartDescription(processedData, showPercentage)

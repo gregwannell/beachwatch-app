@@ -44,6 +44,15 @@
 				"-y",
 				"@browsermcp/mcp@latest"
 			]
+		},
+		"shadcn-ui-server": {
+      		"command": "cmd",
+      		"args": [
+				"/c",
+				"npx",
+				"-y",
+				"shadcn-ui-mcp-server"
+			]
 		}
 	}
 }

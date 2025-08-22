@@ -113,7 +113,7 @@ export function PieChart({
       >
         <ChartContainer
           config={chartConfig}
-          className="min-h-[200px] w-full"
+          className="min-h-[200px] w-full rounded-lg border bg-card shadow-sm"
           style={{ height }}
         >
         <RechartsPieChart
@@ -149,6 +149,7 @@ export function PieChart({
                 formatter={formatTooltip}
                 hideLabel={true}
                 indicator="dot"
+                className="rounded-lg border shadow-lg bg-card"
               />
             }
           />

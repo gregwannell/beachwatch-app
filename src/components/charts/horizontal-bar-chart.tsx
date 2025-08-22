@@ -100,7 +100,7 @@ export function HorizontalBarChart({
       >
         <ChartContainer
           config={chartConfig}
-          className="min-h-[200px] w-full"
+          className="min-h-[200px] w-full rounded-lg border bg-card shadow-sm"
           style={{ height }}
         >
         <BarChart
@@ -128,12 +128,13 @@ export function HorizontalBarChart({
             className="text-xs"
           />
           <ChartTooltip
-            cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
+            cursor={{ fill: "hsl(var(--primary))", opacity: 0.1 }}
             content={
               <ChartTooltipContent
                 formatter={formatTooltip}
                 hideLabel={false}
                 indicator="line"
+                className="rounded-lg border shadow-lg bg-card"
               />
             }
           />

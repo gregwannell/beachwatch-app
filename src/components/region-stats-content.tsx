@@ -3,9 +3,11 @@
 import * as React from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { HorizontalBarChart, PieChart } from "@/components/charts"
 import type { BarChartData, PieChartData } from "@/components/charts/types"
-import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler } from "lucide-react"
+import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
 import type { RegionData, SuggestedRegion } from "@/components/region-info-panel"
@@ -22,21 +24,15 @@ function YearOverYearBadge({ change }: { change?: number }) {
   const isImprovement = change < 0 // Decrease in litter is improvement
   const isNeutral = Math.abs(change) < 1 // Less than 1% change is neutral
   
-  const colorClass = isNeutral 
-    ? "bg-gray-100 text-gray-700 border-gray-200" 
-    : isImprovement 
-      ? "bg-green-100 text-green-700 border-green-200"
-      : "bg-red-100 text-red-700 border-red-200"
-  
+  const variant = isNeutral ? "secondary" : isImprovement ? "default" : "destructive"
   const symbol = change > 0 ? "+" : ""
+  const Icon = isNeutral ? Minus : isImprovement ? TrendingDown : TrendingUp
   
   return (
-    <span className={cn(
-      "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border",
-      colorClass
-    )}>
+    <Badge variant={variant} className="text-xs">
+      <Icon className="w-3 h-3 mr-1" />
       {symbol}{change.toFixed(1)}%
-    </span>
+    </Badge>
   )
 }
 
@@ -81,22 +77,18 @@ function GeographicHierarchy({ regionData }: { regionData: RegionData }) {
 
 function DataAvailabilityStatus({ hasData, litterData }: { hasData: boolean, litterData?: RegionData['litterData'] }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <h3 className="text-sm font-medium text-muted-foreground">Data Status</h3>
-      <div className="flex items-center space-x-2">
-        <div className={cn(
-          "w-2 h-2 rounded-full",
-          hasData ? "bg-green-500" : "bg-gray-400"
-        )} />
-        <span className="text-sm">
-          {hasData ? "Data available" : "No data available"}
-        </span>
+      <div className="flex items-center justify-between">
+        <Badge variant={hasData ? "default" : "secondary"} className="text-xs">
+          {hasData ? "Data Available" : "No Data"}
+        </Badge>
+        {hasData && litterData && (
+          <Badge variant="outline" className="text-xs">
+            {litterData.averageLitterPer100m.toFixed(1)} items/100m
+          </Badge>
+        )}
       </div>
-      {hasData && litterData && (
-        <div className="text-sm text-muted-foreground">
-          {litterData.averageLitterPer100m.toFixed(1)} items per 100m average
-        </div>
-      )}
     </div>
   )
 }
@@ -112,19 +104,16 @@ function EmptyState({
 }) {
   const getAvailabilityBadge = (availability: SuggestedRegion['dataAvailability']) => {
     const config = {
-      full: { label: 'Full data', class: 'bg-green-100 text-green-700 border-green-200' },
-      partial: { label: 'Partial data', class: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-      limited: { label: 'Limited data', class: 'bg-orange-100 text-orange-700 border-orange-200' }
+      full: { label: 'Full data', variant: 'default' as const },
+      partial: { label: 'Partial data', variant: 'secondary' as const },
+      limited: { label: 'Limited data', variant: 'outline' as const }
     }
     
-    const { label, class: className } = config[availability]
+    const { label, variant } = config[availability]
     return (
-      <span className={cn(
-        "inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border",
-        className
-      )}>
+      <Badge variant={variant} className="text-xs">
         {label}
-      </span>
+      </Badge>
     )
   }
 
@@ -242,22 +231,25 @@ function EngagementStats({ engagementData }: {
           return (
             <div 
               key={metric.label}
-              className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
+              className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <div className="flex items-center space-x-3">
-                <div className="flex-shrink-0 p-2 rounded-md bg-primary/10">
-                  <Icon className="w-4 h-4 text-primary" />
+                <div className="flex-shrink-0 p-2.5 rounded-lg bg-primary/10 ring-1 ring-primary/20">
+                  <Icon className="w-5 h-5 text-primary" />
                 </div>
-                <div>
+                <div className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">{metric.label}</span>
+                    <span className="text-sm font-medium text-foreground">{metric.label}</span>
                     {metric.change !== undefined && (
                       <YearOverYearBadge change={metric.change} />
                     )}
                   </div>
-                  <span className="text-lg font-semibold">
+                  <span className="text-xl font-bold text-foreground">
                     {metric.value}
                   </span>
+                  <p className="text-xs text-muted-foreground">
+                    {metric.description}
+                  </p>
                 </div>
               </div>
             </div>
@@ -337,10 +329,13 @@ export function RegionStatsContent({
         <div className="space-y-6">
           {/* Top 5 Litter Items */}
           {regionData.litterData.topItems.length > 0 && (
-            <section className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground">
-                Top Litter Items
-              </h3>
+            <section className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                <h3 className="text-sm font-medium">
+                  Top Litter Items
+                </h3>
+              </div>
               <HorizontalBarChart
                 data={regionData.litterData.topItems.map(item => ({
                   name: item.category,
@@ -401,17 +396,17 @@ export function RegionStatsContent({
           {(!regionData.litterData.topItems.length && 
             !regionData.litterData.materialBreakdown.length && 
             !regionData.litterData.sourceBreakdown.length) && (
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="flex items-start space-x-3">
-                <Info className="w-4 h-4 text-muted-foreground mt-0.5" />
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
                 <div>
-                  <p className="text-sm font-medium">Limited Data Available</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="font-medium">Limited Data Available</p>
+                  <p className="text-sm text-muted-foreground mt-1">
                     Some metrics are available but detailed breakdowns are not yet processed.
                   </p>
                 </div>
-              </div>
-            </div>
+              </AlertDescription>
+            </Alert>
           )}
         </div>
       ) : (

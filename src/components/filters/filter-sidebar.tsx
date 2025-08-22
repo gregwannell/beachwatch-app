@@ -3,8 +3,9 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { RotateCcw } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { RotateCcw, MapPin, Calendar, Info } from "lucide-react"
 
 import { RegionSelect } from "./region-select"
 import { YearRangePicker } from "./year-range-picker"
@@ -89,7 +90,7 @@ export function FilterSidebar({
   }
 
   return (
-    <div className={`p-4 space-y-4 ${className}`}>
+    <div className={`p-3 sm:p-4 space-y-3 sm:space-y-4 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-medium text-sm text-muted-foreground">
@@ -110,9 +111,12 @@ export function FilterSidebar({
       </div>
 
       {/* Region Filter */}
-      <Card role="region" aria-labelledby="location-filter-title">
+      <Card role="region" aria-labelledby="location-filter-title" className="border-0 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium" id="location-filter-title">Location</CardTitle>
+          <CardTitle className="text-sm font-medium flex items-center gap-2" id="location-filter-title">
+            <MapPin className="h-4 w-4 text-primary" />
+            Location
+          </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           <RegionSelect
@@ -125,37 +129,46 @@ export function FilterSidebar({
         </CardContent>
       </Card>
 
-      <Separator />
-
       {/* Year Range Filter */}
-      <YearRangePicker
-        value={filters.yearRange}
-        onChange={handleYearRangeChange}
-        availableYears={filterOptions.availableYears}
-      />
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-primary" />
+            Time Period
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <YearRangePicker
+            value={filters.yearRange}
+            onChange={handleYearRangeChange}
+            availableYears={filterOptions.availableYears}
+          />
+        </CardContent>
+      </Card>
 
 
       {/* Active filters summary */}
       {hasActiveFilters && (
-        <Card className="bg-muted/50">
-          <CardContent className="p-3">
-            <div className="text-xs text-muted-foreground">
-              <div className="font-medium mb-2">Active Filters:</div>
-              <div className="space-y-1">
+        <Alert className="border-primary/20 bg-primary/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Active Filters</div>
+              <div className="flex flex-wrap gap-1">
                 {filters.region.selectedRegionId && (
-                  <div>
-                    • Region: {filterOptions.regions.find(r => 
+                  <Badge variant="secondary" className="text-xs">
+                    {filterOptions.regions.find(r => 
                       r.id === filters.region.selectedRegionId
                     )?.name}
-                  </div>
+                  </Badge>
                 )}
-                <div>
-                  • Time: {filters.yearRange.startYear}
-                </div>
+                <Badge variant="secondary" className="text-xs">
+                  {filters.yearRange.startYear}
+                </Badge>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   )

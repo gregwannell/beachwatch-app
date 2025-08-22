@@ -1,4 +1,3 @@
-import type { Tables } from '@/lib/database.types'
 
 // Extended region interface for filter components
 export interface FilterRegion {
@@ -19,12 +18,12 @@ export interface RegionFilter {
 export interface YearRangeFilter {
   startYear: number
   endYear: number
-  mode: 'single' | 'range'
+  mode: 'single'
 }
 
 export interface CategoryFilter {
-  materials: string[]
-  sources: string[]
+  // Reserved for future category filters
+  [key: string]: unknown
 }
 
 // Combined filter state
@@ -38,6 +37,4 @@ export interface FilterState {
 export interface FilterOptions {
   regions: FilterRegion[]
   availableYears: { min: number; max: number }
-  materials: string[]
-  sources: string[]
 }

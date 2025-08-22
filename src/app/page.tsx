@@ -47,10 +47,7 @@ export default function Home() {
       endYear: 2024,
       mode: 'single'
     },
-    categories: {
-      materials: [],
-      sources: [],
-    }
+    categories: {}
   })
   
   // Fetch map regions data

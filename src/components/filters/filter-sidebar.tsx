@@ -8,9 +8,8 @@ import { RotateCcw } from "lucide-react"
 
 import { RegionSelect } from "./region-select"
 import { YearRangePicker } from "./year-range-picker"
-import { CategoryCheckboxes } from "./category-checkboxes"
 import { useFilterOptions } from "@/hooks/use-filter-options"
-import { FilterState, FilterRegion } from "@/types/filter-types"
+import { FilterState } from "@/types/filter-types"
 
 interface FilterSidebarProps {
   filters: FilterState
@@ -39,12 +38,6 @@ export function FilterSidebar({
     })
   }
 
-  const handleCategoriesChange = (categories: FilterState['categories']) => {
-    onFiltersChange({
-      ...filters,
-      categories,
-    })
-  }
 
   const handleResetFilters = () => {
     onFiltersChange({
@@ -54,20 +47,14 @@ export function FilterSidebar({
         endYear: filterOptions.availableYears.max,
         mode: 'single'
       },
-      categories: {
-        materials: [],
-        sources: [],
-      },
+      categories: {},
     })
   }
 
   // Calculate if any filters are active
   const hasActiveFilters = 
     filters.region.selectedRegionId !== null ||
-    filters.yearRange.mode === 'range' ||
-    filters.yearRange.startYear !== filterOptions.availableYears.max ||
-    filters.categories.materials.length > 0 ||
-    filters.categories.sources.length > 0
+    filters.yearRange.startYear !== filterOptions.availableYears.max
 
   if (isLoading) {
     return (
@@ -146,22 +133,6 @@ export function FilterSidebar({
         availableYears={filterOptions.availableYears}
       />
 
-      <Separator />
-
-      {/* Category Filters */}
-      <div>
-        <h4 className="font-medium text-sm text-muted-foreground mb-3">
-          Litter Categories
-        </h4>
-        <CategoryCheckboxes
-          value={filters.categories}
-          onChange={handleCategoriesChange}
-          availableCategories={{
-            materials: filterOptions.materials,
-            sources: filterOptions.sources,
-          }}
-        />
-      </div>
 
       {/* Active filters summary */}
       {hasActiveFilters && (
@@ -178,16 +149,8 @@ export function FilterSidebar({
                   </div>
                 )}
                 <div>
-                  • Time: {filters.yearRange.mode === 'single' 
-                    ? `${filters.yearRange.startYear}` 
-                    : `${filters.yearRange.startYear}-${filters.yearRange.endYear}`}
+                  • Time: {filters.yearRange.startYear}
                 </div>
-                {filters.categories.materials.length > 0 && (
-                  <div>• Materials: {filters.categories.materials.length} selected</div>
-                )}
-                {filters.categories.sources.length > 0 && (
-                  <div>• Sources: {filters.categories.sources.length} selected</div>
-                )}
               </div>
             </div>
           </CardContent>

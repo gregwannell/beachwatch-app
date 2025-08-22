@@ -24,16 +24,6 @@
 				"SUPABASE_ACCESS_TOKEN": "sbp_aaeb5b5a9c91cf6daac6722c479a64e4502c0ffd"
 			}
 		},
-		"puppeteer": {
-			"type": "stdio",
-			"command": "cmd",
-			"args": [
-				"/c",
-				"npx",
-				"-y",
-				"@modelcontextprotocol/server-puppeteer"
-			]
-		},
 		"taskmaster-ai": {
 			"type": "stdio",
 			"command": "cmd",
@@ -45,6 +35,15 @@
 				"task-master-ai"
 			],
 			"env": {}
+		},
+    	"browsermcp": {
+      		"command": "cmd",
+      		"args": [
+				"/c", 
+				"npx",
+				"-y",
+				"@browsermcp/mcp@latest"
+			]
 		}
 	}
 }

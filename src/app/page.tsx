@@ -12,6 +12,7 @@ import { RegionInfoPanel } from '@/components/region-info-panel'
 import { RegionStatsContent } from '@/components/region-stats-content'
 import { Button } from '@/components/ui/button'
 import { useUKStats } from '@/hooks/use-uk-stats'
+import { BarChart3, X } from 'lucide-react'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -33,6 +34,7 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isRegionPanelOpen, setIsRegionPanelOpen] = useState(false)
+  const [isStatsOpen, setIsStatsOpen] = useState(false)
   
   // Hierarchy navigation state
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
@@ -144,13 +146,6 @@ export default function Home() {
           onFiltersChange={setFilters}
         />
       }
-      statsPanel={
-        <RegionStatsContent
-          regionData={selectedRegionId ? regionData : ukStatsData}
-          isLoading={selectedRegionId ? isRegionLoading : isUKStatsLoading}
-          onRegionSelect={handleRegionSelect}
-        />
-      }
     >
       <div className="h-full w-full">
         {isLoading ? (
@@ -189,6 +184,60 @@ export default function Home() {
                 </Button>
               </div>
             )}
+
+            {/* Floating Stats Button */}
+            <div className="absolute top-4 right-4 z-[10000] pointer-events-auto">
+              <Button
+                variant="default"
+                size="lg"
+                className="shadow-lg bg-white text-foreground hover:bg-gray-50 border border-border"
+                onClick={() => setIsStatsOpen(true)}
+              >
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Show Stats
+              </Button>
+            </div>
+
+            {/* Custom Stats Panel */}
+            <div className={`
+              fixed top-0 right-0 h-full w-[400px] bg-background border-l border-border shadow-2xl
+              transform transition-transform duration-300 ease-in-out z-[10003]
+              ${isStatsOpen ? 'translate-x-0' : 'translate-x-full'}
+            `}>
+              <div className="flex flex-col h-full">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-border bg-background/95 backdrop-blur-sm">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="flex items-center gap-2 font-semibold">
+                        <BarChart3 className="w-5 h-5" />
+                        Regional Stats
+                      </h2>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        View regional litter statistics and environmental data
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsStatsOpen(false)}
+                      className="p-2"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Content */}
+                <div className="flex-1 overflow-auto">
+                  <RegionStatsContent
+                    regionData={selectedRegionId ? regionData : ukStatsData}
+                    isLoading={selectedRegionId ? isRegionLoading : isUKStatsLoading}
+                    onRegionSelect={handleRegionSelect}
+                  />
+                </div>
+              </div>
+            </div>
             
             <UKMap
               regions={regions}

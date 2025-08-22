@@ -1,9 +1,8 @@
 "use client"
 
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Menu, PanelRightOpen, Waves, Map } from 'lucide-react'
+import { Menu, Waves, Map } from 'lucide-react'
 import { useState } from 'react'
 import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -12,16 +11,13 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 interface MainLayoutProps {
   children: React.ReactNode
   sidebar?: React.ReactNode
-  statsPanel?: React.ReactNode
 }
 
 export function MainLayout({ 
   children, 
-  sidebar, 
-  statsPanel
+  sidebar
 }: MainLayoutProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [rightSidebarOpen, setRightSidebarOpen] = useState(true)
 
   return (
     <div className="flex h-screen bg-background">
@@ -108,27 +104,14 @@ export function MainLayout({
                   >
                     <Menu className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-                    aria-label={rightSidebarOpen ? "Hide statistics panel" : "Show statistics panel"}
-                    aria-expanded={rightSidebarOpen}
-                  >
-                    <PanelRightOpen className="h-4 w-4" />
-                  </Button>
                 </div>
               </div>
             </div>
           </header>
 
-          {/* Main Content Area - Map with Right Sidebar */}
-          <div className="flex h-[calc(100vh-4rem)]">
-            {/* Map Content */}
-            <div className={cn(
-              "flex-1 relative transition-all duration-300",
-              rightSidebarOpen ? "mr-0" : "mr-0"
-            )} role="main" aria-label="Interactive map">
+          {/* Main Content Area - Map */}
+          <div className="h-[calc(100vh-4rem)]">
+            <div className="h-full relative" role="main" aria-label="Interactive map">
               <div className="absolute inset-0" id="main-content">
                 {children || (
                   <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">
@@ -142,34 +125,6 @@ export function MainLayout({
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-            
-            {/* Right Sidebar - Stats Panel */}
-            <div className={cn(
-              "border-l bg-gradient-subtle transition-all duration-300 ease-in-out overflow-hidden",
-              "hidden lg:block",
-              rightSidebarOpen ? "w-[35%] xl:w-[30%]" : "w-0 border-l-0"
-            )} role="complementary" aria-label="Statistics panel">
-              <div className={cn(
-                "h-full flex flex-col transition-opacity duration-300",
-                rightSidebarOpen ? "opacity-100" : "opacity-0"
-              )}>
-                <div className="border-b p-4 flex-shrink-0 bg-background/50 backdrop-blur-sm">
-                  <h2 className="font-semibold text-sm flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-primary"></div>
-                    Region Statistics
-                  </h2>
-                </div>
-                <div className="flex-1 overflow-auto">
-                  {rightSidebarOpen && (statsPanel || (
-                    <div className="p-4">
-                      <div className="space-y-4">
-                        <div className="text-sm">Statistics will display here</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>

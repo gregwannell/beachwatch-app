@@ -101,6 +101,7 @@ export function FilterSidebar({
             size="sm"
             onClick={handleResetFilters}
             className="h-7 text-xs"
+            aria-label="Reset all filters"
           >
             <RotateCcw className="h-3 w-3 mr-1" />
             Reset
@@ -109,9 +110,9 @@ export function FilterSidebar({
       </div>
 
       {/* Region Filter */}
-      <Card>
+      <Card role="region" aria-labelledby="location-filter-title">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Location</CardTitle>
+          <CardTitle className="text-sm font-medium" id="location-filter-title">Location</CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           <RegionSelect

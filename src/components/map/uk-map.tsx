@@ -81,7 +81,7 @@ export function UKMap({
   }
 
   return (
-    <div className={className}>
+    <div className={className} role="application" aria-label="Interactive UK regions map">
       <MapContainer
         ref={mapRef}
         bounds={UK_BOUNDS}
@@ -96,6 +96,8 @@ export function UKMap({
         dragging={true}
         zoomControl={true}
         className="w-full h-full rounded-lg"
+        keyboard={true}
+        attributionControl={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

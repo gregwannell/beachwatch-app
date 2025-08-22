@@ -33,7 +33,6 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isRegionPanelOpen, setIsRegionPanelOpen] = useState(false)
-  const [statsPanelCollapsed, setStatsPanelCollapsed] = useState(false)
   
   // Hierarchy navigation state
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
@@ -69,13 +68,13 @@ export default function Home() {
   const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
     selectedRegionId,
     filters.yearRange.startYear,
-    !statsPanelCollapsed
+    true
   )
 
   // Fetch UK stats for default state
   const { data: ukStatsData, isLoading: isUKStatsLoading } = useUKStats(
     filters.yearRange.startYear,
-    !statsPanelCollapsed && !selectedRegionId
+    !selectedRegionId
   )
 
   const handleRegionClick = (regionId: number) => {
@@ -90,7 +89,6 @@ export default function Home() {
     if (canDrillDown) {
       // For countries/crown dependencies: show their stats in sidebar AND drill down
       setSelectedRegionId(regionId)
-      setStatsPanelCollapsed(false) // Ensure sidebar is open
       setParentRegionId(regionId)
       setParentRegionName(clickedRegion.name)
       // Update filter for the country level
@@ -101,7 +99,6 @@ export default function Home() {
     } else {
       // For counties/unitary authorities: show their stats in sidebar
       setSelectedRegionId(regionId)
-      setStatsPanelCollapsed(false) // Ensure sidebar is open
       setIsRegionPanelOpen(false) // Close any existing modal
       // Update filter when a region is clicked on the map
       setFilters(prev => ({
@@ -121,18 +118,15 @@ export default function Home() {
     setParentRegionName(null)
     setSelectedRegionId(null) // This will trigger UK stats to show
     setIsRegionPanelOpen(false)
-    setStatsPanelCollapsed(false) // Keep sidebar open to show UK stats
   }
 
   const handleRegionSelect = (regionId: string) => {
     const numericRegionId = parseInt(regionId)
     setSelectedRegionId(numericRegionId)
-    setStatsPanelCollapsed(false) // Ensure sidebar is open
     setFilters(prev => ({
       ...prev,
       region: { selectedRegionId: numericRegionId }
     }))
-    // Keep sidebar open to show the new region's data
   }
 
   const handleRegionHover = (regionId: number | null) => {
@@ -157,8 +151,6 @@ export default function Home() {
           onRegionSelect={handleRegionSelect}
         />
       }
-      statsPanelCollapsed={statsPanelCollapsed}
-      onStatsPanelToggle={() => setStatsPanelCollapsed(!statsPanelCollapsed)}
     >
       <div className="h-full w-full">
         {isLoading ? (
@@ -191,6 +183,7 @@ export default function Home() {
                   variant="secondary"
                   size="sm"
                   className="bg-white shadow-lg border border-gray-300 hover:bg-gray-50 text-gray-900 font-medium"
+                  aria-label="Return to country view"
                 >
                   ← Back to Countries
                 </Button>

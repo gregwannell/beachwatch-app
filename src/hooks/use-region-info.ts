@@ -90,43 +90,40 @@ function calculateYearOverYearChange(aggregates: ApiRegionData['aggregates']): n
   return Math.round(change * 10) / 10 // Round to 1 decimal place
 }
 
-// Helper function to generate mock engagement data
-function generateEngagementData(regionId: number, hasData: boolean): RegionData['engagementData'] {
-  if (!hasData) return undefined
-
-  // Generate realistic engagement numbers based on region ID (for consistent mock data)
-  const baseMultiplier = (regionId % 10) + 1
-  const surveyCount = Math.floor(45 + (baseMultiplier * 15) + Math.random() * 20)
-  const volunteerCount = Math.floor(surveyCount * 2.3 + Math.random() * 10)
-  const totalBeachLength = Math.floor(2500 + (baseMultiplier * 800) + Math.random() * 1500)
-
-  // Generate year-over-year changes (some positive, some negative)
-  const surveyChange = (Math.random() - 0.5) * 30 // -15% to +15%
-  const volunteerChange = (Math.random() - 0.4) * 25 // Slightly more positive trend
-  const beachLengthChange = (Math.random() - 0.3) * 20 // Generally positive trend
-
+// Helper function to calculate engagement year-over-year changes
+function calculateEngagementYearOverYearChange(aggregates: { year: string, total_surveys: number, total_volunteers: number, total_length_m: number }[]): RegionData['engagementData']['yearOverYearChanges'] | undefined {
+  if (aggregates.length < 2) return undefined
+  
+  // Sort by year descending to get current and previous year
+  const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+  const current = sorted[0]
+  const previous = sorted[1]
+  
+  const calculatePercentChange = (current: number, previous: number): number => {
+    if (current === 0 && previous === 0) return 0
+    if (previous === 0) return 100
+    const change = ((current - previous) / previous) * 100
+    return Math.round(change * 10) / 10
+  }
+  
   return {
-    surveyCount,
-    volunteerCount,
-    totalBeachLength,
-    yearOverYearChanges: {
-      surveys: Math.round(surveyChange * 10) / 10,
-      volunteers: Math.round(volunteerChange * 10) / 10,
-      beachLength: Math.round(beachLengthChange * 10) / 10
-    }
+    surveys: calculatePercentChange(current.total_surveys, previous.total_surveys),
+    volunteers: calculatePercentChange(current.total_volunteers, previous.total_volunteers),
+    beachLength: calculatePercentChange(current.total_length_m, previous.total_length_m)
   }
 }
 
 // Main hook for fetching region info panel data
-export function useRegionInfo(regionId: number | null, enabled: boolean = true) {
+export function useRegionInfo(regionId: number | null, year?: number, enabled: boolean = true) {
   return useQuery({
-    queryKey: ['region-info', regionId],
+    queryKey: ['region-info', regionId, year],
     queryFn: async (): Promise<RegionData | null> => {
       if (!regionId) return null
 
       // Fetch basic region data with parent info
+      const yearParam = year ? `&year=${year}` : ''
       const regionResponse = await fetch(
-        `/api/regions/${regionId}?includeParent=true&includeAggregates=true`
+        `/api/regions/${regionId}?includeParent=true&includeAggregates=true${yearParam}`
       )
       
       if (!regionResponse.ok) {
@@ -156,9 +153,10 @@ export function useRegionInfo(regionId: number | null, enabled: boolean = true) 
       }
 
       // Fetch detailed breakdown data in parallel
+      const yearQueryParam = year ? `&year=${year}` : ''
       const [materialsResponse, sourcesResponse] = await Promise.all([
-        fetch(`/api/analytics/materials?regionId=${regionId}&limit=5`).catch(() => null),
-        fetch(`/api/analytics/sources?regionId=${regionId}&limit=5`).catch(() => null)
+        fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
+        fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null)
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
@@ -216,7 +214,12 @@ export function useRegionInfo(regionId: number | null, enabled: boolean = true) 
           averageLitterPer100m,
           yearOverYearChange
         },
-        engagementData: generateEngagementData(region.id, true)
+        engagementData: aggregates.length > 0 ? {
+          surveyCount: aggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),
+          volunteerCount: aggregates.reduce((sum, agg) => sum + agg.total_volunteers, 0),
+          totalBeachLength: Math.round(aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)),
+          yearOverYearChanges: calculateEngagementYearOverYearChange(aggregates)
+        } : undefined
       }
     },
     enabled: enabled && regionId !== null,

@@ -4,16 +4,17 @@ import { useQuery } from '@tanstack/react-query'
 import type { RegionData } from '@/components/region-info-panel'
 
 // Hook for fetching UK-level aggregate statistics
-export function useUKStats(enabled: boolean = true) {
+export function useUKStats(year?: number, enabled: boolean = true) {
   return useQuery({
-    queryKey: ['uk-stats'],
+    queryKey: ['uk-stats', year],
     queryFn: async (): Promise<RegionData> => {
       // Fetch UK-level aggregated data (region ID 1 is typically UK)
       const ukRegionId = 1
       
       // Fetch basic UK region data
+      const yearParam = year ? `&year=${year}` : ''
       const regionResponse = await fetch(
-        `/api/regions/${ukRegionId}?includeAggregates=true`
+        `/api/regions/${ukRegionId}?includeAggregates=true${yearParam}`
       )
       
       if (!regionResponse.ok) {
@@ -24,9 +25,10 @@ export function useUKStats(enabled: boolean = true) {
       const { region, aggregates = [] } = regionData
 
       // Fetch UK-wide breakdown data in parallel
+      const yearQueryParam = year ? `&year=${year}` : ''
       const [materialsResponse, sourcesResponse] = await Promise.all([
-        fetch(`/api/analytics/materials?regionId=${ukRegionId}&limit=10`).catch(() => null),
-        fetch(`/api/analytics/sources?regionId=${ukRegionId}&limit=10`).catch(() => null)
+        fetch(`/api/analytics/materials?regionId=${ukRegionId}&limit=10${yearQueryParam}`).catch(() => null),
+        fetch(`/api/analytics/sources?regionId=${ukRegionId}&limit=10${yearQueryParam}`).catch(() => null)
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
@@ -63,14 +65,19 @@ export function useUKStats(enabled: boolean = true) {
 
       // Calculate average litter per 100m from aggregates
       const averageLitterPer100m = aggregates.length > 0
-        ? aggregates.reduce((sum: number, agg: any) => sum + agg.avg_per_100m, 0) / aggregates.length
+        ? aggregates.reduce((sum: number, agg: { avg_per_100m: number }) => sum + agg.avg_per_100m, 0) / aggregates.length
         : 0
 
       // Calculate year-over-year change
       const yearOverYearChange = calculateYearOverYearChange(aggregates)
 
-      // Generate UK-wide engagement data
-      const engagementData = generateUKEngagementData()
+      // Use real engagement data from aggregates
+      const engagementData = aggregates.length > 0 ? {
+        surveyCount: aggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),
+        volunteerCount: aggregates.reduce((sum, agg) => sum + agg.total_volunteers, 0),
+        totalBeachLength: Math.round(aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)),
+        yearOverYearChanges: calculateEngagementYearOverYearChange(aggregates)
+      } : undefined
 
       return {
         id: region.id.toString(),
@@ -109,26 +116,25 @@ function calculateYearOverYearChange(aggregates: { year: string, avg_per_100m: n
   return Math.round(change * 10) / 10 // Round to 1 decimal place
 }
 
-// Helper function to generate UK-wide engagement data
-function generateUKEngagementData(): RegionData['engagementData'] {
-  // Generate realistic UK-wide engagement numbers
-  const surveyCount = Math.floor(2500 + Math.random() * 500) // 2500-3000 surveys
-  const volunteerCount = Math.floor(surveyCount * 2.8 + Math.random() * 200) // ~7000-8500 volunteers
-  const totalBeachLength = Math.floor(45000 + Math.random() * 5000) // ~45-50km total
-
-  // Generate year-over-year changes
-  const surveyChange = (Math.random() - 0.3) * 20 // Generally positive trend
-  const volunteerChange = (Math.random() - 0.2) * 25 // Generally positive trend  
-  const beachLengthChange = (Math.random() - 0.2) * 15 // Generally positive trend
-
+// Helper function to calculate engagement year-over-year changes
+function calculateEngagementYearOverYearChange(aggregates: { year: string, total_surveys: number, total_volunteers: number, total_length_m: number }[]): RegionData['engagementData']['yearOverYearChanges'] | undefined {
+  if (aggregates.length < 2) return undefined
+  
+  // Sort by year descending to get current and previous year
+  const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+  const current = sorted[0]
+  const previous = sorted[1]
+  
+  const calculatePercentChange = (current: number, previous: number): number => {
+    if (current === 0 && previous === 0) return 0
+    if (previous === 0) return 100
+    const change = ((current - previous) / previous) * 100
+    return Math.round(change * 10) / 10
+  }
+  
   return {
-    surveyCount,
-    volunteerCount,
-    totalBeachLength,
-    yearOverYearChanges: {
-      surveys: Math.round(surveyChange * 10) / 10,
-      volunteers: Math.round(volunteerChange * 10) / 10,
-      beachLength: Math.round(beachLengthChange * 10) / 10
-    }
+    surveys: calculatePercentChange(current.total_surveys, previous.total_surveys),
+    volunteers: calculatePercentChange(current.total_volunteers, previous.total_volunteers),
+    beachLength: calculatePercentChange(current.total_length_m, previous.total_length_m)
   }
 }

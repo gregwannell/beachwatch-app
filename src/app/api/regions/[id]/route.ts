@@ -25,6 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const includeChildren = searchParams.get('includeChildren') === 'true'
     const includeParent = searchParams.get('includeParent') === 'true'
     const includeAggregates = searchParams.get('includeAggregates') === 'true'
+    const year = searchParams.get('year')
     
     // Base region query
     let regionQuery = supabase
@@ -59,7 +60,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       const isValid = validateRegionGeometry(region.geometry)
       if (!isValid) {
         console.warn(`Invalid geometry for region ${region.id}: ${region.name}`)
-        region.geometry = null
+        // Cast to any to allow geometry modification
+        ;(region as any).geometry = null
       }
     }
     
@@ -104,7 +106,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     
     // Include aggregates if requested
     if (includeAggregates && region.has_data) {
-      const { data: aggregates, error: aggregatesError } = await supabase
+      let aggregatesQuery = supabase
         .from('annual_region_aggregates')
         .select(`
           id, year, total_surveys, total_volunteers, total_volunteer_min,
@@ -113,6 +115,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         `)
         .eq('name_id', regionId)
         .order('year', { ascending: false })
+      
+      // Apply year filter if provided
+      if (year) {
+        aggregatesQuery = aggregatesQuery.eq('year', year)
+      }
+      
+      const { data: aggregates, error: aggregatesError } = await aggregatesQuery
       
       if (aggregatesError) {
         console.error('Aggregates query error:', aggregatesError)

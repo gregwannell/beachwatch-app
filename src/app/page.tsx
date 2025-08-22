@@ -60,11 +60,13 @@ export default function Home() {
   // Fetch region info for the sidebar
   const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
     selectedRegionId,
+    filters.yearRange.startYear,
     !statsPanelCollapsed
   )
 
   // Fetch UK stats for default state
   const { data: ukStatsData, isLoading: isUKStatsLoading } = useUKStats(
+    filters.yearRange.startYear,
     !statsPanelCollapsed && !selectedRegionId
   )
 

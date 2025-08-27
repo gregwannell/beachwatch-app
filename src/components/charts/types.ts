@@ -8,6 +8,10 @@ export interface BarChartData extends ChartDataItem {
   category: string
 }
 
+export interface PieChartData extends ChartDataItem {
+  fill: string
+}
+
 
 export interface ChartProps {
   data: ChartDataItem[]

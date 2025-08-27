@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
 import { BarChartProps } from "./types"
-import { calculatePercentages, sortTopItems, formatChartValue } from "./utils"
+import { sortTopItems } from "./utils"
 import { createChartConfig } from "./chart-config"
 import { ChartPatterns, generateChartAriaLabel, generateChartDescription } from "./accessibility"
 import { ChartSkeleton } from "./chart-skeleton"
@@ -29,7 +29,8 @@ export function HorizontalBarChart({
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
     const sorted = sortTopItems(data, maxItems)
-    return calculatePercentages(sorted)
+    // Don't calculate percentages here - use raw values for proper scaling
+    return sorted
   }, [data, maxItems])
 
   const chartConfig = React.useMemo(() => {
@@ -37,18 +38,6 @@ export function HorizontalBarChart({
     return createChartConfig(itemNames)
   }, [processedData])
 
-  const formatTooltip = React.useCallback(
-    (value: number, name: string, props: { payload?: { name: string } }) => {
-      const item = processedData.find(d => d.name === props.payload?.name)
-      if (!item) return null
-
-      const displayValue = showPercentage ? item.percentage : value
-      const formattedValue = formatChartValue(displayValue || 0, showPercentage)
-      
-      return [formattedValue, item.name]
-    },
-    [processedData, showPercentage]
-  )
 
   // Handle loading state
   if (loading) {
@@ -105,41 +94,30 @@ export function HorizontalBarChart({
         >
         <BarChart
           data={processedData}
-          layout="horizontal"
+          layout="vertical"
           margin={{
-            top: 20,
-            right: 30,
-            left: 40,
-            bottom: 5,
+            left: -20,
           }}
         >
           <XAxis
             type="number"
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(value) => formatChartValue(value, showPercentage)}
+            dataKey="value"
+            hide
           />
           <YAxis
-            type="category"
             dataKey="name"
-            axisLine={false}
+            type="category"
             tickLine={false}
-            width={100}
+            tickMargin={10}
+            axisLine={false}
             className="text-xs"
           />
           <ChartTooltip
-            cursor={{ fill: "hsl(var(--primary))", opacity: 0.1 }}
-            content={
-              <ChartTooltipContent
-                formatter={formatTooltip}
-                hideLabel={false}
-                indicator="line"
-                className="rounded-lg border shadow-lg bg-card"
-              />
-            }
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
           />
           <Bar
-            dataKey={showPercentage ? "percentage" : "value"}
+            dataKey="value"
             fill="hsl(var(--chart-1))"
             radius={[0, 4, 4, 0]}
           />

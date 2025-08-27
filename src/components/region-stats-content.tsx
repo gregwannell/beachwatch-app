@@ -5,8 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { HorizontalBarChart, InteractivePieChart } from "@/components/charts"
-import type { BarChartData } from "@/components/charts/types"
+import { InteractivePieChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -328,30 +327,6 @@ export function RegionStatsContent({
       {/* Show charts if data is available */}
       {regionData.hasData && regionData.litterData ? (
         <div className="space-y-6">
-          {/* Top 5 Litter Items */}
-          {regionData.litterData.topItems.length > 0 && (
-            <section className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <BarChart3 className="h-4 w-4 text-primary" />
-                <h3 className="text-sm font-medium">
-                  Top Litter Items
-                </h3>
-              </div>
-              <HorizontalBarChart
-                data={regionData.litterData.topItems.map(item => ({
-                  name: item.category,
-                  value: item.count,
-                  category: item.category,
-                  percentage: item.percentage
-                }) as BarChartData)}
-                height={180}
-                maxItems={5}
-                showCount={true}
-                showPercentage={false}
-                className="w-full"
-              />
-            </section>
-          )}
 
           {/* Material Breakdown */}
           {regionData.litterData.materialBreakdown.length > 0 && (

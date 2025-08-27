@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { HorizontalBarChart, InteractivePieChart } from "@/components/charts"
-import type { BarChartData } from "@/components/charts/types"
+import { InteractivePieChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -456,32 +455,6 @@ export function RegionInfoPanel({
               {/* Show charts if data is available */}
               {regionData.hasData && regionData.litterData ? (
                 <div className="space-y-6" role="region" aria-label="Litter data visualizations">
-                  {/* Top 5 Litter Items */}
-                  {regionData.litterData.topItems.length > 0 && (
-                    <section className="space-y-3" aria-labelledby="top-litter-heading">
-                      <h3 id="top-litter-heading" className="text-sm font-medium text-muted-foreground">
-                        Top Litter Items
-                      </h3>
-                      <div role="img" aria-labelledby="top-litter-heading" aria-describedby="top-litter-description">
-                        <HorizontalBarChart
-                          data={regionData.litterData.topItems.map(item => ({
-                            name: item.category,
-                            value: item.count,
-                            category: item.category,
-                            percentage: item.percentage
-                          }) as BarChartData)}
-                          height={200}
-                          maxItems={5}
-                          showCount={true}
-                          showPercentage={false}
-                          className="w-full"
-                        />
-                        <p id="top-litter-description" className="sr-only">
-                          Horizontal bar chart showing the top {Math.min(regionData.litterData.topItems.length, 5)} most common litter items found in {regionData.name}
-                        </p>
-                      </div>
-                    </section>
-                  )}
 
                   {/* Material Breakdown */}
                   {regionData.litterData.materialBreakdown.length > 0 && (

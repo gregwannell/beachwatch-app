@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import type { RegionData } from '@/components/region-info-panel'
+import type { RegionData } from '@/types/region-types'
 
 // Hook for fetching UK-level aggregate statistics
 export function useUKStats(year?: number, enabled: boolean = true) {

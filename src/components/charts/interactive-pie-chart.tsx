@@ -65,11 +65,7 @@ export function InteractivePieChart({
 
   // Create chart config with simple name-based keys
   const chartConfig = React.useMemo(() => {
-    const config: ChartConfig = {
-      value: {
-        label: "Value",
-      },
-    }
+    const config: ChartConfig = {}
     
     data.forEach((item) => {
       config[item.name] = {
@@ -153,8 +149,8 @@ export function InteractivePieChart({
         >
           <PieChart>
             <ChartTooltip
+              content={<ChartTooltipContent />}
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
             />
             <Pie
               data={data}

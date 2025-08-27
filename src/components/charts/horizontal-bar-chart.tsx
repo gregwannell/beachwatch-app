@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,
@@ -9,19 +9,23 @@ import {
 } from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
 import { BarChartProps } from "./types"
-import { sortTopItems } from "./utils"
-import { createChartConfig } from "./chart-config"
+import { sortTopItems, formatChartValue } from "./utils"
+import { chartColors } from "./chart-config"
 import { ChartPatterns, generateChartAriaLabel, generateChartDescription } from "./accessibility"
 import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError, ChartEmptyState } from "./chart-error"
 
+// Utility function to truncate long item names for labels
+function truncateLabel(label: string, maxLength: number = 20): string {
+  return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label
+}
+
 export function HorizontalBarChart({
   data,
   className,
-  height = 300,
+  height = 320, // Increased slightly to accommodate full names
   maxItems = 5,
   showPercentage = false,
-  showCount = true,
   loading = false,
   error,
   onRetry,
@@ -29,15 +33,32 @@ export function HorizontalBarChart({
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
     const sorted = sortTopItems(data, maxItems)
-    // Don't calculate percentages here - use raw values for proper scaling
-    return sorted
+    const colors = Object.values(chartColors)
+    
+    // Add unique colors to each item (matching pie chart pattern)
+    return sorted.map((item, index) => ({
+      ...item,
+      fill: colors[index % colors.length]
+    }))
   }, [data, maxItems])
 
   const chartConfig = React.useMemo(() => {
-    const itemNames = processedData.map(item => item.name)
-    return createChartConfig(itemNames)
+    const config: ChartConfig = {
+      label: {
+        color: "hsl(var(--background))",
+      },
+    }
+    
+    // Add color configuration for each item (like pie chart)
+    processedData.forEach((item) => {
+      config[item.name] = {
+        label: item.name,
+        color: item.fill,
+      }
+    })
+    
+    return config
   }, [processedData])
-
 
   // Handle loading state
   if (loading) {
@@ -93,12 +114,14 @@ export function HorizontalBarChart({
           style={{ height }}
         >
         <BarChart
+          accessibilityLayer
           data={processedData}
           layout="vertical"
           margin={{
-            left: -20,
+            right: 16,
           }}
         >
+          <CartesianGrid horizontal={false} />
           <XAxis
             type="number"
             dataKey="value"
@@ -110,17 +133,40 @@ export function HorizontalBarChart({
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            className="text-xs"
+            hide
           />
           <ChartTooltip
+            content={<ChartTooltipContent />}
             cursor={false}
-            content={<ChartTooltipContent hideLabel />}
           />
           <Bar
             dataKey="value"
-            fill="hsl(var(--chart-1))"
-            radius={[0, 4, 4, 0]}
-          />
+            nameKey="name"
+            layout="vertical"
+            radius={4}
+          >
+            {processedData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.fill} />
+            ))}
+            <LabelList
+              dataKey="name"
+              position="insideLeft"
+              offset={8}
+              fill="white"
+              fontSize={12}
+              fontWeight="500"
+              style={{ textShadow: '0 0 3px rgba(0,0,0,0.3)' }}
+              formatter={(value: string) => truncateLabel(value, 18)}
+            />
+            <LabelList
+              dataKey="value"
+              position="right"
+              offset={8}
+              className="fill-foreground"
+              fontSize={12}
+              formatter={(value: number) => formatChartValue(value, false)}
+            />
+          </Bar>
         </BarChart>
         </ChartContainer>
         <div 

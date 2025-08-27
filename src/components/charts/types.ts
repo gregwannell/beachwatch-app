@@ -6,6 +6,7 @@ export interface ChartDataItem {
 
 export interface BarChartData extends ChartDataItem {
   category: string
+  fill?: string // Optional color for individual bars
 }
 
 export interface PieChartData extends ChartDataItem {

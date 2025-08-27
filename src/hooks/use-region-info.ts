@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import type { RegionData, SuggestedRegion } from '@/components/region-info-panel'
+import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
 interface ApiRegionData {
   region: {
@@ -38,6 +38,17 @@ interface SourceBreakdown {
   source: {
     id: number
     name: string
+  }
+  total: number
+  avgPer100m: number
+  presence: number
+}
+
+interface LitterItemBreakdown {
+  item: {
+    id: number
+    name: string
+    shortName?: string
   }
   total: number
   avgPer100m: number
@@ -154,14 +165,16 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 
       // Fetch detailed breakdown data in parallel
       const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse] = await Promise.all([
+      const [materialsResponse, sourcesResponse, litterItemsResponse] = await Promise.all([
         fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null)
+        fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
+        fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null)
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
       let materialBreakdown: RegionData['litterData']['materialBreakdown'] = []
       let sourceBreakdown: RegionData['litterData']['sourceBreakdown'] = []
+      let topLitterItems: LitterItemBreakdown[] = []
 
       // Process materials data (represents top litter items)
       if (materialsResponse?.ok) {
@@ -191,6 +204,12 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         }))
       }
 
+      // Process litter items data
+      if (litterItemsResponse?.ok) {
+        const litterItemsData: { data: { litterItems: LitterItemBreakdown[] } } = await litterItemsResponse.json()
+        topLitterItems = litterItemsData.data.litterItems
+      }
+
       // Calculate average litter per 100m from aggregates
       const averageLitterPer100m = aggregates.length > 0
         ? aggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / aggregates.length
@@ -211,6 +230,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           topItems,
           materialBreakdown,
           sourceBreakdown,
+          topLitterItems,
           averageLitterPer100m,
           yearOverYearChange
         },

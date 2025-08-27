@@ -5,12 +5,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { InteractivePieChart } from "@/components/charts"
+import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
-import type { RegionData, SuggestedRegion } from "@/components/region-info-panel"
+import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
 interface RegionStatsContentProps {
   regionData?: RegionData
@@ -327,6 +327,21 @@ export function RegionStatsContent({
       {/* Show charts if data is available */}
       {regionData.hasData && regionData.litterData ? (
         <div className="space-y-6">
+
+          {/* Top Litter Items */}
+          {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
+            <section className="space-y-3">
+              <TopLitterItemsChart
+                data={regionData.litterData.topLitterItems}
+                title="Top Litter Items"
+                description="Most common litter items by average per 100m"
+                height={200}
+                maxItems={5}
+                showAvgPer100m={true}
+                className="w-full"
+              />
+            </section>
+          )}
 
           {/* Material Breakdown */}
           {regionData.litterData.materialBreakdown.length > 0 && (

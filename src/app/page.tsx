@@ -8,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { FilterState } from '@/types/filter-types'
-import { RegionInfoPanel } from '@/components/region-info-panel'
 import { RegionStatsContent } from '@/components/region-stats-content'
 import { Button } from '@/components/ui/button'
 import { useUKStats } from '@/hooks/use-uk-stats'
@@ -33,7 +32,6 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
 export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
-  const [isRegionPanelOpen, setIsRegionPanelOpen] = useState(false)
   const [isStatsOpen, setIsStatsOpen] = useState(false)
   
   // Hierarchy navigation state
@@ -101,7 +99,6 @@ export default function Home() {
     } else {
       // For counties/unitary authorities: show their stats in sidebar
       setSelectedRegionId(regionId)
-      setIsRegionPanelOpen(false) // Close any existing modal
       // Update filter when a region is clicked on the map
       setFilters(prev => ({
         ...prev,
@@ -110,16 +107,11 @@ export default function Home() {
     }
   }
 
-  const handleRegionPanelClose = () => {
-    setIsRegionPanelOpen(false)
-    // Keep the selected region for visual feedback on map, but close panel
-  }
 
   const handleBackToCountries = () => {
     setParentRegionId(null) // This will default to parentId=1 in the hook
     setParentRegionName(null)
     setSelectedRegionId(null) // This will trigger UK stats to show
-    setIsRegionPanelOpen(false)
   }
 
   const handleRegionSelect = (regionId: string) => {
@@ -247,13 +239,6 @@ export default function Home() {
               className="h-full w-full"
             />
             
-            <RegionInfoPanel
-              isOpen={isRegionPanelOpen}
-              onClose={handleRegionPanelClose}
-              regionData={regionData || undefined}
-              isLoading={isRegionLoading}
-              onRegionSelect={handleRegionSelect}
-            />
           </>
         )}
       </div>

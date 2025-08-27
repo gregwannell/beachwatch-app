@@ -21,12 +21,13 @@ interface TopLitterItemsChartProps extends Omit<ChartProps, 'data'> {
   description?: string
   maxItems?: number
   showAvgPer100m?: boolean
+  barThickness?: number // Controls the thickness of individual bars
 }
 
 export function TopLitterItemsChart({
   data,
   className,
-  height = 200,
+  height = 220,
   title = "Top Litter Items",
   description = "Top litter items by average per 100m",
   maxItems = 5,
@@ -36,6 +37,7 @@ export function TopLitterItemsChart({
   onRetry,
   showPercentage = false,
   showCount = true,
+  barThickness = 32, // Default bar thickness
 }: TopLitterItemsChartProps) {
   const chartData = React.useMemo((): BarChartData[] => {
     if (!data || data.length === 0) return []
@@ -75,6 +77,7 @@ export function TopLitterItemsChart({
         loading={loading}
         error={error}
         onRetry={onRetry}
+        barThickness={barThickness}
       />
     </div>
   )

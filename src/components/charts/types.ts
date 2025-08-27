@@ -28,6 +28,7 @@ export interface ChartProps {
 export interface BarChartProps extends ChartProps {
   data: BarChartData[]
   maxItems?: number
+  barThickness?: number // Controls the thickness/height of individual bars
 }
 
 

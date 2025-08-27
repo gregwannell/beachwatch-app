@@ -58,6 +58,7 @@ export function InteractivePieChart({
     }
   }, [data, activeItem])
 
+
   const activeIndex = React.useMemo(
     () => data.findIndex((item) => item.name === activeItem),
     [data, activeItem]
@@ -105,41 +106,55 @@ export function InteractivePieChart({
           <CardTitle className="text-base">{title}</CardTitle>
           {description && <CardDescription className="text-sm">{description}</CardDescription>}
         </div>
-        <Select value={activeItem} onValueChange={setActiveItem}>
-          <SelectTrigger
-            className="ml-auto h-7 w-[170px] rounded-lg pl-2.5"
-            aria-label="Select a value"
-          >
-            <SelectValue placeholder="Select item" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {items.map((itemName) => {
-              const config = chartConfig[itemName as keyof typeof chartConfig]
+        <div className="ml-auto">
+          <Select value={activeItem} onValueChange={setActiveItem}>
+            <SelectTrigger
+              className="h-7 w-[170px] rounded-lg pl-2.5"
+              aria-label="Select a value"
+              onClick={(e) => {
+                console.log('SelectTrigger clicked', e)
+                e.stopPropagation()
+              }}
+            >
+              <SelectValue placeholder="Select item" />
+            </SelectTrigger>
+            <SelectContent 
+              align="end" 
+              className="rounded-xl z-[99999]" 
+              sideOffset={8}
+            >
+              {items.map((itemName) => {
+                const config = chartConfig[itemName as keyof typeof chartConfig]
 
-              if (!config) {
-                return null
-              }
+                if (!config) {
+                  return null
+                }
 
-              return (
-                <SelectItem
-                  key={itemName}
-                  value={itemName}
-                  className="rounded-lg [&_span]:flex"
-                >
-                  <div className="flex items-center gap-2 text-xs">
-                    <span
-                      className="flex h-3 w-3 shrink-0 rounded-xs"
-                      style={{
-                        backgroundColor: config.color,
-                      }}
-                    />
-                    {config?.label}
-                  </div>
-                </SelectItem>
-              )
-            })}
-          </SelectContent>
-        </Select>
+                return (
+                  <SelectItem
+                    key={itemName}
+                    value={itemName}
+                    className="rounded-lg cursor-pointer"
+                    onSelect={() => {
+                      console.log('SelectItem selected:', itemName)
+                      setActiveItem(itemName)
+                    }}
+                  >
+                    <div className="flex items-center gap-2 text-xs">
+                      <span
+                        className="flex h-3 w-3 shrink-0 rounded-xs"
+                        style={{
+                          backgroundColor: config.color,
+                        }}
+                      />
+                      {config?.label}
+                    </div>
+                  </SelectItem>
+                )
+              })}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="flex flex-1 justify-center pb-0">
         <ChartContainer

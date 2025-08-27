@@ -335,10 +335,11 @@ export function RegionStatsContent({
                 data={regionData.litterData.topLitterItems}
                 title="Top Litter Items"
                 description="Most common litter items by average per 100m"
-                height={280}
+                height={220}
                 maxItems={5}
                 showAvgPer100m={true}
                 className="w-full"
+                barThickness={30}
               />
             </section>
           )}

@@ -23,12 +23,13 @@ function truncateLabel(label: string, maxLength: number = 20): string {
 export function HorizontalBarChart({
   data,
   className,
-  height = 320, // Increased slightly to accommodate full names
+  height = 250, // Increased slightly to accommodate full names
   maxItems = 5,
   showPercentage = false,
   loading = false,
   error,
   onRetry,
+  barThickness = 32, // New prop to control bar thickness
 }: BarChartProps) {
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
@@ -144,6 +145,7 @@ export function HorizontalBarChart({
             nameKey="name"
             layout="vertical"
             radius={4}
+            maxBarSize={barThickness}
           >
             {processedData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -156,7 +158,7 @@ export function HorizontalBarChart({
               fontSize={12}
               fontWeight="500"
               style={{ textShadow: '0 0 3px rgba(0,0,0,0.3)' }}
-              formatter={(value: string) => truncateLabel(value, 18)}
+              formatter={(value: string) => truncateLabel(value, 10)}
             />
             <LabelList
               dataKey="value"

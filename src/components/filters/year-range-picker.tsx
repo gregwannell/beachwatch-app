@@ -1,10 +1,8 @@
 'use client'
 
 import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { YearRangeFilter } from "@/types/filter-types"
 
 interface YearRangePickerProps {
@@ -14,7 +12,6 @@ interface YearRangePickerProps {
   className?: string
 }
 
-
 export function YearRangePicker({
   value,
   onChange,
@@ -23,14 +20,14 @@ export function YearRangePicker({
 }: YearRangePickerProps) {
   const { min: minYear, max: maxYear } = availableYears
 
-  // Preset years for quick selection
-  const presetYears = [
-    { label: 'Latest Year', year: maxYear },
-    { label: 'Previous Year', year: maxYear - 1 },
-    { label: 'Oldest Data', year: minYear }
-  ]
+  // Generate array of all available years
+  const yearOptions = []
+  for (let year = maxYear; year >= minYear; year--) {
+    yearOptions.push(year)
+  }
 
-  const handleYearChange = (year: number) => {
+  const handleYearChange = (yearString: string) => {
+    const year = parseInt(yearString)
     onChange({
       startYear: year,
       endYear: year,
@@ -38,66 +35,25 @@ export function YearRangePicker({
     })
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newYear = parseInt(event.target.value)
-    if (!isNaN(newYear) && newYear >= minYear && newYear <= maxYear) {
-      handleYearChange(newYear)
-    }
-  }
-
-
-
-  const handlePresetClick = (year: number) => {
-    handleYearChange(year)
-  }
-
   return (
-    <Card className={className}>
-      <CardContent className="p-4 space-y-4">
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Year</Label>
-        </div>
-
-
-        {/* Year input */}
-        <div>
-          <Label htmlFor="year" className="text-xs">Select Year</Label>
-          <Input
-            id="year"
-            type="number"
-            value={value.startYear}
-            onChange={handleInputChange}
-            min={minYear}
-            max={maxYear}
-            className="text-sm"
-          />
-        </div>
-
-        {/* Current selection display */}
-        <div className="text-center">
-          <div className="text-sm font-medium">
-            Selected: {value.startYear}
-          </div>
-        </div>
-
-        {/* Preset buttons */}
-        <div className="space-y-2">
-          <Label className="text-xs text-muted-foreground">Quick Select</Label>
-          <div className="grid grid-cols-1 gap-2">
-            {presetYears.map((preset) => (
-              <Button
-                key={preset.label}
-                variant="outline"
-                size="sm"
-                onClick={() => handlePresetClick(preset.year)}
-                className="text-xs h-8"
-              >
-                {preset.label} ({preset.year})
-              </Button>
-            ))}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <div className={className}>
+      <Label className="text-xs mb-2 block">Select Year</Label>
+      <Select 
+        value={value.startYear.toString()} 
+        onValueChange={handleYearChange}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select a year" />
+        </SelectTrigger>
+        <SelectContent>
+          {yearOptions.map((year) => (
+            <SelectItem key={year} value={year.toString()}>
+              {year} {year === maxYear && '(Latest)'}
+              {year === minYear && '(Oldest)'}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   )
 }

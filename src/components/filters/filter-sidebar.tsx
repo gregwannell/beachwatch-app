@@ -110,6 +110,30 @@ export function FilterSidebar({
         )}
       </div>
 
+      {/* Active filters summary */}
+      {hasActiveFilters && (
+        <Alert className="border-primary/20 bg-primary/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Active Filters</div>
+              <div className="flex flex-wrap gap-1">
+                {filters.region.selectedRegionId && (
+                  <Badge variant="secondary" className="text-xs">
+                    {filterOptions.regions.find(r => 
+                      r.id === filters.region.selectedRegionId
+                    )?.name}
+                  </Badge>
+                )}
+                <Badge variant="secondary" className="text-xs">
+                  {filters.yearRange.startYear}
+                </Badge>
+              </div>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Region Filter */}
       <Card role="region" aria-labelledby="location-filter-title" className="border-0 shadow-sm">
         <CardHeader className="pb-3">
@@ -146,30 +170,6 @@ export function FilterSidebar({
         </CardContent>
       </Card>
 
-
-      {/* Active filters summary */}
-      {hasActiveFilters && (
-        <Alert className="border-primary/20 bg-primary/5">
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            <div className="space-y-2">
-              <div className="font-medium text-sm">Active Filters</div>
-              <div className="flex flex-wrap gap-1">
-                {filters.region.selectedRegionId && (
-                  <Badge variant="secondary" className="text-xs">
-                    {filterOptions.regions.find(r => 
-                      r.id === filters.region.selectedRegionId
-                    )?.name}
-                  </Badge>
-                )}
-                <Badge variant="secondary" className="text-xs">
-                  {filters.yearRange.startYear}
-                </Badge>
-              </div>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
     </div>
   )
 }

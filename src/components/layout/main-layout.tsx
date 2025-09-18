@@ -33,9 +33,9 @@ export function MainLayout({
       <SidebarProvider>
         <Sidebar side="left" className="border-r bg-gradient-subtle" aria-label="Data filters">
           <SidebarHeader className="border-b p-4 bg-background/50 backdrop-blur-sm">
-            <h2 className="font-semibold text-sm flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Filters
+            <h2 className="font-semibold text-xl flex items-center gap-2">
+              <Waves className="h-8 w-8 text-primary" />
+              Beachwatch Date Explorer
             </h2>
           </SidebarHeader>
           <SidebarContent className="overflow-auto" role="region" aria-label="Filter controls">
@@ -62,33 +62,12 @@ export function MainLayout({
               <div className="flex items-center justify-between flex-1">
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 ring-1 ring-primary/20 hover-lift">
-                      <Waves className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <h1 className="text-lg sm:text-xl font-bold tracking-tight">
-                        <span className="hidden sm:inline">Beachwatch Data Explorer</span>
-                        <span className="sm:hidden">Beachwatch</span>
-                      </h1>
-                      <div className="hidden sm:flex items-center space-x-2 mt-0.5">
-                        <Breadcrumb>
-                          <BreadcrumbList>
-                            <BreadcrumbItem>
-                              <BreadcrumbLink href="#" className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Map className="h-3 w-3" />
-                                UK Coastal Survey
-                              </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                              <BreadcrumbPage className="text-xs">Interactive Map</BreadcrumbPage>
-                            </BreadcrumbItem>
-                          </BreadcrumbList>
-                        </Breadcrumb>
-                        <Badge variant="secondary" className="text-xs">
-                          2024 Data
-                        </Badge>
-                      </div>
+                    <div className="hidden sm:flex items-center space-x-2">
+                      <img 
+                        src="https://www.mcsuk.org/static/images/logos/bubbles-light.gif"
+                        alt="Marine Conservation Society"
+                        className="h-8 w-auto"
+                      />
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "Beachwatch Data Explorer",
+  title: "Beachwatch Date Explorer",
   description: "Interactive data explorer for UK beach litter survey data",
 };
 

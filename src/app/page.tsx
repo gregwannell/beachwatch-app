@@ -164,12 +164,12 @@ export default function Home() {
           <>
             {/* Back button when viewing counties */}
             {parentRegionId && (
-              <div className="absolute top-4 left-4 z-[10000] pointer-events-auto">
+              <div className="absolute top-4 left-15 z-[10000] pointer-events-auto">
                 <Button 
                   onClick={handleBackToCountries}
                   variant="secondary"
                   size="sm"
-                  className="bg-white shadow-lg border border-gray-300 hover:bg-gray-50 text-gray-900 font-medium"
+                  className="shadow-lg"
                   aria-label="Return to country view"
                 >
                   ← Back to Countries

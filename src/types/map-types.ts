@@ -5,6 +5,7 @@ import type { RegionGeometry, Tables } from '@/lib/database.types'
 export interface MapRegion {
   id: number
   name: string
+  parent_id: number | null
   geometry: RegionGeometry | null
   has_data: boolean
   type: string

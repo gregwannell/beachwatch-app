@@ -52,7 +52,7 @@ export function RegionTooltip({ hoverState, regions }: RegionTooltipProps) {
 
   return (
     <div
-      className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 pointer-events-none"
+      className="fixed z-[10010] bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 pointer-events-none"
       style={{
         left: mousePosition.x + 10,
         top: mousePosition.y - 10,

@@ -12,6 +12,7 @@ import { RegionStatsContent } from '@/components/region-stats-content'
 import { Button } from '@/components/ui/button'
 import { useUKStats } from '@/hooks/use-uk-stats'
 import { BarChart3, X } from 'lucide-react'
+import { RegionTooltip } from '@/components/map/region-tooltip'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -33,6 +34,11 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isStatsOpen, setIsStatsOpen] = useState(false)
+
+  // Create hover state object for tooltip
+  const hoverState = {
+    hoveredRegionId
+  }
   
   // Hierarchy navigation state
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
@@ -124,6 +130,7 @@ export default function Home() {
   }
 
   const handleRegionHover = (regionId: number | null) => {
+    console.log('handleRegionHover called with:', regionId)
     setHoveredRegionId(regionId)
   }
 
@@ -238,7 +245,13 @@ export default function Home() {
               onRegionHover={handleRegionHover}
               className="h-full w-full"
             />
-            
+
+            {/* Region name tooltip */}
+            <RegionTooltip
+              hoverState={hoverState}
+              regions={regions}
+            />
+
           </>
         )}
       </div>

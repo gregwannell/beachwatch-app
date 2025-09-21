@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
-import { LatLngBounds } from 'leaflet'
+import { LatLngBounds, LatLng } from 'leaflet'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
 import { MAP_THEMES, type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import 'leaflet/dist/leaflet.css'
@@ -32,6 +32,40 @@ const REGION_COLORS = {
   guernsey: '#20263e',        // Dark blue
   jersey: '#20263e',          // Dark blue
   isleOfMan: '#d5e4f6'        // Light blue
+}
+
+// Function to calculate bounds from GeoJSON geometry
+function calculateGeometryBounds(geometry: { type: string; coordinates: number[] | number[][] | number[][][] | number[][][][] }): LatLngBounds | null {
+  if (!geometry || !geometry.coordinates) return null
+
+  const bounds = new LatLngBounds([])
+
+  const addCoordinatesToBounds = (coords: number[] | number[][] | number[][][]) => {
+    if (typeof coords[0] === 'number') {
+      // Single coordinate pair [lng, lat]
+      bounds.extend(new LatLng(coords[1] as number, coords[0] as number))
+    } else {
+      // Array of coordinates
+      coords.forEach((coord) => addCoordinatesToBounds(coord as number[] | number[][] | number[][][]))
+    }
+  }
+
+  try {
+    if (geometry.type === 'Polygon') {
+      // Polygon: coordinates[0] is the outer ring
+      addCoordinatesToBounds(geometry.coordinates[0])
+    } else if (geometry.type === 'MultiPolygon') {
+      // MultiPolygon: coordinates is array of polygons
+      geometry.coordinates.forEach((polygon: number[][][]) => {
+        addCoordinatesToBounds(polygon[0]) // outer ring of each polygon
+      })
+    }
+
+    return bounds.isValid() ? bounds : null
+  } catch (error) {
+    console.warn('Error calculating bounds for geometry:', error)
+    return null
+  }
 }
 
 // Function to determine region color based on name and parent relationships
@@ -74,6 +108,7 @@ function getRegionColor(region: { id: number; name: string; parent_id: number | 
 
 interface UKMapProps extends MapComponentProps {
   mapTheme?: MapTheme
+  resetToUKView?: boolean // Trigger to reset zoom to UK bounds
 }
 
 export function UKMap({
@@ -82,10 +117,20 @@ export function UKMap({
   onRegionClick,
   onRegionHover,
   className = "w-full h-full",
-  mapTheme = DEFAULT_MAP_THEME
+  mapTheme = DEFAULT_MAP_THEME,
+  resetToUKView = false
 }: UKMapProps) {
-  const mapRef = useRef(null)
+  const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
+
+  // Handle reset to UK view
+  useEffect(() => {
+    if (resetToUKView && mapRef.current) {
+      mapRef.current.fitBounds(UK_BOUNDS, {
+        padding: [10, 10]
+      })
+    }
+  }, [resetToUKView])
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {
@@ -106,15 +151,51 @@ export function UKMap({
   const onEachRegion = (feature: { properties: { id: number; has_data: boolean; type: string } }, layer: L.Layer) => {
     const regionId = feature.properties.id
     const regionType = feature.properties.type
-    
+
     // Determine if this region can be drilled down
     const canDrillDown = regionType === 'Country' || regionType === 'Crown Dependency'
-    
+
     layer.on({
       click: () => {
+        // Find the region data for this clicked region
+        const clickedRegion = regions.find(r => r.id === regionId)
+
+        // Zoom to polygon bounds
+        if (clickedRegion?.geometry && mapRef.current) {
+          const bounds = calculateGeometryBounds(clickedRegion.geometry)
+          if (bounds) {
+            // Different zoom levels based on region type
+            const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
+            const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
+
+            mapRef.current.fitBounds(bounds, {
+              padding: padding,
+              maxZoom: maxZoom
+            })
+          }
+        }
+
         onRegionClick?.(regionId)
       },
       touchstart: () => {
+        // Find the region data for this touched region
+        const clickedRegion = regions.find(r => r.id === regionId)
+
+        // Zoom to polygon bounds
+        if (clickedRegion?.geometry && mapRef.current) {
+          const bounds = calculateGeometryBounds(clickedRegion.geometry)
+          if (bounds) {
+            // Different zoom levels based on region type
+            const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
+            const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
+
+            mapRef.current.fitBounds(bounds, {
+              padding: padding,
+              maxZoom: maxZoom
+            })
+          }
+        }
+
         // Handle touch for mobile
         onRegionClick?.(regionId)
       },
@@ -146,7 +227,7 @@ export function UKMap({
         maxBoundsViscosity={1.0}
         zoom={6}
         minZoom={5}
-        maxZoom={10}
+        maxZoom={13}
         scrollWheelZoom={true}
         touchZoom={true}
         doubleClickZoom={true}
@@ -155,6 +236,9 @@ export function UKMap({
         className="w-full h-full rounded-lg"
         keyboard={true}
         attributionControl={true}
+        whenReady={() => {
+          // Map is ready for use
+        }}
       >
         <TileLayer
           key={mapTheme}

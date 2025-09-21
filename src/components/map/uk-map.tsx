@@ -109,6 +109,7 @@ function getRegionColor(region: { id: number; name: string; parent_id: number | 
 interface UKMapProps extends MapComponentProps {
   mapTheme?: MapTheme
   resetToUKView?: boolean // Trigger to reset zoom to UK bounds
+  zoomToRegionId?: number | null // Trigger to zoom to specific region
 }
 
 export function UKMap({
@@ -118,10 +119,32 @@ export function UKMap({
   onRegionHover,
   className = "w-full h-full",
   mapTheme = DEFAULT_MAP_THEME,
-  resetToUKView = false
+  resetToUKView = false,
+  zoomToRegionId = null
 }: UKMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
+
+  // Helper function to zoom to a region by ID
+  const zoomToRegion = (regionId: number) => {
+    const region = regions.find(r => r.id === regionId)
+    if (!region?.geometry || !mapRef.current) return
+
+    const bounds = calculateGeometryBounds(region.geometry)
+    if (!bounds) return
+
+    // Determine if this region can be drilled down
+    const canDrillDown = region.type === 'Country' || region.type === 'Crown Dependency'
+
+    // Different zoom levels based on region type
+    const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
+    const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
+
+    mapRef.current.fitBounds(bounds, {
+      padding: padding,
+      maxZoom: maxZoom
+    })
+  }
 
   // Handle reset to UK view
   useEffect(() => {
@@ -131,6 +154,13 @@ export function UKMap({
       })
     }
   }, [resetToUKView])
+
+  // Handle zoom to specific region
+  useEffect(() => {
+    if (zoomToRegionId && mapRef.current) {
+      zoomToRegion(zoomToRegionId)
+    }
+  }, [zoomToRegionId, regions])
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {
@@ -157,44 +187,14 @@ export function UKMap({
 
     layer.on({
       click: () => {
-        // Find the region data for this clicked region
-        const clickedRegion = regions.find(r => r.id === regionId)
-
         // Zoom to polygon bounds
-        if (clickedRegion?.geometry && mapRef.current) {
-          const bounds = calculateGeometryBounds(clickedRegion.geometry)
-          if (bounds) {
-            // Different zoom levels based on region type
-            const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
-            const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
-
-            mapRef.current.fitBounds(bounds, {
-              padding: padding,
-              maxZoom: maxZoom
-            })
-          }
-        }
+        zoomToRegion(regionId)
 
         onRegionClick?.(regionId)
       },
       touchstart: () => {
-        // Find the region data for this touched region
-        const clickedRegion = regions.find(r => r.id === regionId)
-
         // Zoom to polygon bounds
-        if (clickedRegion?.geometry && mapRef.current) {
-          const bounds = calculateGeometryBounds(clickedRegion.geometry)
-          if (bounds) {
-            // Different zoom levels based on region type
-            const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
-            const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
-
-            mapRef.current.fitBounds(bounds, {
-              padding: padding,
-              maxZoom: maxZoom
-            })
-          }
-        }
+        zoomToRegion(regionId)
 
         // Handle touch for mobile
         onRegionClick?.(regionId)

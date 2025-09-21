@@ -44,7 +44,7 @@ export default function Home() {
   
   // Hierarchy navigation state
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
-  const [parentRegionName, setParentRegionName] = useState<string | null>(null)
+  const [resetMapView, setResetMapView] = useState(false)
   
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
@@ -98,7 +98,6 @@ export default function Home() {
       // For countries/crown dependencies: show their stats in sidebar AND drill down
       setSelectedRegionId(regionId)
       setParentRegionId(regionId)
-      setParentRegionName(clickedRegion.name)
       // Update filter for the country level
       setFilters(prev => ({
         ...prev,
@@ -118,8 +117,11 @@ export default function Home() {
 
   const handleBackToCountries = () => {
     setParentRegionId(null) // This will default to parentId=1 in the hook
-    setParentRegionName(null)
     setSelectedRegionId(null) // This will trigger UK stats to show
+    setResetMapView(true) // Trigger map reset
+
+    // Reset the flag after a short delay
+    setTimeout(() => setResetMapView(false), 100)
   }
 
   const handleRegionSelect = (regionId: string) => {
@@ -248,6 +250,7 @@ export default function Home() {
               onRegionClick={handleRegionClick}
               onRegionHover={handleRegionHover}
               mapTheme={mapTheme}
+              resetToUKView={resetMapView}
               className="h-full w-full"
             />
 

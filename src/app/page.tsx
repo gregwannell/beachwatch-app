@@ -56,6 +56,16 @@ export default function Home() {
     },
     categories: {}
   })
+
+  // Handle filter changes and sync selectedRegionId for regional stats
+  const handleFiltersChange = (newFilters: FilterState) => {
+    setFilters(newFilters)
+
+    // Sync selectedRegionId when region filter changes
+    if (newFilters.region.selectedRegionId !== filters.region.selectedRegionId) {
+      setSelectedRegionId(newFilters.region.selectedRegionId)
+    }
+  }
   
   // Fetch map regions data
   const { data: regions = [], isLoading, error } = useMapRegions({
@@ -99,18 +109,18 @@ export default function Home() {
       setSelectedRegionId(regionId)
       setParentRegionId(regionId)
       // Update filter for the country level
-      setFilters(prev => ({
-        ...prev,
+      handleFiltersChange({
+        ...filters,
         region: { selectedRegionId: regionId }
-      }))
+      })
     } else {
       // For counties/unitary authorities: show their stats in sidebar
       setSelectedRegionId(regionId)
       // Update filter when a region is clicked on the map
-      setFilters(prev => ({
-        ...prev,
+      handleFiltersChange({
+        ...filters,
         region: { selectedRegionId: regionId }
-      }))
+      })
     }
   }
 
@@ -127,10 +137,10 @@ export default function Home() {
   const handleRegionSelect = (regionId: string) => {
     const numericRegionId = parseInt(regionId)
     setSelectedRegionId(numericRegionId)
-    setFilters(prev => ({
-      ...prev,
+    handleFiltersChange({
+      ...filters,
       region: { selectedRegionId: numericRegionId }
-    }))
+    })
   }
 
   const handleRegionHover = (regionId: number | null) => {
@@ -146,7 +156,8 @@ export default function Home() {
       sidebar={
         <FilterSidebar
           filters={filters}
-          onFiltersChange={setFilters}
+          onFiltersChange={handleFiltersChange}
+          onResetToCountries={handleBackToCountries}
           mapTheme={mapTheme}
           onMapThemeChange={setMapTheme}
         />
@@ -251,6 +262,7 @@ export default function Home() {
               onRegionHover={handleRegionHover}
               mapTheme={mapTheme}
               resetToUKView={resetMapView}
+              zoomToRegionId={selectedRegionId}
               className="h-full w-full"
             />
 

@@ -17,6 +17,7 @@ import { type MapTheme, DEFAULT_MAP_THEME } from "@/lib/map-themes"
 interface FilterSidebarProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
+  onResetToCountries?: () => void
   className?: string
   mapTheme?: MapTheme
   onMapThemeChange?: (theme: MapTheme) => void
@@ -25,6 +26,7 @@ interface FilterSidebarProps {
 export function FilterSidebar({
   filters,
   onFiltersChange,
+  onResetToCountries,
   className,
   mapTheme = DEFAULT_MAP_THEME,
   onMapThemeChange,
@@ -56,6 +58,9 @@ export function FilterSidebar({
       },
       categories: {},
     })
+
+    // Reset map view to countries
+    onResetToCountries?.()
   }
 
   // Calculate if any filters are active

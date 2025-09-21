@@ -12,13 +12,15 @@ interface InteractiveMapProps {
   selectedRegionId?: number | null
   className?: string
   mapTheme?: MapTheme
+  resetToUKView?: boolean
 }
 
 export function InteractiveMap({
   onRegionClick,
   selectedRegionId,
   className = "w-full h-full",
-  mapTheme = DEFAULT_MAP_THEME
+  mapTheme = DEFAULT_MAP_THEME,
+  resetToUKView = false
 }: InteractiveMapProps) {
   const [hoverState, setHoverState] = useState<RegionHoverState>({
     hoveredRegionId: null
@@ -63,6 +65,7 @@ export function InteractiveMap({
         onRegionClick={handleRegionClick}
         onRegionHover={handleRegionHover}
         mapTheme={mapTheme}
+        resetToUKView={resetToUKView}
         className="w-full h-full"
       />
 

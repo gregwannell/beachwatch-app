@@ -37,20 +37,31 @@ export function RegionSelect({
 }: RegionSelectProps) {
   const [open, setOpen] = React.useState(false)
 
-  const selectedRegion = regions.find(region => region.id === selectedRegionId)
-
-  // Group regions by hierarchy for better display
+  // Group regions by hierarchy for better display with hierarchical filtering
   const groupedRegions = React.useMemo(() => {
     const groups: { [key: string]: FilterRegion[] } = {
       'Countries': [],
       'Counties & Unitary Authorities': [],
     }
 
+    // Determine filtering based on current selection
+    const selectedRegion = regions.find(r => r.id === selectedRegionId)
+    const filterParentId = selectedRegion?.type === 'Country'
+      ? selectedRegion.id
+      : selectedRegion?.parent_id
+
     regions.forEach(region => {
       if (region.type === 'Country') {
+        // Always show countries, but when a county is selected, prioritize its parent
         groups['Countries'].push(region)
       } else if (region.type === 'County Unitary') {
-        groups['Counties & Unitary Authorities'].push(region)
+        // Filter counties based on selection:
+        // - If no selection: show all counties
+        // - If country selected: show only counties from that country
+        // - If county selected: show counties from the same parent country
+        if (!filterParentId || region.parent_id === filterParentId) {
+          groups['Counties & Unitary Authorities'].push(region)
+        }
       }
     })
 
@@ -61,8 +72,8 @@ export function RegionSelect({
       }
     })
 
-    return groups
-  }, [regions])
+    return { groups, selectedRegion }
+  }, [regions, selectedRegionId])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -73,7 +84,7 @@ export function RegionSelect({
           aria-expanded={open}
           className={cn("justify-between", className)}
         >
-          {selectedRegion ? selectedRegion.name : placeholder}
+          {groupedRegions.selectedRegion ? groupedRegions.selectedRegion.name : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -82,24 +93,9 @@ export function RegionSelect({
           <CommandInput placeholder="Search regions..." className="h-9" />
           <CommandList>
             <CommandEmpty>No regions found.</CommandEmpty>
-            
-            {/* Clear selection option */}
-            {selectedRegionId && (
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    onRegionChange(null)
-                    setOpen(false)
-                  }}
-                  className="text-muted-foreground"
-                >
-                  Clear selection
-                </CommandItem>
-              </CommandGroup>
-            )}
 
             {/* Grouped regions */}
-            {Object.entries(groupedRegions).map(([groupName, groupRegions]) => {
+            {Object.entries(groupedRegions.groups).map(([groupName, groupRegions]) => {
               if (groupRegions.length === 0) return null
               
               return (

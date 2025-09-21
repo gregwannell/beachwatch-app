@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const year = searchParams.get('year')
     
     // Base region query
-    let regionQuery = supabase
+    const regionQuery = supabase
       .from('regions')
       .select(
         includeGeometry 

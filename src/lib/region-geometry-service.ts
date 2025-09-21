@@ -77,7 +77,7 @@ export class RegionGeometryService {
     }
     
     let totalCoordinates = 0
-    let totalRings = coordinates.length
+    const totalRings = coordinates.length
     
     // Validate each coordinate ring
     coordinates.forEach((ring, ringIndex) => {
@@ -196,7 +196,7 @@ export class RegionGeometryService {
       }
     }
     
-    let metadata = {
+    const metadata = {
       area: 0,
       centroid: [0, 0] as Coordinates,
       coordinateCount: 0,
@@ -214,7 +214,7 @@ export class RegionGeometryService {
       } else if (geometry.type === 'MultiPolygon') {
         // Calculate total area and average centroid
         let totalArea = 0
-        let centroidSum = [0, 0] as [number, number]
+        const centroidSum = [0, 0] as [number, number]
         let polygonCount = 0
         
         geometry.coordinates.forEach(coords => {

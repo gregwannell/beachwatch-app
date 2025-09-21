@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { useUKStats } from '@/hooks/use-uk-stats'
 import { BarChart3, X } from 'lucide-react'
 import { RegionTooltip } from '@/components/map/region-tooltip'
+import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -34,6 +35,7 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isStatsOpen, setIsStatsOpen] = useState(false)
+  const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
 
   // Create hover state object for tooltip
   const hoverState = {
@@ -138,11 +140,13 @@ export default function Home() {
   const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId
 
   return (
-    <MainLayout 
+    <MainLayout
       sidebar={
-        <FilterSidebar 
+        <FilterSidebar
           filters={filters}
           onFiltersChange={setFilters}
+          mapTheme={mapTheme}
+          onMapThemeChange={setMapTheme}
         />
       }
     >
@@ -243,6 +247,7 @@ export default function Home() {
               selectedRegionId={effectiveSelectedRegionId}
               onRegionClick={handleRegionClick}
               onRegionHover={handleRegionHover}
+              mapTheme={mapTheme}
               className="h-full w-full"
             />
 

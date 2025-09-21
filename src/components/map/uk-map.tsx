@@ -4,7 +4,9 @@ import { useRef, useState } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { LatLngBounds } from 'leaflet'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
+import { MAP_THEMES, type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet-providers'
 
 // Fix for Leaflet default markers in Next.js
 import L, { LeafletMouseEvent } from 'leaflet'
@@ -70,13 +72,18 @@ function getRegionColor(region: { id: number; name: string; parent_id: number | 
   return '#6b7280'
 }
 
+interface UKMapProps extends MapComponentProps {
+  mapTheme?: MapTheme
+}
+
 export function UKMap({
   regions = [],
   selectedRegionId,
   onRegionClick,
   onRegionHover,
-  className = "w-full h-full"
-}: MapComponentProps) {
+  className = "w-full h-full",
+  mapTheme = DEFAULT_MAP_THEME
+}: UKMapProps) {
   const mapRef = useRef(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
 
@@ -150,8 +157,9 @@ export function UKMap({
         attributionControl={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          key={mapTheme}
+          attribution={MAP_THEMES[mapTheme].attribution}
+          url={MAP_THEMES[mapTheme].url}
         />
         
         {regions.map((region) => {

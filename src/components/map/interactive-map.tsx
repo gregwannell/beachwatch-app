@@ -5,17 +5,20 @@ import { UKMap } from './uk-map'
 import { RegionTooltip } from './region-tooltip'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import type { RegionHoverState } from '@/types/map-types'
+import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 
 interface InteractiveMapProps {
   onRegionClick?: (regionId: number) => void
   selectedRegionId?: number | null
   className?: string
+  mapTheme?: MapTheme
 }
 
-export function InteractiveMap({ 
-  onRegionClick, 
+export function InteractiveMap({
+  onRegionClick,
   selectedRegionId,
-  className = "w-full h-full"
+  className = "w-full h-full",
+  mapTheme = DEFAULT_MAP_THEME
 }: InteractiveMapProps) {
   const [hoverState, setHoverState] = useState<RegionHoverState>({
     hoveredRegionId: null
@@ -59,9 +62,10 @@ export function InteractiveMap({
         selectedRegionId={selectedRegionId}
         onRegionClick={handleRegionClick}
         onRegionHover={handleRegionHover}
+        mapTheme={mapTheme}
         className="w-full h-full"
       />
-      
+
       <RegionTooltip
         hoverState={hoverState}
         regions={regions}

@@ -13,8 +13,8 @@ interface MainLayoutProps {
   sidebar?: React.ReactNode
 }
 
-export function MainLayout({ 
-  children, 
+export function MainLayout({
+  children,
   sidebar
 }: MainLayoutProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)

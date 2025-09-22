@@ -127,8 +127,39 @@ export function UKMap({
 
   // Helper function to zoom to a region by ID
   const zoomToRegion = (regionId: number) => {
+    if (!mapRef.current) return
+
+    // Special case: -1 means zoom to fit all current regions
+    if (regionId === -1) {
+      if (regions.length === 0) return
+
+      // Calculate combined bounds of all regions
+      let combinedBounds = null
+      regions.forEach(region => {
+        if (region.geometry) {
+          const regionBounds = calculateGeometryBounds(region.geometry)
+          if (regionBounds) {
+            if (!combinedBounds) {
+              combinedBounds = regionBounds
+            } else {
+              combinedBounds.extend(regionBounds)
+            }
+          }
+        }
+      })
+
+      if (combinedBounds) {
+        mapRef.current.fitBounds(combinedBounds, {
+          padding: [20, 20],
+          maxZoom: 8  // Country-level zoom when fitting multiple regions
+        })
+      }
+      return
+    }
+
+    // Normal case: zoom to specific region
     const region = regions.find(r => r.id === regionId)
-    if (!region?.geometry || !mapRef.current) return
+    if (!region?.geometry) return
 
     const bounds = calculateGeometryBounds(region.geometry)
     if (!bounds) return

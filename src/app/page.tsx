@@ -47,6 +47,7 @@ export default function Home() {
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
   const [resetMapView, setResetMapView] = useState(false)
   const [zoomToRegionId, setZoomToRegionId] = useState<number | null>(null)
+  const [pendingZoom, setPendingZoom] = useState<number | null>(null)
   
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
@@ -79,10 +80,9 @@ export default function Home() {
             // Trigger zoom to the selected county after a short delay to allow regions to load
             setTimeout(() => setZoomToRegionId(selectedRegionId), 100)
           } else if (selectedRegion.type === 'Country' || selectedRegion.type === 'Crown Dependency') {
-            // For countries: zoom to the country first, then drill down to show counties
-            setZoomToRegionId(selectedRegionId)
-            // Then drill down to show counties of this country after a delay
-            setTimeout(() => setParentRegionId(selectedRegionId), 200)
+            // For countries: drill down to show counties first, then zoom when regions are loaded
+            setPendingZoom(selectedRegionId)  // Store zoom request for later
+            setParentRegionId(selectedRegionId)  // Load counties layer immediately
           } else {
             // For other types (UK, etc): show countries level
             setParentRegionId(null)
@@ -162,6 +162,7 @@ export default function Home() {
     setSelectedRegionId(null) // This will trigger UK stats to show
     setResetMapView(true) // Trigger map reset
     setZoomToRegionId(null) // Clear any zoom trigger
+    setPendingZoom(null) // Clear any pending zoom
 
     // Reset the flag after a short delay
     setTimeout(() => setResetMapView(false), 100)
@@ -188,6 +189,33 @@ export default function Home() {
       return () => clearTimeout(timer)
     }
   }, [zoomToRegionId])
+
+  // Execute pending zoom when target region becomes available
+  useEffect(() => {
+    if (pendingZoom && regions.length > 0 && !isLoading) {
+      // Check if the target region exists in current regions
+      const targetRegion = regions.find(r => r.id === pendingZoom)
+
+      if (targetRegion) {
+        // Target region is available, execute zoom
+        setZoomToRegionId(pendingZoom)
+        setPendingZoom(null)  // Clear pending zoom
+      } else if (filterOptions?.regions) {
+        // Target region not in current layer, check if it's a country showing its counties
+        const targetCountry = filterOptions.regions.find(r => r.id === pendingZoom)
+        if (targetCountry && (targetCountry.type === 'Country' || targetCountry.type === 'Crown Dependency')) {
+          // For countries, zoom to fit all counties of that country
+          // Since we're showing counties of this country (parentRegionId === pendingZoom),
+          // we can trigger a zoom that will fit all visible counties
+          if (parentRegionId === pendingZoom) {
+            // Use a special zoom ID that the map will interpret as "zoom to fit all current regions"
+            setZoomToRegionId(-1)  // Special ID for "fit all regions"
+            setPendingZoom(null)
+          }
+        }
+      }
+    }
+  }, [regions, isLoading, pendingZoom, filterOptions, parentRegionId])
 
   // Sync the selected region between filters and map
   const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId

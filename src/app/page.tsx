@@ -79,10 +79,10 @@ export default function Home() {
             // Trigger zoom to the selected county after a short delay to allow regions to load
             setTimeout(() => setZoomToRegionId(selectedRegionId), 100)
           } else if (selectedRegion.type === 'Country' || selectedRegion.type === 'Crown Dependency') {
-            // For countries: drill down to show counties of this country
-            setParentRegionId(selectedRegionId)
-            // Trigger zoom to the selected country
-            setTimeout(() => setZoomToRegionId(selectedRegionId), 100)
+            // For countries: zoom to the country first, then drill down to show counties
+            setZoomToRegionId(selectedRegionId)
+            // Then drill down to show counties of this country after a delay
+            setTimeout(() => setParentRegionId(selectedRegionId), 200)
           } else {
             // For other types (UK, etc): show countries level
             setParentRegionId(null)

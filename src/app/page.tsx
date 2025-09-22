@@ -3,7 +3,8 @@
 import { MainLayout } from '@/components/layout/main-layout'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
-import { useState } from 'react'
+import { useFilterOptions } from '@/hooks/use-filter-options'
+import { useState, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
@@ -45,6 +46,7 @@ export default function Home() {
   // Hierarchy navigation state
   const [parentRegionId, setParentRegionId] = useState<number | null>(null)
   const [resetMapView, setResetMapView] = useState(false)
+  const [zoomToRegionId, setZoomToRegionId] = useState<number | null>(null)
   
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
@@ -64,9 +66,39 @@ export default function Home() {
     // Sync selectedRegionId when region filter changes
     if (newFilters.region.selectedRegionId !== filters.region.selectedRegionId) {
       setSelectedRegionId(newFilters.region.selectedRegionId)
+
+      // Handle map layer navigation when region selection changes
+      const selectedRegionId = newFilters.region.selectedRegionId
+      if (selectedRegionId && filterOptions?.regions) {
+        const selectedRegion = filterOptions.regions.find(r => r.id === selectedRegionId)
+
+        if (selectedRegion) {
+          if (selectedRegion.type === 'County Unitary') {
+            // For counties: navigate to show counties of the parent country
+            setParentRegionId(selectedRegion.parent_id)
+            // Trigger zoom to the selected county after a short delay to allow regions to load
+            setTimeout(() => setZoomToRegionId(selectedRegionId), 100)
+          } else if (selectedRegion.type === 'Country' || selectedRegion.type === 'Crown Dependency') {
+            // For countries: drill down to show counties of this country
+            setParentRegionId(selectedRegionId)
+            // Trigger zoom to the selected country
+            setTimeout(() => setZoomToRegionId(selectedRegionId), 100)
+          } else {
+            // For other types (UK, etc): show countries level
+            setParentRegionId(null)
+            setZoomToRegionId(null)
+          }
+        }
+      } else {
+        // No region selected: go back to countries view
+        setParentRegionId(null)
+      }
     }
   }
   
+  // Fetch filter options for region lookup
+  const { data: filterOptions } = useFilterOptions()
+
   // Fetch map regions data
   const { data: regions = [], isLoading, error } = useMapRegions({
     includeGeometry: true,
@@ -129,6 +161,7 @@ export default function Home() {
     setParentRegionId(null) // This will default to parentId=1 in the hook
     setSelectedRegionId(null) // This will trigger UK stats to show
     setResetMapView(true) // Trigger map reset
+    setZoomToRegionId(null) // Clear any zoom trigger
 
     // Reset the flag after a short delay
     setTimeout(() => setResetMapView(false), 100)
@@ -147,6 +180,14 @@ export default function Home() {
     console.log('handleRegionHover called with:', regionId)
     setHoveredRegionId(regionId)
   }
+
+  // Clear zoom trigger after a delay to allow map to process
+  useEffect(() => {
+    if (zoomToRegionId) {
+      const timer = setTimeout(() => setZoomToRegionId(null), 200)
+      return () => clearTimeout(timer)
+    }
+  }, [zoomToRegionId])
 
   // Sync the selected region between filters and map
   const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId
@@ -262,7 +303,7 @@ export default function Home() {
               onRegionHover={handleRegionHover}
               mapTheme={mapTheme}
               resetToUKView={resetMapView}
-              zoomToRegionId={selectedRegionId}
+              zoomToRegionId={zoomToRegionId}
               className="h-full w-full"
             />
 

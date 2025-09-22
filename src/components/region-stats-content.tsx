@@ -262,7 +262,7 @@ function EngagementStats({ engagementData }: {
 
 function LoadingSkeleton() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="space-y-2">
         <Skeleton className="h-4 w-20" />
         <Skeleton className="h-6 w-full" />
@@ -291,7 +291,7 @@ export function RegionStatsContent({
 
   if (!regionData) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 text-center">
+      <div className="flex flex-col items-center justify-center py-8 text-center p-6">
         <div className="text-muted-foreground">No region selected</div>
         <div className="text-sm text-muted-foreground mt-1">
           Click on a region in the map to view details
@@ -301,7 +301,7 @@ export function RegionStatsContent({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       {/* Header with region name and year-over-year change */}
       <div className="space-y-2">
         <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>

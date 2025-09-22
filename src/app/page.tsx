@@ -37,6 +37,7 @@ export default function Home() {
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isStatsOpen, setIsStatsOpen] = useState(false)
   const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
+  const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
 
   // Create hover state object for tooltip
   const hoverState = {
@@ -190,6 +191,13 @@ export default function Home() {
     }
   }, [zoomToRegionId])
 
+  // Track when we've loaded initial regions to prevent loading overlay during transitions
+  useEffect(() => {
+    if (regions.length > 0 && !hasLoadedInitialRegions) {
+      setHasLoadedInitialRegions(true)
+    }
+  }, [regions.length, hasLoadedInitialRegions])
+
   // Execute pending zoom when target region becomes available
   useEffect(() => {
     if (pendingZoom && regions.length > 0 && !isLoading) {
@@ -233,17 +241,7 @@ export default function Home() {
       }
     >
       <div className="h-full w-full">
-        {isLoading ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="space-y-4 text-center">
-              <Skeleton className="h-8 w-48 mx-auto" />
-              <Skeleton className="h-4 w-32 mx-auto" />
-              <div className="mt-8">
-                <Skeleton className="h-96 w-full" />
-              </div>
-            </div>
-          </div>
-        ) : error ? (
+        {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
               <div className="text-4xl">⚠️</div>
@@ -258,7 +256,7 @@ export default function Home() {
             {/* Back button when viewing counties */}
             {parentRegionId && (
               <div className="absolute top-4 left-15 z-[10000] pointer-events-auto">
-                <Button 
+                <Button
                   onClick={handleBackToCountries}
                   variant="secondary"
                   size="sm"
@@ -312,7 +310,7 @@ export default function Home() {
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* Content */}
                 <div className="flex-1 overflow-auto">
                   <RegionStatsContent
@@ -323,7 +321,18 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
+
+            {/* Show loading overlay only during very first map load */}
+            {isLoading && !hasLoadedInitialRegions ? (
+              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
+                <div className="space-y-4 text-center">
+                  <div className="text-2xl">🗺️</div>
+                  <Skeleton className="h-8 w-48 mx-auto" />
+                  <p className="text-sm text-muted-foreground">Loading interactive map...</p>
+                </div>
+              </div>
+            ) : null}
+
             <UKMap
               regions={regions}
               selectedRegionId={effectiveSelectedRegionId}

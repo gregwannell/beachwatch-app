@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RotateCcw, MapPin, Calendar, Info, Palette } from "lucide-react"
 
-import { RegionSelect } from "./region-select"
+import { HierarchicalRegionSelect } from "./hierarchical-region-select"
 import { YearRangePicker } from "./year-range-picker"
 import { useFilterOptions } from "@/hooks/use-filter-options"
 import { FilterState } from "@/types/filter-types"
@@ -154,7 +154,7 @@ export function FilterSidebar({
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <RegionSelect
+          <HierarchicalRegionSelect
             regions={filterOptions.regions}
             selectedRegionId={filters.region.selectedRegionId}
             onRegionChange={handleRegionChange}

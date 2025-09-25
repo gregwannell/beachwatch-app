@@ -17,7 +17,7 @@ import { type MapTheme, DEFAULT_MAP_THEME } from "@/lib/map-themes"
 interface FilterSidebarProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
-  onResetToCountries?: () => void
+  onMapReset?: () => void
   className?: string
   mapTheme?: MapTheme
   onMapThemeChange?: (theme: MapTheme) => void
@@ -26,7 +26,7 @@ interface FilterSidebarProps {
 export function FilterSidebar({
   filters,
   onFiltersChange,
-  onResetToCountries,
+  onMapReset,
   className,
   mapTheme = DEFAULT_MAP_THEME,
   onMapThemeChange,
@@ -49,23 +49,27 @@ export function FilterSidebar({
 
 
   const handleResetFilters = () => {
-    onFiltersChange({
-      region: { selectedRegionId: null },
+    // Create the reset filters
+    const resetFilters = {
+      region: { selectedRegionId: 1 }, // Set to UK (region ID 1) instead of null
       yearRange: {
         startYear: filterOptions.availableYears.max,
         endYear: filterOptions.availableYears.max,
         mode: 'single'
       },
       categories: {},
-    })
+    }
 
-    // Reset map view to countries
-    onResetToCountries?.()
+    // Apply the filters - this will trigger the parent's handleFiltersChange
+    onFiltersChange(resetFilters)
+
+    // Also trigger the direct map reset to ensure polygon layers return to countries view
+    onMapReset?.()
   }
 
   // Calculate if any filters are active
-  const hasActiveFilters = 
-    filters.region.selectedRegionId !== null ||
+  const hasActiveFilters =
+    (filters.region.selectedRegionId !== null && filters.region.selectedRegionId !== 1) ||
     filters.yearRange.startYear !== filterOptions.availableYears.max
 
   if (isLoading) {

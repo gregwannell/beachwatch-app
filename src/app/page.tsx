@@ -51,7 +51,7 @@ export default function Home() {
   
   // Filter state management
   const [filters, setFilters] = useState<FilterState>({
-    region: { selectedRegionId: null },
+    region: { selectedRegionId: 1 }, // Start with UK selected to match selectedRegionId initial state
     yearRange: {
       startYear: 2024,
       endYear: 2024,
@@ -83,19 +83,40 @@ export default function Home() {
             // For countries: drill down to show counties first, then zoom when regions are loaded
             setPendingZoom(selectedRegionId)  // Store zoom request for later
             setParentRegionId(selectedRegionId)  // Load counties layer immediately
-          } else {
-            // For other types (UK, etc): show countries level
+          } else if (selectedRegion.type === 'Sovereign State') {
+            // For UK: show countries level and reset map view
             setParentRegionId(null)
             setZoomToRegionId(null)
+            setResetMapView(true)
+            setPendingZoom(null)
+            // Reset the flag after a short delay
+            setTimeout(() => setResetMapView(false), 100)
           }
         }
-      } else {
-        // No region selected: go back to countries view
+      } else if (selectedRegionId === 1) {
+        // UK selected: go back to countries view and reset map
         setParentRegionId(null)
+        setResetMapView(true)
+        setZoomToRegionId(null)
+        setPendingZoom(null)
+        // Reset the flag after a short delay
+        setTimeout(() => setResetMapView(false), 100)
       }
     }
   }
-  
+
+  const handleMapReset = () => {
+    // This function replicates the old "Back to Countries" button behavior
+    setParentRegionId(null) // This will default to parentId=1 in the hook (show countries)
+    setSelectedRegionId(1) // This will trigger UK stats to show (region ID 1)
+    setResetMapView(true) // Trigger map reset
+    setZoomToRegionId(null) // Clear any zoom trigger
+    setPendingZoom(null) // Clear any pending zoom
+
+    // Reset the flag after a short delay
+    setTimeout(() => setResetMapView(false), 100)
+  }
+
   // Fetch filter options for region lookup
   const { data: filterOptions } = useFilterOptions()
 
@@ -151,16 +172,6 @@ export default function Home() {
   }
 
 
-  const handleBackToCountries = () => {
-    setParentRegionId(null) // This will default to parentId=1 in the hook
-    setSelectedRegionId(null) // This will trigger UK stats to show
-    setResetMapView(true) // Trigger map reset
-    setZoomToRegionId(null) // Clear any zoom trigger
-    setPendingZoom(null) // Clear any pending zoom
-
-    // Reset the flag after a short delay
-    setTimeout(() => setResetMapView(false), 100)
-  }
 
   const handleRegionSelect = (regionId: string) => {
     const numericRegionId = parseInt(regionId)
@@ -227,7 +238,7 @@ export default function Home() {
         <FilterSidebar
           filters={filters}
           onFiltersChange={handleFiltersChange}
-          onResetToCountries={handleBackToCountries}
+          onMapReset={handleMapReset}
           mapTheme={mapTheme}
           onMapThemeChange={setMapTheme}
         />
@@ -246,20 +257,6 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {/* Back button when viewing counties */}
-            {parentRegionId && (
-              <div className="absolute top-4 left-15 z-[10000] pointer-events-auto">
-                <Button
-                  onClick={handleBackToCountries}
-                  variant="secondary"
-                  size="sm"
-                  className="shadow-lg"
-                  aria-label="Return to country view"
-                >
-                  ← Back to Countries
-                </Button>
-              </div>
-            )}
 
             {/* Floating Stats Button */}
             <div className="absolute top-4 right-4 z-[10000] pointer-events-auto">

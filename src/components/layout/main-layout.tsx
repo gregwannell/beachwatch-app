@@ -27,14 +27,27 @@ export function MainLayout({
 
     const hierarchy = []
 
-    if (regionData.level === 'region' && regionData.parentName) {
+    // Always start with United Kingdom unless we're already at UK level
+    if (regionData.name !== 'United Kingdom') {
       hierarchy.push({ level: 'country', name: 'United Kingdom' })
-      hierarchy.push({ level: 'county', name: regionData.parentName })
+    }
+
+    if (regionData.level === 'region' && regionData.parentName) {
+      // For regions: UK > [Country/County] > Region
+      // The parentName could be either a country or county depending on data structure
+      hierarchy.push({ level: 'parent', name: regionData.parentName })
       hierarchy.push({ level: 'region', name: regionData.name })
     } else if (regionData.level === 'county') {
-      hierarchy.push({ level: 'country', name: 'United Kingdom' })
+      // For counties: UK > [Country if exists] > County
+      if (regionData.parentName && regionData.parentName !== 'United Kingdom') {
+        hierarchy.push({ level: 'country', name: regionData.parentName })
+      }
       hierarchy.push({ level: 'county', name: regionData.name })
+    } else if (regionData.level === 'country' || regionData.level === 'Crown Dependency') {
+      // For countries: UK > Country
+      hierarchy.push({ level: regionData.level, name: regionData.name })
     } else {
+      // For UK itself or other levels: just the region name
       hierarchy.push({ level: regionData.level, name: regionData.name })
     }
 

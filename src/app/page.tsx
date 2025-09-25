@@ -11,7 +11,6 @@ import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats-content'
 import { Button } from '@/components/ui/button'
-import { useUKStats } from '@/hooks/use-uk-stats'
 import { BarChart3, X } from 'lucide-react'
 import { RegionTooltip } from '@/components/map/region-tooltip'
 import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
@@ -33,7 +32,7 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
 
 
 export default function Home() {
-  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null)
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(1) // Default to UK (region ID 1)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [isStatsOpen, setIsStatsOpen] = useState(false)
   const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
@@ -115,17 +114,11 @@ export default function Home() {
     firstRegion: regions[0]
   })
 
-  // Fetch region info for the sidebar
+  // Fetch region info for the sidebar (including UK as default)
   const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
     selectedRegionId,
     filters.yearRange.startYear,
     true
-  )
-
-  // Fetch UK stats for default state
-  const { data: ukStatsData, isLoading: isUKStatsLoading } = useUKStats(
-    filters.yearRange.startYear,
-    !selectedRegionId
   )
 
   const handleRegionClick = (regionId: number) => {
@@ -314,8 +307,8 @@ export default function Home() {
                 {/* Content */}
                 <div className="flex-1 overflow-auto">
                   <RegionStatsContent
-                    regionData={selectedRegionId ? regionData : ukStatsData}
-                    isLoading={selectedRegionId ? isRegionLoading : isUKStatsLoading}
+                    regionData={regionData}
+                    isLoading={isRegionLoading}
                     onRegionSelect={handleRegionSelect}
                   />
                 </div>

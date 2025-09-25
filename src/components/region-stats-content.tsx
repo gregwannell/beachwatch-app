@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
@@ -37,62 +36,6 @@ function YearOverYearBadge({ change }: { change?: number }) {
   )
 }
 
-function GeographicHierarchy({ regionData }: { regionData: RegionData }) {
-  const hierarchy = []
-  
-  // Build hierarchy chain
-  if (regionData.level === 'region' && regionData.parentName) {
-    hierarchy.push({ level: 'country', name: 'United Kingdom' })
-    hierarchy.push({ level: 'county', name: regionData.parentName })
-    hierarchy.push({ level: 'region', name: regionData.name })
-  } else if (regionData.level === 'county') {
-    hierarchy.push({ level: 'country', name: 'United Kingdom' })
-    hierarchy.push({ level: 'county', name: regionData.name })
-  } else {
-    hierarchy.push({ level: regionData.level, name: regionData.name })
-  }
-  
-  return (
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium text-muted-foreground">Location</h3>
-      <div className="flex flex-col space-y-1">
-        {hierarchy.map((item, index) => (
-          <div key={index} className="flex items-center text-sm">
-            <span className={cn(
-              "capitalize",
-              index === hierarchy.length - 1 
-                ? "font-medium text-foreground" 
-                : "text-muted-foreground"
-            )}>
-              {item.name}
-            </span>
-            {index < hierarchy.length - 1 && (
-              <span className="text-muted-foreground mx-2">→</span>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function DataAvailabilityStatus({ hasData, litterData }: { hasData: boolean, litterData?: RegionData['litterData'] }) {
-  return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-medium text-muted-foreground">Data Status</h3>
-      <div className="flex items-center justify-between">
-        <Badge variant={hasData ? "default" : "secondary"} className="text-xs">
-          {hasData ? "Data Available" : "No Data"}
-        </Badge>
-        {hasData && litterData && (
-          <Badge variant="outline" className="text-xs">
-            {litterData.averageLitterPer100m.toFixed(1)} items/100m
-          </Badge>
-        )}
-      </div>
-    </div>
-  )
-}
 
 function EmptyState({ 
   regionName, 
@@ -304,14 +247,6 @@ function OverviewTab({ regionData }: { regionData: RegionData }) {
         </div>
       )}
 
-      {/* Geographic Context */}
-      <GeographicHierarchy regionData={regionData} />
-
-      {/* Data Status */}
-      <DataAvailabilityStatus
-        hasData={regionData.hasData}
-        litterData={regionData.litterData}
-      />
 
       {/* Key Insights */}
       {regionData.hasData && regionData.litterData && (
@@ -503,8 +438,11 @@ export function RegionStatsContent({
   if (!regionData.hasData) {
     return (
       <div className="p-6">
-        <div className="space-y-4 mb-6">
+        <div className="space-y-2 mb-6">
           <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+          <Badge variant="secondary" className="text-xs w-fit">
+            No Data
+          </Badge>
         </div>
         <EmptyState
           regionName={regionData.name}
@@ -517,9 +455,12 @@ export function RegionStatsContent({
 
   return (
     <div className="space-y-4 p-6">
-      {/* Header with region name */}
+      {/* Header with region name and status badge */}
       <div className="space-y-2">
         <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+        <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit">
+          {regionData.hasData ? "Data Available" : "No Data"}
+        </Badge>
       </div>
 
       {/* Tabbed Interface */}

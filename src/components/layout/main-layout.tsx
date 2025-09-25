@@ -1,23 +1,47 @@
 "use client"
 
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Menu, Waves, Map } from 'lucide-react'
+import { Menu, Waves } from 'lucide-react'
 import { useState } from 'react'
 import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import type { RegionData } from '@/types/region-types'
 
 interface MainLayoutProps {
   children: React.ReactNode
   sidebar?: React.ReactNode
+  regionData?: RegionData
 }
 
 export function MainLayout({
   children,
-  sidebar
+  sidebar,
+  regionData
 }: MainLayoutProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  // Generate breadcrumb hierarchy
+  const getBreadcrumbHierarchy = () => {
+    if (!regionData) return []
+
+    const hierarchy = []
+
+    if (regionData.level === 'region' && regionData.parentName) {
+      hierarchy.push({ level: 'country', name: 'United Kingdom' })
+      hierarchy.push({ level: 'county', name: regionData.parentName })
+      hierarchy.push({ level: 'region', name: regionData.name })
+    } else if (regionData.level === 'county') {
+      hierarchy.push({ level: 'country', name: 'United Kingdom' })
+      hierarchy.push({ level: 'county', name: regionData.name })
+    } else {
+      hierarchy.push({ level: regionData.level, name: regionData.name })
+    }
+
+    return hierarchy
+  }
+
+  const breadcrumbHierarchy = getBreadcrumbHierarchy()
 
   return (
     <div className="flex h-screen bg-background">
@@ -63,13 +87,39 @@ export function MainLayout({
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-3">
                     <div className="hidden sm:flex items-center space-x-2">
-                      <img 
+                      <img
                         src="https://www.mcsuk.org/static/images/logos/bubbles-light.gif"
                         alt="Marine Conservation Society"
                         className="h-8 w-auto"
                       />
                     </div>
                   </div>
+
+                  {/* Regional Breadcrumb */}
+                  {breadcrumbHierarchy.length > 0 && (
+                    <div className="hidden md:block">
+                      <Breadcrumb>
+                        <BreadcrumbList>
+                          {breadcrumbHierarchy.map((item, index) => (
+                            <div key={index} className="flex items-center">
+                              {index > 0 && <BreadcrumbSeparator />}
+                              <BreadcrumbItem>
+                                {index === breadcrumbHierarchy.length - 1 ? (
+                                  <BreadcrumbPage className="font-medium">
+                                    {item.name}
+                                  </BreadcrumbPage>
+                                ) : (
+                                  <BreadcrumbLink className="text-muted-foreground">
+                                    {item.name}
+                                  </BreadcrumbLink>
+                                )}
+                              </BreadcrumbItem>
+                            </div>
+                          ))}
+                        </BreadcrumbList>
+                      </Breadcrumb>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex items-center gap-2">

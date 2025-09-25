@@ -243,6 +243,7 @@ export default function Home() {
           onMapThemeChange={setMapTheme}
         />
       }
+      regionData={regionData || undefined}
     >
       <div className="h-full w-full">
         {error ? (
@@ -304,7 +305,7 @@ export default function Home() {
                 {/* Content */}
                 <div className="flex-1 overflow-auto">
                   <RegionStatsContent
-                    regionData={regionData}
+                    regionData={regionData || undefined}
                     isLoading={isRegionLoading}
                     onRegionSelect={handleRegionSelect}
                   />

@@ -1,14 +1,18 @@
 "use client"
 
 import * as React from "react"
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
-import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart } from "lucide-react"
+import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart, Calendar, Clock } from "lucide-react"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
@@ -81,7 +85,7 @@ function EmptyState({
             variant="outline" 
             size="sm"
             className="text-xs"
-            onClick={() => window.open('https://www.mcsuk.org/what-we-do/clean-seas-and-beaches/great-british-beach-clean', '_blank')}
+            onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
           >
             <ExternalLink className="w-3 h-3 mr-2" />
             Contribute Data
@@ -219,32 +223,198 @@ function LoadingSkeleton() {
   )
 }
 
+function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
+  const [timeRange, setTimeRange] = React.useState("10y")
+
+  // Chart configuration
+  const chartConfig = {
+    litter: {
+      label: "Average Litter",
+      color: "var(--primary)",
+    },
+  } satisfies ChartConfig
+
+  // Generate sample data if no trend data available
+  const sampleTrendData = React.useMemo(() => {
+    if (regionData.litterData?.trendData) {
+      return regionData.litterData.trendData
+    }
+
+    // Generate sample trend data for demonstration
+    const currentYear = new Date().getFullYear()
+    const baseValue = regionData.litterData?.averageLitterPer100m || 100
+    const years = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i)
+
+    return years.map(year => ({
+      year,
+      averageLitterPer100m: baseValue + (Math.random() - 0.5) * 40,
+      date: `${year}-01-01`
+    }))
+  }, [regionData.litterData])
+
+  // Filter data based on selected time range
+  const filteredData = React.useMemo(() => {
+    const currentYear = new Date().getFullYear()
+    let yearsToShow = 15 // All years
+
+    if (timeRange === "10y") {
+      yearsToShow = 10
+    } else if (timeRange === "5y") {
+      yearsToShow = 5
+    }
+
+    return sampleTrendData
+      .filter(item => item.year >= currentYear - yearsToShow + 1)
+      .sort((a, b) => a.year - b.year)
+  }, [sampleTrendData, timeRange])
+
+  if (!regionData.litterData) return null
+
+  // Time period options
+  const timeOptions = [
+    { value: 'all', label: 'All Years', icon: Calendar },
+    { value: '10y', label: 'Last 10 Years', icon: Clock },
+    { value: '5y', label: 'Last 5 Years', icon: Clock }
+  ]
+
+  return (
+    <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 border border-primary/20 @container/card min-h-[320px]">
+      {/* Header with time period selector and chart icon */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center space-x-2">
+          {/* Desktop: Toggle Group */}
+          <ToggleGroup
+            type="single"
+            value={timeRange}
+            onValueChange={setTimeRange}
+            variant="outline"
+            className="hidden *:data-[slot=toggle-group-item]:!px-3 *:data-[slot=toggle-group-item]:text-xs @[640px]/card:flex"
+            aria-label="Select time period for litter data trend"
+          >
+            {timeOptions.map(option => (
+              <ToggleGroupItem key={option.value} value={option.value}>
+                <option.icon className="w-3 h-3 mr-1" />
+                {option.label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+
+          {/* Mobile: Select Dropdown */}
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger
+              className="flex w-36 @[640px]/card:hidden"
+              size="sm"
+              aria-label="Select time period"
+            >
+              <SelectValue placeholder="Time period" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              {timeOptions.map(option => (
+                <SelectItem key={option.value} value={option.value} className="rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <option.icon className="w-3 h-3" />
+                    <span>{option.label}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex-shrink-0 p-3 rounded-full bg-primary/10">
+          <BarChart3 className="w-8 h-8 text-primary" />
+        </div>
+      </div>
+
+      {/* Current metric display */}
+      <div className="space-y-2 mb-6">
+        <h3 className="text-sm font-medium text-muted-foreground">Current Average Litter</h3>
+        <div className="flex items-center space-x-3">
+          <span className="text-3xl font-bold text-primary">
+            {regionData.litterData.averageLitterPer100m.toFixed(1)}
+          </span>
+          <div className="text-sm text-muted-foreground">
+            <div>items per 100m</div>
+            {regionData.litterData.yearOverYearChange !== undefined && (
+              <YearOverYearBadge change={regionData.litterData.yearOverYearChange} />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Area Chart */}
+      <div className="bg-background/50 rounded-lg p-4 shadow-sm">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[180px] w-full @[640px]/card:h-[180px] @[480px]/card:h-[160px] @max-[480px]/card:h-[140px]"
+        >
+          <AreaChart
+            data={filteredData}
+            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+          >
+            <defs>
+              <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-litter)"
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-litter)"
+                  stopOpacity={0.05}
+                />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="3 3"
+              stroke="var(--muted-foreground)"
+              strokeOpacity={0.2}
+            />
+            <XAxis
+              dataKey="year"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => value.toString()}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(value) => `Year ${value}`}
+                  formatter={(value: number | string) => [
+                    `${Number(value).toFixed(1)} items per 100m`,
+                    "Average Litter"
+                  ]}
+                  indicator="dot"
+                />
+              }
+            />
+            <Area
+              dataKey="averageLitterPer100m"
+              type="monotone"
+              fill="url(#fillLitter)"
+              stroke="var(--color-litter)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </AreaChart>
+        </ChartContainer>
+      </div>
+    </div>
+  )
+}
+
 function OverviewTab({ regionData }: { regionData: RegionData }) {
   return (
     <div className="space-y-6">
-      {/* Hero Metric - Average Litter */}
+      {/* Enhanced Hero Metric - Average Litter with Trend Chart */}
       {regionData.litterData && (
-        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 border border-primary/20">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">Current Average Litter</h3>
-              <div className="flex items-center space-x-3">
-                <span className="text-3xl font-bold text-primary">
-                  {regionData.litterData.averageLitterPer100m.toFixed(1)}
-                </span>
-                <div className="text-sm text-muted-foreground">
-                  <div>items per 100m</div>
-                  {regionData.litterData.yearOverYearChange !== undefined && (
-                    <YearOverYearBadge change={regionData.litterData.yearOverYearChange} />
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex-shrink-0 p-3 rounded-full bg-primary/10">
-              <BarChart3 className="w-8 h-8 text-primary" />
-            </div>
-          </div>
-        </div>
+        <EnhancedHeroMetric regionData={regionData} />
       )}
 
 

@@ -5,9 +5,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
-import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
@@ -263,18 +264,216 @@ function EngagementStats({ engagementData }: {
 function LoadingSkeleton() {
   return (
     <div className="space-y-6 p-6">
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-6 w-full" />
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <div className="space-y-3">
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </div>
       </div>
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-16" />
-        <Skeleton className="h-6 w-24" />
+    </div>
+  )
+}
+
+function OverviewTab({ regionData }: { regionData: RegionData }) {
+  return (
+    <div className="space-y-6">
+      {/* Hero Metric - Average Litter */}
+      {regionData.litterData && (
+        <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 border border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground">Current Average Litter</h3>
+              <div className="flex items-center space-x-3">
+                <span className="text-3xl font-bold text-primary">
+                  {regionData.litterData.averageLitterPer100m.toFixed(1)}
+                </span>
+                <div className="text-sm text-muted-foreground">
+                  <div>items per 100m</div>
+                  {regionData.litterData.yearOverYearChange !== undefined && (
+                    <YearOverYearBadge change={regionData.litterData.yearOverYearChange} />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="flex-shrink-0 p-3 rounded-full bg-primary/10">
+              <BarChart3 className="w-8 h-8 text-primary" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Geographic Context */}
+      <GeographicHierarchy regionData={regionData} />
+
+      {/* Data Status */}
+      <DataAvailabilityStatus
+        hasData={regionData.hasData}
+        litterData={regionData.litterData}
+      />
+
+      {/* Key Insights */}
+      {regionData.hasData && regionData.litterData && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-medium text-muted-foreground">Key Insights</h3>
+          <div className="grid gap-3">
+            {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
+              <div className="p-4 rounded-lg border bg-card">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Info className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">Top Litter Item</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <strong>{regionData.litterData.topLitterItems[0].item.name}</strong> is the most common item
+                  ({regionData.litterData.topLitterItems[0].avgPer100m.toFixed(1)} per 100m)
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function LitterStatsTab({ regionData }: { regionData: RegionData }) {
+  if (!regionData.hasData || !regionData.litterData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+          <PieChart className="w-6 h-6 text-muted-foreground" />
+        </div>
+        <div className="space-y-2">
+          <h4 className="text-base font-semibold">No Litter Data Available</h4>
+          <p className="text-muted-foreground text-sm">
+            Litter statistics are not available for this region.
+          </p>
+        </div>
       </div>
-      <div className="space-y-3">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-16 w-full" />
-        <Skeleton className="h-16 w-full" />
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Top Litter Items */}
+      {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
+        <section className="space-y-3">
+          <TopLitterItemsChart
+            data={regionData.litterData.topLitterItems}
+            title="Top Litter Items"
+            description="Most common litter items by average per 100m"
+            height={220}
+            maxItems={5}
+            showAvgPer100m={true}
+            className="w-full"
+            barThickness={30}
+          />
+        </section>
+      )}
+
+      {/* Material Breakdown - PRESERVED AS-IS */}
+      {regionData.litterData.materialBreakdown.length > 0 && (
+        <section className="space-y-3">
+          <InteractivePieChart
+            data={regionData.litterData.materialBreakdown.map((item, index) => ({
+              name: item.material,
+              value: item.count,
+              percentage: item.percentage,
+              fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+            }))}
+            title="Material Breakdown"
+            description="Breakdown by material type"
+            height={250}
+            className="w-full"
+          />
+        </section>
+      )}
+
+      {/* Source Breakdown - PRESERVED AS-IS */}
+      {regionData.litterData.sourceBreakdown.length > 0 && (
+        <section className="space-y-3">
+          <InteractivePieChart
+            data={regionData.litterData.sourceBreakdown.map((item, index) => ({
+              name: item.source,
+              value: item.count,
+              percentage: item.percentage,
+              fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+            }))}
+            title="Source Breakdown"
+            description="Breakdown by source type"
+            height={250}
+            className="w-full"
+          />
+        </section>
+      )}
+
+      {/* Partial data notification */}
+      {(!regionData.litterData.topItems.length &&
+        !regionData.litterData.materialBreakdown.length &&
+        !regionData.litterData.sourceBreakdown.length) && (
+        <Alert>
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            <div>
+              <p className="font-medium">Limited Data Available</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Some metrics are available but detailed breakdowns are not yet processed.
+              </p>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+    </div>
+  )
+}
+
+function EngagementTab({ regionData }: { regionData: RegionData }) {
+  if (!regionData.hasData || !regionData.engagementData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+          <Users className="w-6 h-6 text-muted-foreground" />
+        </div>
+        <div className="space-y-2">
+          <h4 className="text-base font-semibold">No Engagement Data Available</h4>
+          <p className="text-muted-foreground text-sm">
+            Community engagement statistics are not available for this region.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.open('https://www.mcsuk.org/what-we-do/clean-seas-and-beaches/great-british-beach-clean', '_blank')}
+        >
+          <ExternalLink className="w-4 h-4 mr-2" />
+          Get Involved
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <EngagementStats engagementData={regionData.engagementData} />
+
+      {/* Call to Action */}
+      <div className="p-4 rounded-lg border bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20">
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium">Join the Community</h4>
+          <p className="text-sm text-muted-foreground">
+            Help expand beach litter data by participating in local surveys and beach clean events.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => window.open('https://www.mcsuk.org/what-we-do/clean-seas-and-beaches/great-british-beach-clean', '_blank')}
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Contribute Data
+          </Button>
+        </div>
       </div>
     </div>
   )
@@ -300,111 +499,55 @@ export function RegionStatsContent({
     )
   }
 
-  return (
-    <div className="space-y-6 p-6">
-      {/* Header with region name and year-over-year change */}
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-        {regionData.litterData?.yearOverYearChange !== undefined && (
-          <YearOverYearBadge change={regionData.litterData.yearOverYearChange} />
-        )}
-      </div>
-
-      {/* Always show geographic hierarchy and data status */}
-      <GeographicHierarchy regionData={regionData} />
-      <DataAvailabilityStatus 
-        hasData={regionData.hasData} 
-        litterData={regionData.litterData} 
-      />
-      
-      {/* Show engagement statistics if available */}
-      {regionData.hasData && regionData.engagementData && (
-        <EngagementStats 
-          engagementData={regionData.engagementData}
-        />
-      )}
-      
-      {/* Show charts if data is available */}
-      {regionData.hasData && regionData.litterData ? (
-        <div className="space-y-6">
-
-          {/* Top Litter Items */}
-          {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
-            <section className="space-y-3">
-              <TopLitterItemsChart
-                data={regionData.litterData.topLitterItems}
-                title="Top Litter Items"
-                description="Most common litter items by average per 100m"
-                height={220}
-                maxItems={5}
-                showAvgPer100m={true}
-                className="w-full"
-                barThickness={30}
-              />
-            </section>
-          )}
-
-          {/* Material Breakdown */}
-          {regionData.litterData.materialBreakdown.length > 0 && (
-            <section className="space-y-3">
-              <InteractivePieChart
-                data={regionData.litterData.materialBreakdown.map((item, index) => ({
-                  name: item.material,
-                  value: item.count,
-                  percentage: item.percentage,
-                  fill: Object.values(chartColors)[index % Object.values(chartColors).length]
-                }))}
-                title="Material Breakdown"
-                description="Breakdown by material type"
-                height={250}
-                className="w-full"
-              />
-            </section>
-          )}
-
-          {/* Source Breakdown */}
-          {regionData.litterData.sourceBreakdown.length > 0 && (
-            <section className="space-y-3">
-              <InteractivePieChart
-                data={regionData.litterData.sourceBreakdown.map((item, index) => ({
-                  name: item.source,
-                  value: item.count,
-                  percentage: item.percentage,
-                  fill: Object.values(chartColors)[index % Object.values(chartColors).length]
-                }))}
-                title="Source Breakdown"
-                description="Breakdown by source type"
-                height={250}
-                className="w-full"
-              />
-            </section>
-          )}
-
-          {/* Partial data notification */}
-          {(!regionData.litterData.topItems.length && 
-            !regionData.litterData.materialBreakdown.length && 
-            !regionData.litterData.sourceBreakdown.length) && (
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <div>
-                  <p className="font-medium">Limited Data Available</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Some metrics are available but detailed breakdowns are not yet processed.
-                  </p>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
+  // Show empty state if no data is available
+  if (!regionData.hasData) {
+    return (
+      <div className="p-6">
+        <div className="space-y-4 mb-6">
+          <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
         </div>
-      ) : (
-        /* Show empty state with suggestions */
         <EmptyState
           regionName={regionData.name}
           suggestedRegions={regionData.suggestedRegions}
           onRegionSelect={onRegionSelect}
         />
-      )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4 p-6">
+      {/* Header with region name */}
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+      </div>
+
+      {/* Tabbed Interface */}
+      <Tabs defaultValue="overview" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview" className="text-sm">
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="litter" className="text-sm">
+            Litter Stats
+          </TabsTrigger>
+          <TabsTrigger value="engagement" className="text-sm">
+            Engagement
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-4 mt-6">
+          <OverviewTab regionData={regionData} />
+        </TabsContent>
+
+        <TabsContent value="litter" className="space-y-4 mt-6">
+          <LitterStatsTab regionData={regionData} />
+        </TabsContent>
+
+        <TabsContent value="engagement" className="space-y-4 mt-6">
+          <EngagementTab regionData={regionData} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

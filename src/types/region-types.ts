@@ -42,6 +42,11 @@ export interface RegionData {
     }>
     averageLitterPer100m: number
     yearOverYearChange?: number
+    trendData?: Array<{
+      year: number
+      averageLitterPer100m: number
+      date: string // ISO format for chart
+    }>
   }
   engagementData?: {
     surveyCount: number

@@ -14,7 +14,7 @@ import type { RegionData, SuggestedRegion } from '@/types/region-types'
 import { AverageLitterKpiCard } from './average-litter-kpi-card'
 import { EmptyState } from './empty-state'
 import { EngagementStats } from './engagement-stats'
-import { TrendChartSection } from './trend-chart-section'
+import { AverageLitterChart } from './average-litter-chart'
 import { LoadingSkeleton } from './loading-skeleton'
 
 interface RegionStatsContentProps {
@@ -34,7 +34,7 @@ function OverviewTab({ regionData }: { regionData: RegionData }) {
 
       {/* Trend Chart - Separate section */}
       {regionData.litterData && (
-        <TrendChartSection regionData={regionData} />
+        <AverageLitterChart regionData={regionData} />
       )}
 
       {/* Key Insights */}

@@ -165,16 +165,18 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 
       // Fetch detailed breakdown data in parallel
       const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse, litterItemsResponse] = await Promise.all([
+      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse] = await Promise.all([
         fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null)
+        fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
+        fetch(`/api/analytics/trends?regionId=${regionId}`).catch(() => null)
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
       let materialBreakdown: RegionData['litterData']['materialBreakdown'] = []
       let sourceBreakdown: RegionData['litterData']['sourceBreakdown'] = []
       let topLitterItems: LitterItemBreakdown[] = []
+      let trendData: RegionData['litterData']['trendData'] = undefined
 
       // Process materials data (represents top litter items)
       if (materialsResponse?.ok) {
@@ -210,6 +212,16 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         topLitterItems = litterItemsData.data.litterItems
       }
 
+      // Process trends data
+      if (trendsResponse?.ok) {
+        const trendsData: { data: { trends: Array<{ year: string, avgPer100m: number }> } } = await trendsResponse.json()
+        trendData = trendsData.data.trends.map(trend => ({
+          year: parseInt(trend.year),
+          averageLitterPer100m: trend.avgPer100m,
+          date: `${trend.year}-01-01`
+        }))
+      }
+
       // Calculate average litter per 100m from aggregates
       const averageLitterPer100m = aggregates.length > 0
         ? aggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / aggregates.length
@@ -232,7 +244,8 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           sourceBreakdown,
           topLitterItems,
           averageLitterPer100m,
-          yearOverYearChange
+          yearOverYearChange,
+          trendData
         },
         engagementData: aggregates.length > 0 ? {
           surveyCount: aggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),

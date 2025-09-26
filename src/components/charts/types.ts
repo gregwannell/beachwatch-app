@@ -13,6 +13,12 @@ export interface PieChartData extends ChartDataItem {
   fill: string
 }
 
+export interface TrendDataPoint {
+  year: number
+  averageLitterPer100m: number
+  date: string
+}
+
 
 export interface ChartProps {
   data: ChartDataItem[]
@@ -29,6 +35,14 @@ export interface BarChartProps extends ChartProps {
   data: BarChartData[]
   maxItems?: number
   barThickness?: number // Controls the thickness/height of individual bars
+}
+
+export interface TrendChartProps extends Omit<ChartProps, 'data'> {
+  data: TrendDataPoint[]
+  title?: string
+  description?: string
+  averageLitterValue?: number // Current average value to display
+  yearOverYearChange?: number // Year-over-year change percentage
 }
 
 

@@ -7,6 +7,7 @@ export * from './utils'
 export { HorizontalBarChart } from './horizontal-bar-chart'
 export { InteractivePieChart } from './interactive-pie-chart'
 export { TopLitterItemsChart } from './top-litter-items-chart'
+export { LitterTrendChart } from './litter-trend-chart'
 
 // State management
 export { ChartSkeleton } from './chart-skeleton'

@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
-import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart, Calendar, Clock } from "lucide-react"
+import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart } from "lucide-react"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
@@ -224,8 +222,6 @@ function LoadingSkeleton() {
 }
 
 function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
-  const [timeRange, setTimeRange] = React.useState("10y")
-
   // Chart configuration
   const chartConfig = {
     litter: {
@@ -234,16 +230,15 @@ function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
     },
   } satisfies ChartConfig
 
-  // Generate sample data if no trend data available
-  const sampleTrendData = React.useMemo(() => {
+  // Generate trend data for all years (1994-2024)
+  const allYearsTrendData = React.useMemo(() => {
     if (regionData.litterData?.trendData) {
       return regionData.litterData.trendData
     }
 
-    // Generate sample trend data for demonstration
-    const currentYear = new Date().getFullYear()
+    // Generate trend data for all years from 1994 to 2024
     const baseValue = regionData.litterData?.averageLitterPer100m || 100
-    const years = Array.from({ length: 15 }, (_, i) => currentYear - 14 + i)
+    const years = Array.from({ length: 31 }, (_, i) => 1994 + i) // 1994 to 2024
 
     return years.map(year => ({
       year,
@@ -252,73 +247,19 @@ function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
     }))
   }, [regionData.litterData])
 
-  // Filter data based on selected time range
-  const filteredData = React.useMemo(() => {
-    const currentYear = new Date().getFullYear()
-    let yearsToShow = 15 // All years
-
-    if (timeRange === "10y") {
-      yearsToShow = 10
-    } else if (timeRange === "5y") {
-      yearsToShow = 5
-    }
-
-    return sampleTrendData
-      .filter(item => item.year >= currentYear - yearsToShow + 1)
-      .sort((a, b) => a.year - b.year)
-  }, [sampleTrendData, timeRange])
+  // Sort data chronologically
+  const chartData = React.useMemo(() => {
+    return allYearsTrendData.sort((a, b) => a.year - b.year)
+  }, [allYearsTrendData])
 
   if (!regionData.litterData) return null
 
-  // Time period options
-  const timeOptions = [
-    { value: 'all', label: 'All Years', icon: Calendar },
-    { value: '10y', label: 'Last 10 Years', icon: Clock },
-    { value: '5y', label: 'Last 5 Years', icon: Clock }
-  ]
-
   return (
     <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 border border-primary/20 @container/card min-h-[320px]">
-      {/* Header with time period selector and chart icon */}
+      {/* Header with chart icon */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
-          {/* Desktop: Toggle Group */}
-          <ToggleGroup
-            type="single"
-            value={timeRange}
-            onValueChange={setTimeRange}
-            variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:!px-3 *:data-[slot=toggle-group-item]:text-xs @[640px]/card:flex"
-            aria-label="Select time period for litter data trend"
-          >
-            {timeOptions.map(option => (
-              <ToggleGroupItem key={option.value} value={option.value}>
-                <option.icon className="w-3 h-3 mr-1" />
-                {option.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-
-          {/* Mobile: Select Dropdown */}
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger
-              className="flex w-36 @[640px]/card:hidden"
-              size="sm"
-              aria-label="Select time period"
-            >
-              <SelectValue placeholder="Time period" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              {timeOptions.map(option => (
-                <SelectItem key={option.value} value={option.value} className="rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <option.icon className="w-3 h-3" />
-                    <span>{option.label}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <h3 className="text-sm font-medium text-muted-foreground">Average Litter Trend (1994-2024)</h3>
         </div>
 
         <div className="flex-shrink-0 p-3 rounded-full bg-primary/10">
@@ -349,7 +290,7 @@ function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
           className="aspect-auto h-[180px] w-full @[640px]/card:h-[180px] @[480px]/card:h-[160px] @max-[480px]/card:h-[140px]"
         >
           <AreaChart
-            data={filteredData}
+            data={chartData}
             margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
           >
             <defs>

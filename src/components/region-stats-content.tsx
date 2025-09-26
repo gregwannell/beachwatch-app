@@ -1,14 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
+import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { InteractivePieChart, TopLitterItemsChart, LitterTrendChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Database, MapPin, ExternalLink, Info, BarChart3, Users, Ruler, TrendingUp, TrendingDown, Minus, PieChart } from "lucide-react"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
@@ -22,19 +21,73 @@ interface RegionStatsContentProps {
 
 function YearOverYearBadge({ change }: { change?: number }) {
   if (change === undefined) return null
-  
+
   const isImprovement = change < 0 // Decrease in litter is improvement
   const isNeutral = Math.abs(change) < 1 // Less than 1% change is neutral
-  
+
   const variant = isNeutral ? "secondary" : isImprovement ? "default" : "destructive"
   const symbol = change > 0 ? "+" : ""
   const Icon = isNeutral ? Minus : isImprovement ? TrendingDown : TrendingUp
-  
+
   return (
     <Badge variant={variant} className="text-xs">
       <Icon className="w-3 h-3 mr-1" />
       {symbol}{change.toFixed(1)}%
     </Badge>
+  )
+}
+
+function AverageLitterKpiCard({ regionData }: { regionData: RegionData }) {
+  if (!regionData.litterData) return null
+
+  const { averageLitterPer100m, yearOverYearChange } = regionData.litterData
+
+  // Determine trending context
+  const getTrendingText = () => {
+    if (yearOverYearChange === undefined) return "No trend data available"
+
+    const isImprovement = yearOverYearChange < 0
+    const isNeutral = Math.abs(yearOverYearChange) < 1
+
+    if (isNeutral) {
+      return (
+        <div className="line-clamp-1 flex gap-2 font-medium">
+          Stable levels this period <Minus className="size-4" />
+        </div>
+      )
+    } else if (isImprovement) {
+      return (
+        <div className="line-clamp-1 flex gap-2 font-medium">
+          Improving this period <TrendingDown className="size-4" />
+        </div>
+      )
+    } else {
+      return (
+        <div className="line-clamp-1 flex gap-2 font-medium">
+          Increasing this period <TrendingUp className="size-4" />
+        </div>
+      )
+    }
+  }
+
+  return (
+    <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs">
+      <CardHeader>
+        <CardDescription>Average Litter per 100m</CardDescription>
+        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+          {averageLitterPer100m.toFixed(1)}
+        </CardTitle>
+        <CardAction>
+          <YearOverYearBadge change={yearOverYearChange} />
+        </CardAction>
+      </CardHeader>
+      <CardFooter className="flex-col items-start gap-1.5 text-sm">
+        {getTrendingText()}
+        <div className="text-muted-foreground">
+          Based on latest survey data
+        </div>
+      </CardFooter>
+    </Card>
   )
 }
 
@@ -221,17 +274,9 @@ function LoadingSkeleton() {
   )
 }
 
-function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
-  // Chart configuration
-  const chartConfig = {
-    litter: {
-      label: "Average Litter",
-      color: "var(--primary)",
-    },
-  } satisfies ChartConfig
-
-  // Generate trend data for all years (1994-2024)
-  const allYearsTrendData = React.useMemo(() => {
+function TrendChartSection({ regionData }: { regionData: RegionData }) {
+  // Prepare trend data for the chart
+  const trendData = React.useMemo(() => {
     if (regionData.litterData?.trendData) {
       return regionData.litterData.trendData
     }
@@ -247,115 +292,32 @@ function EnhancedHeroMetric({ regionData }: { regionData: RegionData }) {
     }))
   }, [regionData.litterData])
 
-  // Sort data chronologically
-  const chartData = React.useMemo(() => {
-    return allYearsTrendData.sort((a, b) => a.year - b.year)
-  }, [allYearsTrendData])
-
   if (!regionData.litterData) return null
 
   return (
-    <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 border border-primary/20 @container/card min-h-[320px]">
-      {/* Header with chart icon */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Average Litter Trend (1994-2024)</h3>
-        </div>
-
-        <div className="flex-shrink-0 p-3 rounded-full bg-primary/10">
-          <BarChart3 className="w-8 h-8 text-primary" />
-        </div>
-      </div>
-
-      {/* Current metric display */}
-      <div className="space-y-2 mb-6">
-        <h3 className="text-sm font-medium text-muted-foreground">Current Average Litter</h3>
-        <div className="flex items-center space-x-3">
-          <span className="text-3xl font-bold text-primary">
-            {regionData.litterData.averageLitterPer100m.toFixed(1)}
-          </span>
-          <div className="text-sm text-muted-foreground">
-            <div>items per 100m</div>
-            {regionData.litterData.yearOverYearChange !== undefined && (
-              <YearOverYearBadge change={regionData.litterData.yearOverYearChange} />
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Area Chart */}
-      <div className="bg-background/50 rounded-lg p-4 shadow-sm">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[180px] w-full @[640px]/card:h-[180px] @[480px]/card:h-[160px] @max-[480px]/card:h-[140px]"
-        >
-          <AreaChart
-            data={chartData}
-            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-          >
-            <defs>
-              <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-litter)"
-                  stopOpacity={0.3}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-litter)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              vertical={false}
-              strokeDasharray="3 3"
-              stroke="var(--muted-foreground)"
-              strokeOpacity={0.2}
-            />
-            <XAxis
-              dataKey="year"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tick={{ fontSize: 12 }}
-              tickFormatter={(value) => value.toString()}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => `Year ${value}`}
-                  formatter={(value: number | string) => [
-                    `${Number(value).toFixed(1)} items per 100m`,
-                    "Average Litter"
-                  ]}
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="averageLitterPer100m"
-              type="monotone"
-              fill="url(#fillLitter)"
-              stroke="var(--color-litter)"
-              strokeWidth={2}
-              dot={false}
-            />
-          </AreaChart>
-        </ChartContainer>
-      </div>
-    </div>
+    <LitterTrendChart
+      data={trendData}
+      title="Average Litter Trend (1994-2024)"
+      description="Historical trend of average litter per 100m over time"
+      averageLitterValue={regionData.litterData.averageLitterPer100m}
+      yearOverYearChange={regionData.litterData.yearOverYearChange}
+      height={240}
+      className="w-full"
+    />
   )
 }
 
 function OverviewTab({ regionData }: { regionData: RegionData }) {
   return (
     <div className="space-y-6">
-      {/* Enhanced Hero Metric - Average Litter with Trend Chart */}
+      {/* Primary KPI Card - Main focal point */}
       {regionData.litterData && (
-        <EnhancedHeroMetric regionData={regionData} />
+        <AverageLitterKpiCard regionData={regionData} />
+      )}
+
+      {/* Trend Chart - Separate section */}
+      {regionData.litterData && (
+        <TrendChartSection regionData={regionData} />
       )}
 
 

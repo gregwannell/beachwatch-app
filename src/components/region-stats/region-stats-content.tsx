@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
-import { Info, ExternalLink, PieChart, Users } from "lucide-react"
+import { Info, ExternalLink, PieChart, Users, AlertTriangle } from "lucide-react"
+import { motion } from "motion/react"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
 // Import extracted components
@@ -168,7 +169,7 @@ function EngagementTab({ regionData }: { regionData: RegionData }) {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => window.open('https://www.mcsuk.org/what-we-do/clean-seas-and-beaches/great-british-beach-clean', '_blank')}
+          onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
         >
           <ExternalLink className="w-4 h-4 mr-2" />
           Get Involved
@@ -251,6 +252,27 @@ export function RegionStatsContent({
           {regionData.hasData ? "Data Available" : "No Data"}
         </Badge>
       </div>
+
+      {/* Low survey count warning */}
+      {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+          <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
+            <AlertTriangle className="h-5 w-5 text-orange-600" />
+            <AlertDescription>
+              <div>
+                <p className="font-medium">Limited Survey Data</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </motion.div>
+      )}
 
       {/* Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">

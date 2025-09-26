@@ -42,28 +42,19 @@ export function LitterTrendChart({
 }: LitterTrendChartProps) {
   // Chart configuration
   const chartConfig = {
-    litter: {
+    averageLitterPer100m: {
       label: "Average Litter",
-      color: "var(--primary)",
+      color: "var(--chart-1)",
     },
   } satisfies ChartConfig
 
-  // Generate all years data (1994-2024) if no data provided
+  // Process data if available
   const chartData = React.useMemo(() => {
     if (data && data.length > 0) {
       return data.sort((a, b) => a.year - b.year)
     }
-
-    // Generate sample data for all years from 1994 to 2024
-    const baseValue = averageLitterValue || 100
-    const years = Array.from({ length: 31 }, (_, i) => 1994 + i) // 1994 to 2024
-
-    return years.map(year => ({
-      year,
-      averageLitterPer100m: baseValue + (Math.random() - 0.5) * 40,
-      date: `${year}-01-01`
-    }))
-  }, [data, averageLitterValue])
+    return []
+  }, [data])
 
   // Loading state
   if (loading) {
@@ -133,12 +124,12 @@ export function LitterTrendChart({
                 <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
-                    stopColor="var(--color-litter)"
+                    stopColor="var(--color-averageLitterPer100m)"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="95%"
-                    stopColor="var(--color-litter)"
+                    stopColor="var(--color-averageLitterPer100m)"
                     stopOpacity={0.05}
                   />
                 </linearGradient>
@@ -159,23 +150,14 @@ export function LitterTrendChart({
                 tickFormatter={(value) => value.toString()}
               />
               <ChartTooltip
+                content={<ChartTooltipContent />}
                 cursor={false}
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value) => `Year ${value}`}
-                    formatter={(value: number | string) => [
-                      `${Number(value).toFixed(1)} items per 100m`,
-                      "Average Litter"
-                    ]}
-                    indicator="dot"
-                  />
-                }
               />
               <Area
                 dataKey="averageLitterPer100m"
                 type="monotone"
                 fill="url(#fillLitter)"
-                stroke="var(--color-litter)"
+                stroke="var(--color-averageLitterPer100m)"
                 strokeWidth={2}
                 dot={false}
               />

@@ -72,7 +72,7 @@ export function MainLayout({
           <SidebarHeader className="border-b p-4 bg-background/50 backdrop-blur-sm">
             <h2 className="font-semibold text-xl flex items-center gap-2">
               <Waves className="h-8 w-8 text-primary" />
-              Beachwatch Date Explorer
+              Beachwatch Data Explorer
             </h2>
           </SidebarHeader>
           <SidebarContent className="overflow-auto" role="region" aria-label="Filter controls">
@@ -101,7 +101,7 @@ export function MainLayout({
                   <div className="flex items-center space-x-3">
                     <div className="hidden sm:flex items-center space-x-2">
                       <img
-                        src="https://www.mcsuk.org/static/images/logos/bubbles-light.gif"
+                        src="/mcs-logo.png"
                         alt="Marine Conservation Society"
                         className="h-8 w-auto"
                       />

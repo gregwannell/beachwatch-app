@@ -22,10 +22,11 @@ interface RegionStatsContentProps {
   regionData?: RegionData
   isLoading?: boolean
   onRegionSelect?: (regionId: string) => void
+  selectedYear?: number
 }
 
 
-function OverviewTab({ regionData }: { regionData: RegionData }) {
+function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; selectedYear?: number }) {
   return (
     <div className="space-y-6">
       {/* Primary KPI Card - Main focal point */}
@@ -35,7 +36,7 @@ function OverviewTab({ regionData }: { regionData: RegionData }) {
 
       {/* Trend Chart - Separate section */}
       {regionData.litterData && (
-        <AverageLitterChart regionData={regionData} />
+        <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
       )}
 
       {/* Key Insights */}
@@ -208,6 +209,7 @@ export function RegionStatsContent({
   regionData,
   isLoading = false,
   onRegionSelect,
+  selectedYear,
 }: RegionStatsContentProps) {
   if (isLoading) {
     return <LoadingSkeleton />
@@ -247,7 +249,14 @@ export function RegionStatsContent({
     <div className="space-y-4 p-6">
       {/* Header with region name and status badge */}
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+        <div className="flex items-baseline gap-2">
+          <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+          {selectedYear && (
+            <span className="text-sm text-muted-foreground font-normal">
+              {selectedYear}
+            </span>
+          )}
+        </div>
         <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit">
           {regionData.hasData ? "Data Available" : "No Data"}
         </Badge>
@@ -289,7 +298,7 @@ export function RegionStatsContent({
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4 mt-6">
-          <OverviewTab regionData={regionData} />
+          <OverviewTab regionData={regionData} selectedYear={selectedYear} />
         </TabsContent>
 
         <TabsContent value="litter" className="space-y-4 mt-6">

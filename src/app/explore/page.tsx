@@ -308,6 +308,7 @@ export default function Home() {
                     regionData={regionData || undefined}
                     isLoading={isRegionLoading}
                     onRegionSelect={handleRegionSelect}
+                    selectedYear={filters.yearRange.startYear}
                   />
                 </div>
               </div>

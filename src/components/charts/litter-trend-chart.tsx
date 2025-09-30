@@ -26,6 +26,7 @@ export interface LitterTrendChartProps extends Omit<ChartProps, 'data'> {
   description?: string
   averageLitterValue?: number // Current average value to display
   yearOverYearChange?: number // Year-over-year change percentage
+  selectedYear?: number // Highlight this year on the chart
 }
 
 export function LitterTrendChart({
@@ -34,6 +35,7 @@ export function LitterTrendChart({
   description = "Average litter per 100m over time (1994-2024)",
   averageLitterValue,
   yearOverYearChange: _yearOverYearChange,
+  selectedYear,
   className,
   height = 180,
   loading = false,
@@ -159,7 +161,24 @@ export function LitterTrendChart({
                 fill="url(#fillLitter)"
                 stroke="var(--color-averageLitterPer100m)"
                 strokeWidth={2}
-                dot={false}
+                dot={(props: any) => {
+                  const { cx, cy, payload } = props
+                  // Only show dot for the selected year
+                  if (selectedYear && payload.year === selectedYear) {
+                    return (
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={6}
+                        fill="var(--color-averageLitterPer100m)"
+                        stroke="white"
+                        strokeWidth={2}
+                        className="animate-pulse"
+                      />
+                    )
+                  }
+                  return null
+                }}
               />
             </AreaChart>
           </ChartContainer>

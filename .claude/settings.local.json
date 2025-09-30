@@ -37,7 +37,8 @@
       "mcp__shadcn-ui-server__get_component_details",
       "mcp__shadcn-ui-server__get_component_examples",
       "mcp__browsermcp__browser_screenshot",
-      "mcp__browsermcp__browser_navigate"
+      "mcp__browsermcp__browser_navigate",
+      "Read(//c/Users/Greg/Pictures/Screenshots/**)"
     ]
   },
   "enableAllProjectMcpServers": true,

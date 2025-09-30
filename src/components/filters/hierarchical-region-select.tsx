@@ -94,8 +94,8 @@ export function HierarchicalRegionSelect({
   }
 
   const handleRegionSelect = (regionId: number) => {
-    // Toggle selection: if already selected, deselect
-    onRegionChange(regionId === selectedRegionId ? null : regionId)
+    // Set the selected region (no toggle off behavior)
+    onRegionChange(regionId)
   }
 
   const selectedRegion = regions.find(r => r.id === selectedRegionId)
@@ -117,24 +117,14 @@ export function HierarchicalRegionSelect({
 
       {/* Selected region display */}
       {hasSelection && (
-        <div className="flex items-center justify-between p-2 bg-primary/5 border border-primary/20 rounded-md">
-          <div className="flex items-center gap-2">
-            <Check className="h-4 w-4 text-primary" />
-            <span className="font-medium text-sm">{selectedRegion?.name}</span>
-            {selectedRegion?.parent_name && (
-              <span className="text-xs text-muted-foreground">
-                in {selectedRegion.parent_name}
-              </span>
-            )}
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onRegionChange(null)}
-            className="h-6 w-6 p-0"
-          >
-            ×
-          </Button>
+        <div className="flex items-center gap-2 p-2 bg-primary/5 border border-primary/20 rounded-md">
+          <Check className="h-4 w-4 text-primary" />
+          <span className="font-medium text-sm">{selectedRegion?.name}</span>
+          {selectedRegion?.parent_name && (
+            <span className="text-xs text-muted-foreground">
+              in {selectedRegion.parent_name}
+            </span>
+          )}
         </div>
       )}
 
@@ -216,20 +206,6 @@ export function HierarchicalRegionSelect({
           ))
         )}
       </div>
-
-      {/* Clear all button */}
-      {hasSelection && (
-        <div className="pt-2 border-t">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onRegionChange(null)}
-            className="w-full h-7"
-          >
-            Clear Selection
-          </Button>
-        </div>
-      )}
     </div>
   )
 }

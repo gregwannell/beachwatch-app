@@ -89,13 +89,28 @@ function generateSuggestedRegions(regionId: number): SuggestedRegion[] {
 }
 
 // Helper function to calculate year-over-year change
-function calculateYearOverYearChange(aggregates: ApiRegionData['aggregates']): number | undefined {
+function calculateYearOverYearChange(
+  aggregates: ApiRegionData['aggregates'],
+  selectedYear?: number
+): number | undefined {
   if (aggregates.length < 2) return undefined
 
-  // Sort by year descending to get current and previous year
-  const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
-  const current = sorted[0]
-  const previous = sorted[1]
+  let current: ApiRegionData['aggregates'][0] | undefined
+  let previous: ApiRegionData['aggregates'][0] | undefined
+
+  if (selectedYear) {
+    // Find data for the selected year and the previous year
+    current = aggregates.find(agg => parseInt(agg.year) === selectedYear)
+    previous = aggregates.find(agg => parseInt(agg.year) === selectedYear - 1)
+
+    // If either year is missing, return undefined
+    if (!current || !previous) return undefined
+  } else {
+    // Fall back to comparing the two most recent years
+    const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+    current = sorted[0]
+    previous = sorted[1]
+  }
 
   if (current.avg_per_100m === 0 && previous.avg_per_100m === 0) return 0
   if (previous.avg_per_100m === 0) return 100 // If previous was 0, any increase is 100%
@@ -152,9 +167,9 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
       if (!regionId) return null
 
       // Fetch basic region data with parent info
-      const yearParam = year ? `&year=${year}` : ''
+      // Note: We don't filter by year here because we need multiple years for year-over-year comparison
       const regionResponse = await fetch(
-        `/api/regions/${regionId}?includeParent=true&includeAggregates=true${yearParam}`
+        `/api/regions/${regionId}?includeParent=true&includeAggregates=true`
       )
       
       if (!regionResponse.ok) {
@@ -190,9 +205,10 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/trends?regionId=${regionId}`).catch(() => null),
-        // Fetch UK data for comparison (UK region ID is typically 1, but we'll fetch by name)
+        // Fetch UK data for comparison (UK region ID is 1)
+        // Don't filter by year - we need all years for comparison
         region.name !== 'United Kingdom'
-          ? fetch(`/api/regions/1?includeAggregates=true${yearParam}`).catch(() => null)
+          ? fetch(`/api/regions/1?includeAggregates=true`).catch(() => null)
           : null
       ])
 
@@ -246,13 +262,20 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         }))
       }
 
-      // Calculate average litter per 100m from aggregates
-      const averageLitterPer100m = aggregates.length > 0
-        ? aggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / aggregates.length
+      // Filter aggregates to selected year (or most recent if no year selected)
+      const filteredAggregates = year
+        ? aggregates.filter(agg => parseInt(agg.year) === year)
+        : aggregates.length > 0
+        ? [aggregates.sort((a, b) => parseInt(b.year) - parseInt(a.year))[0]]
+        : []
+
+      // Calculate average litter per 100m from filtered aggregates
+      const averageLitterPer100m = filteredAggregates.length > 0
+        ? filteredAggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / filteredAggregates.length
         : 0
 
-      // Calculate year-over-year change
-      const yearOverYearChange = calculateYearOverYearChange(aggregates)
+      // Calculate year-over-year change (uses all aggregates internally)
+      const yearOverYearChange = calculateYearOverYearChange(aggregates, year)
 
       // Calculate UK average comparison
       let ukAverageComparison: RegionData['litterData']['ukAverageComparison'] = undefined
@@ -262,16 +285,25 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         } = await ukDataResponse.json()
 
         if (ukData.aggregates && ukData.aggregates.length > 0) {
-          const ukAverage = ukData.aggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / ukData.aggregates.length
-          ukAverageComparison = calculateUkAverageComparison(averageLitterPer100m, ukAverage)
+          // Filter UK data to the same year for comparison
+          const filteredUkAggregates = year
+            ? ukData.aggregates.filter(agg => parseInt(agg.year) === year)
+            : ukData.aggregates.length > 0
+            ? [ukData.aggregates.sort((a, b) => parseInt(b.year) - parseInt(a.year))[0]]
+            : []
+
+          if (filteredUkAggregates.length > 0) {
+            const ukAverage = filteredUkAggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / filteredUkAggregates.length
+            ukAverageComparison = calculateUkAverageComparison(averageLitterPer100m, ukAverage)
+          }
         }
       }
 
-      // Calculate aggregate totals
-      const totalLitter = aggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
-      const totalLengthSurveyed = aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
-      const totalBags = aggregates.reduce((sum, agg) => sum + agg.total_bags, 0)
-      const totalWeight = aggregates.reduce((sum, agg) => sum + agg.total_weight_kg, 0)
+      // Calculate aggregate totals from filtered aggregates
+      const totalLitter = filteredAggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
+      const totalLengthSurveyed = filteredAggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
+      const totalBags = filteredAggregates.reduce((sum, agg) => sum + agg.total_bags, 0)
+      const totalWeight = filteredAggregates.reduce((sum, agg) => sum + agg.total_weight_kg, 0)
 
       return {
         id: region.id.toString(),
@@ -295,10 +327,10 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           totalBags,
           totalWeight
         },
-        engagementData: aggregates.length > 0 ? {
-          surveyCount: aggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),
-          volunteerCount: aggregates.reduce((sum, agg) => sum + agg.total_volunteers, 0),
-          totalBeachLength: Math.round(aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)),
+        engagementData: filteredAggregates.length > 0 ? {
+          surveyCount: filteredAggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),
+          volunteerCount: filteredAggregates.reduce((sum, agg) => sum + agg.total_volunteers, 0),
+          totalBeachLength: Math.round(filteredAggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)),
           yearOverYearChanges: calculateEngagementYearOverYearChange(aggregates)
         } : undefined
       }

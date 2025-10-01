@@ -32,7 +32,7 @@ function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; sel
     <div className="space-y-6">
       {/* Primary KPI Card - Main focal point */}
       {regionData.litterData && (
-        <AverageLitterKpiCard regionData={regionData} />
+        <AverageLitterKpiCard regionData={regionData} selectedYear={selectedYear} />
       )}
 
       {/* Collection Stats - Compact summary */}

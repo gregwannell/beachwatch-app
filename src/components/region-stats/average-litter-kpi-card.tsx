@@ -1,6 +1,7 @@
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { YearOverYearBadge } from "./year-over-year-badge"
+import { UkComparisonText } from "./uk-comparison-text"
 import type { RegionData } from '@/types/region-types'
 
 interface AverageLitterKpiCardProps {
@@ -10,7 +11,7 @@ interface AverageLitterKpiCardProps {
 export function AverageLitterKpiCard({ regionData }: AverageLitterKpiCardProps) {
   if (!regionData.litterData) return null
 
-  const { averageLitterPer100m, yearOverYearChange } = regionData.litterData
+  const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
 
   // Determine trending context
   const getTrendingText = () => {
@@ -53,6 +54,7 @@ export function AverageLitterKpiCard({ regionData }: AverageLitterKpiCardProps) 
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         {getTrendingText()}
+        <UkComparisonText ukAverageComparison={ukAverageComparison} />
         <div className="text-muted-foreground">
           Based on latest survey data
         </div>

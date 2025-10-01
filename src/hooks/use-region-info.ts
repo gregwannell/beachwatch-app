@@ -91,17 +91,34 @@ function generateSuggestedRegions(regionId: number): SuggestedRegion[] {
 // Helper function to calculate year-over-year change
 function calculateYearOverYearChange(aggregates: ApiRegionData['aggregates']): number | undefined {
   if (aggregates.length < 2) return undefined
-  
+
   // Sort by year descending to get current and previous year
   const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
   const current = sorted[0]
   const previous = sorted[1]
-  
+
   if (current.avg_per_100m === 0 && previous.avg_per_100m === 0) return 0
   if (previous.avg_per_100m === 0) return 100 // If previous was 0, any increase is 100%
-  
+
   const change = ((current.avg_per_100m - previous.avg_per_100m) / previous.avg_per_100m) * 100
   return Math.round(change * 10) / 10 // Round to 1 decimal place
+}
+
+// Helper function to calculate UK average comparison
+function calculateUkAverageComparison(
+  regionalAverage: number,
+  ukAverage: number
+): RegionData['litterData']['ukAverageComparison'] | undefined {
+  if (ukAverage === 0) return undefined
+
+  const percentDifference = ((regionalAverage - ukAverage) / ukAverage) * 100
+  const multiplier = regionalAverage / ukAverage
+
+  return {
+    ukAverage,
+    percentDifference: Math.round(percentDifference * 10) / 10, // Round to 1 decimal place
+    multiplier: Math.round(multiplier * 10) / 10 // Round to 1 decimal place
+  }
 }
 
 // Helper function to calculate engagement year-over-year changes
@@ -168,11 +185,15 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 
       // Fetch detailed breakdown data in parallel
       const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse] = await Promise.all([
+      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse] = await Promise.all([
         fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/trends?regionId=${regionId}`).catch(() => null)
+        fetch(`/api/analytics/trends?regionId=${regionId}`).catch(() => null),
+        // Fetch UK data for comparison (UK region ID is typically 1, but we'll fetch by name)
+        region.name !== 'United Kingdom'
+          ? fetch(`/api/regions/1?includeAggregates=true${yearParam}`).catch(() => null)
+          : null
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
@@ -233,6 +254,19 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
       // Calculate year-over-year change
       const yearOverYearChange = calculateYearOverYearChange(aggregates)
 
+      // Calculate UK average comparison
+      let ukAverageComparison: RegionData['litterData']['ukAverageComparison'] = undefined
+      if (ukDataResponse?.ok && region.name !== 'United Kingdom') {
+        const ukData: {
+          aggregates: ApiRegionData['aggregates']
+        } = await ukDataResponse.json()
+
+        if (ukData.aggregates && ukData.aggregates.length > 0) {
+          const ukAverage = ukData.aggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / ukData.aggregates.length
+          ukAverageComparison = calculateUkAverageComparison(averageLitterPer100m, ukAverage)
+        }
+      }
+
       // Calculate aggregate totals
       const totalLitter = aggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
       const totalLengthSurveyed = aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
@@ -254,6 +288,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           topLitterItems,
           averageLitterPer100m,
           yearOverYearChange,
+          ukAverageComparison,
           trendData,
           totalLitter,
           totalLengthSurveyed,

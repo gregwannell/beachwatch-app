@@ -42,6 +42,11 @@ export interface RegionData {
     }>
     averageLitterPer100m: number
     yearOverYearChange?: number
+    ukAverageComparison?: {
+      ukAverage: number
+      percentDifference: number
+      multiplier: number
+    }
     trendData?: Array<{
       year: number
       averageLitterPer100m: number

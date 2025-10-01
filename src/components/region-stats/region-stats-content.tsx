@@ -13,6 +13,7 @@ import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
 // Import extracted components
 import { AverageLitterKpiCard } from './average-litter-kpi-card'
+import { LitterCollectionStats } from './litter-collection-stats'
 import { EmptyState } from './empty-state'
 import { EngagementStats } from './engagement-stats'
 import { AverageLitterChart } from './average-litter-chart'
@@ -32,6 +33,11 @@ function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; sel
       {/* Primary KPI Card - Main focal point */}
       {regionData.litterData && (
         <AverageLitterKpiCard regionData={regionData} />
+      )}
+
+      {/* Collection Stats - Compact summary */}
+      {regionData.litterData && (
+        <LitterCollectionStats litterData={regionData.litterData} />
       )}
 
       {/* Trend Chart - Separate section */}

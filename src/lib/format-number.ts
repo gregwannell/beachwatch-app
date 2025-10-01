@@ -32,7 +32,27 @@ export function formatBeachLength(lengthInMeters: number): string {
   if (lengthInMeters < 1000) {
     return `${lengthInMeters}m`
   }
-  
+
   const kilometers = lengthInMeters / 1000
   return `${kilometers.toFixed(1).replace(/\.0+$/, '')}km`
+}
+
+/**
+ * Format weight with appropriate precision and unit
+ * @param weightInKg - Weight in kilograms
+ * @returns Formatted string with kg unit
+ */
+export function formatWeight(weightInKg: number): string {
+  // For weights less than 1 kg, show 2 decimal places
+  if (weightInKg < 1) {
+    return `${weightInKg.toFixed(2)} kg`
+  }
+
+  // For weights less than 100 kg, show 1 decimal place
+  if (weightInKg < 100) {
+    return `${weightInKg.toFixed(1)} kg`
+  }
+
+  // For larger weights, round to nearest whole number
+  return `${Math.round(weightInKg)} kg`
 }

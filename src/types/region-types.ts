@@ -47,6 +47,10 @@ export interface RegionData {
       averageLitterPer100m: number
       date: string // ISO format for chart
     }>
+    totalLitter: number
+    totalLengthSurveyed: number
+    totalBags: number
+    totalWeight: number
   }
   engagementData?: {
     surveyCount: number

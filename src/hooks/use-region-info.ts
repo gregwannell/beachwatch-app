@@ -21,6 +21,9 @@ interface ApiRegionData {
     year: string
     total_litter: number
     avg_per_100m: number
+    total_length_m: number
+    total_bags: number
+    total_weight_kg: number
   }>
 }
 
@@ -230,10 +233,16 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
       // Calculate year-over-year change
       const yearOverYearChange = calculateYearOverYearChange(aggregates)
 
+      // Calculate aggregate totals
+      const totalLitter = aggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
+      const totalLengthSurveyed = aggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
+      const totalBags = aggregates.reduce((sum, agg) => sum + agg.total_bags, 0)
+      const totalWeight = aggregates.reduce((sum, agg) => sum + agg.total_weight_kg, 0)
+
       return {
         id: region.id.toString(),
         name: region.name,
-        level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' : 
+        level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' :
                region.type === 'County Unitary' ? 'county' : 'region',
         parentId: region.parent_id?.toString(),
         parentName: parent?.name,
@@ -245,7 +254,11 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           topLitterItems,
           averageLitterPer100m,
           yearOverYearChange,
-          trendData
+          trendData,
+          totalLitter,
+          totalLengthSurveyed,
+          totalBags,
+          totalWeight
         },
         engagementData: aggregates.length > 0 ? {
           surveyCount: aggregates.reduce((sum, agg) => sum + agg.total_surveys, 0),

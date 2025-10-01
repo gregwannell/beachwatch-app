@@ -279,29 +279,6 @@ export default function Home() {
               ${isStatsOpen ? 'translate-x-0' : 'translate-x-full'}
             `}>
               <div className="flex flex-col h-full">
-                {/* Header */}
-                <div className="px-6 py-4 border-b border-border bg-background/95 backdrop-blur-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="flex items-center gap-2 font-semibold">
-                        <BarChart3 className="w-5 h-5" />
-                        Regional Stats
-                      </h2>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        View regional litter statistics and environmental data
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsStatsOpen(false)}
-                      className="p-2"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-
                 {/* Content */}
                 <div className="flex-1 overflow-auto">
                   <RegionStatsContent

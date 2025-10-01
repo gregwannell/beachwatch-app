@@ -1,15 +1,15 @@
 {
 	"mcpServers": {
-		"context7": {
-			"type": "stdio",
-			"command": "cmd",
-			"args": [
-				"/c",
-				"npx",
-				"-y",
-				"@upstash/context7-mcp"
-			]
-		},
+		// "context7": {
+		// 	"type": "stdio",
+		// 	"command": "cmd",
+		// 	"args": [
+		// 		"/c",
+		// 		"npx",
+		// 		"-y",
+		// 		"@upstash/context7-mcp"
+		// 	]
+		// },
 		"supabase": {
 			"type": "stdio",
 			"command": "cmd",
@@ -24,27 +24,27 @@
 				"SUPABASE_ACCESS_TOKEN": "sbp_aaeb5b5a9c91cf6daac6722c479a64e4502c0ffd"
 			}
 		},
-		"taskmaster-ai": {
-			"type": "stdio",
-			"command": "cmd",
-			"args": [
-				"/c",
-				"npx",
-				"-y",
-				"--package=task-master-ai",
-				"task-master-ai"
-			],
-			"env": {}
-		},
-    	"browsermcp": {
-      		"command": "cmd",
-      		"args": [
-				"/c", 
-				"npx",
-				"-y",
-				"@browsermcp/mcp@latest"
-			]
-		},
+		// "taskmaster-ai": {
+		// 	"type": "stdio",
+		// 	"command": "cmd",
+		// 	"args": [
+		// 		"/c",
+		// 		"npx",
+		// 		"-y",
+		// 		"--package=task-master-ai",
+		// 		"task-master-ai"
+		// 	],
+		// 	"env": {}
+		// },
+    	// "browsermcp": {
+      	// 	"command": "cmd",
+      	// 	"args": [
+		// 		"/c", 
+		// 		"npx",
+		// 		"-y",
+		// 		"@browsermcp/mcp@latest"
+		// 	]
+		// },
 		"shadcn-ui-server": {
       		"command": "cmd",
       		"args": [

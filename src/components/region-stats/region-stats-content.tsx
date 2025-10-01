@@ -16,7 +16,6 @@ import { AverageLitterKpiCard } from './average-litter-kpi-card'
 import { LitterCollectionStats } from './litter-collection-stats'
 import { EmptyState } from './empty-state'
 import { EngagementStats } from './engagement-stats'
-import { AverageLitterChart } from './average-litter-chart'
 import { LoadingSkeleton } from './loading-skeleton'
 
 interface RegionStatsContentProps {
@@ -38,11 +37,6 @@ function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; sel
       {/* Collection Stats - Compact summary */}
       {regionData.litterData && (
         <LitterCollectionStats litterData={regionData.litterData} />
-      )}
-
-      {/* Trend Chart - Separate section */}
-      {regionData.litterData && (
-        <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
       )}
 
       {/* Key Insights */}
@@ -200,7 +194,7 @@ function EngagementTab({ regionData }: { regionData: RegionData }) {
             variant="outline"
             size="sm"
             className="mt-2"
-            onClick={() => window.open('https://www.mcsuk.org/what-we-do/clean-seas-and-beaches/great-british-beach-clean', '_blank')}
+            onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
           >
             <ExternalLink className="w-4 h-4 mr-2" />
             Contribute Data
@@ -278,11 +272,20 @@ export function RegionStatsContent({
           <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
             <AlertTriangle className="h-5 w-5 text-orange-600" />
             <AlertDescription>
-              <div>
+              <div className="space-y-2">
                 <p className="font-medium">Limited Survey Data</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground">
                   This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
                 </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Contribute Data
+                </Button>
               </div>
             </AlertDescription>
           </Alert>

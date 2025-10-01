@@ -1,4 +1,10 @@
+"use client"
+
+import { useState } from "react"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Button } from "@/components/ui/button"
+import { Info, ChevronDown } from "lucide-react"
 import { YearOverYearBadge } from "./year-over-year-badge"
 import { UkComparisonText } from "./uk-comparison-text"
 import type { RegionData } from '@/types/region-types'
@@ -9,6 +15,8 @@ interface AverageLitterKpiCardProps {
 }
 
 export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitterKpiCardProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   if (!regionData.litterData) return null
 
   const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
@@ -16,7 +24,40 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   return (
     <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs">
       <CardHeader>
-        <CardDescription>Average Litter per 100m</CardDescription>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex items-center justify-between gap-2">
+            <CardDescription>Average Litter per 100m</CardDescription>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-auto w-auto p-1 hover:bg-primary/10"
+                aria-label="Toggle calculation information"
+              >
+                <Info className="h-4 w-4 text-muted-foreground" />
+                <ChevronDown
+                  className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${
+                    isOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+
+          <CollapsibleContent className="mt-2">
+            <div className="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
+              <p><strong>How is this calculated?</strong></p>
+              <p className="mt-2 text-xs">
+               First, we work out how much litter is found per 100 metres of beach, so every 
+               stretch is measured in the same way. For each beach stretch, we then find the 
+               middle result (median) from all its surveys, which gives a fair “typical” value. 
+               Finally, we take the middle of those typical values across all beaches, so no single 
+               beach or unusual survey dominates the result.
+              </p>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {averageLitterPer100m.toFixed(1)}
         </CardTitle>

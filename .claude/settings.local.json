@@ -38,7 +38,8 @@
       "mcp__shadcn-ui-server__get_component_examples",
       "mcp__browsermcp__browser_screenshot",
       "mcp__browsermcp__browser_navigate",
-      "Read(//c/Users/Greg/Pictures/Screenshots/**)"
+      "Read(//c/Users/Greg/Pictures/Screenshots/**)",
+      "Bash(git log:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

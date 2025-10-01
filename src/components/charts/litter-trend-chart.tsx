@@ -1,14 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Area, AreaChart, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError } from "./chart-error"
@@ -31,9 +24,6 @@ export interface LitterTrendChartProps extends Omit<ChartProps, 'data'> {
 
 export function LitterTrendChart({
   data,
-  title = "Average Litter Trend",
-  description = "Average litter per 100m over time (1994-2024)",
-  averageLitterValue,
   yearOverYearChange: _yearOverYearChange,
   selectedYear,
   className,
@@ -45,7 +35,7 @@ export function LitterTrendChart({
   // Chart configuration
   const chartConfig = {
     averageLitterPer100m: {
-      label: "Average Litter",
+      label: "Litter per 100m",
       color: "var(--chart-1)",
     },
   } satisfies ChartConfig
@@ -61,129 +51,98 @@ export function LitterTrendChart({
   // Loading state
   if (loading) {
     return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="text-base">{title}</CardTitle>
-          {description && <CardDescription className="text-sm">{description}</CardDescription>}
-        </CardHeader>
-        <CardContent>
-          <ChartSkeleton height={height} />
-        </CardContent>
-      </Card>
+      <div className={className}>
+        <ChartSkeleton height={height} />
+      </div>
     )
   }
 
   // Error state
   if (error) {
     return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="text-base">{title}</CardTitle>
-          {description && <CardDescription className="text-sm">{description}</CardDescription>}
-        </CardHeader>
-        <CardContent>
-          <ChartError message={error} onRetry={onRetry} />
-        </CardContent>
-      </Card>
+      <div className={className}>
+        <ChartError message={error} onRetry={onRetry} />
+      </div>
     )
   }
 
   // Empty state
   if (!chartData || chartData.length === 0) {
     return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="text-base">{title}</CardTitle>
-          {description && <CardDescription className="text-sm">{description}</CardDescription>}
-        </CardHeader>
-        <CardContent className="flex items-center justify-center" style={{ height }}>
-          <div className="text-center text-muted-foreground">
-            <p>No trend data available</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className={`flex items-center justify-center ${className}`} style={{ height }}>
+        <div className="text-center text-muted-foreground">
+          <p className="text-sm">No trend data available</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card className={`@container/chart ${className}`}>
-      <CardHeader>
-        <CardTitle className="text-base">{title}</CardTitle>
-        {description && <CardDescription className="text-sm">{description}</CardDescription>}
-      </CardHeader>
-      <CardContent>
-        <div className="bg-background/50 rounded-lg p-4 shadow-sm">
-          <ChartContainer
-            config={chartConfig}
-            className="aspect-auto w-full @[640px]/chart:h-[180px] @[480px]/chart:h-[160px] @max-[480px]/chart:h-[140px]"
-            style={{ height }}
-          >
-            <AreaChart
-              data={chartData}
-              margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-            >
-              <defs>
-                <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--color-averageLitterPer100m)"
-                    stopOpacity={0.3}
+    <div className={className}>
+      <ChartContainer
+        config={chartConfig}
+        className="w-full"
+        style={{ height }}
+      >
+        <AreaChart
+          data={chartData}
+          margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="5%"
+                stopColor="var(--color-averageLitterPer100m)"
+                stopOpacity={0.8}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--color-averageLitterPer100m)"
+                stopOpacity={0.1}
+              />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="year"
+            hide={true}
+          />
+          <YAxis
+            hide={true}
+          />
+          <ChartTooltip
+            content={<ChartTooltipContent />}
+            cursor={{
+              stroke: "var(--color-averageLitterPer100m)",
+              strokeWidth: 1,
+              strokeDasharray: "4 4",
+            }}
+          />
+          <Area
+            dataKey="averageLitterPer100m"
+            type="natural"
+            fill="url(#fillLitter)"
+            stroke="var(--color-averageLitterPer100m)"
+            dot={(props: any) => {
+              const { cx, cy, payload } = props
+              // Only show dot for the selected year
+              if (selectedYear && payload.year === selectedYear) {
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={6}
+                    fill="var(--color-averageLitterPer100m)"
+                    stroke="white"
+                    strokeWidth={2}
+                    className="animate-pulse"
                   />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--color-averageLitterPer100m)"
-                    stopOpacity={0.05}
-                  />
-                </linearGradient>
-              </defs>
-              <CartesianGrid
-                vertical={false}
-                strokeDasharray="3 3"
-                stroke="var(--muted-foreground)"
-                strokeOpacity={0.2}
-              />
-              <XAxis
-                dataKey="year"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value.toString()}
-              />
-              <ChartTooltip
-                content={<ChartTooltipContent />}
-                cursor={false}
-              />
-              <Area
-                dataKey="averageLitterPer100m"
-                type="monotone"
-                fill="url(#fillLitter)"
-                stroke="var(--color-averageLitterPer100m)"
-                strokeWidth={2}
-                dot={(props: any) => {
-                  const { cx, cy, payload } = props
-                  // Only show dot for the selected year
-                  if (selectedYear && payload.year === selectedYear) {
-                    return (
-                      <circle
-                        cx={cx}
-                        cy={cy}
-                        r={6}
-                        fill="var(--color-averageLitterPer100m)"
-                        stroke="white"
-                        strokeWidth={2}
-                        className="animate-pulse"
-                      />
-                    )
-                  }
-                  return null
-                }}
-              />
-            </AreaChart>
-          </ChartContainer>
-        </div>
-      </CardContent>
-    </Card>
+                )
+              }
+              return null
+            }}
+          />
+        </AreaChart>
+      </ChartContainer>
+    </div>
   )
 }

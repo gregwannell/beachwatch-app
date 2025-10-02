@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { InteractivePieChart, TopLitterItemsChart } from "@/components/charts"
+import { InteractivePieChart, DonutPieChart, TopLitterItemsChart } from "@/components/charts"
 import { chartColors } from "@/components/charts/chart-config"
 import { Info, ExternalLink, PieChart, Users, AlertTriangle } from "lucide-react"
 import { motion } from "motion/react"
@@ -118,14 +118,17 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
 
             <TabsContent value="material" className="mt-4">
               {regionData.litterData.materialBreakdown.length > 0 ? (
-                <InteractivePieChart
+                <DonutPieChart
                   data={regionData.litterData.materialBreakdown.map((item, index) => ({
                     name: item.material,
                     value: item.avgPer100m,
                     percentage: item.percentage,
                     fill: Object.values(chartColors)[index % Object.values(chartColors).length]
                   }))}
+                  title="Material Breakdown"
+                  description="Breakdown by material type"
                   height={250}
+                  centerLabel="Total"
                   className="w-full"
                 />
               ) : (
@@ -137,14 +140,17 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
 
             <TabsContent value="source" className="mt-4">
               {regionData.litterData.sourceBreakdown.length > 0 ? (
-                <InteractivePieChart
+                <DonutPieChart
                   data={regionData.litterData.sourceBreakdown.map((item, index) => ({
                     name: item.source,
                     value: item.avgPer100m,
                     percentage: item.percentage,
                     fill: Object.values(chartColors)[index % Object.values(chartColors).length]
                   }))}
+                  title="Source Breakdown"
+                  description="Breakdown by source type"
                   height={250}
+                  centerLabel="Total"
                   className="w-full"
                 />
               ) : (

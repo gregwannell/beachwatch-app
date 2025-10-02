@@ -39,7 +39,11 @@ export function HorizontalBarChart({
   }, [data, maxItems])
 
   const chartConfig = React.useMemo(() => {
-    const config: ChartConfig = {}
+    const config: ChartConfig = {
+      value: {
+      label: "Avg/100m",
+      },
+    }
 
     // Add color configuration for each item (like pie chart)
     processedData.forEach((item) => {
@@ -130,8 +134,8 @@ export function HorizontalBarChart({
             hide
           />
           <ChartTooltip
-            content={<ChartTooltipContent />}
             cursor={false}
+            content={<ChartTooltipContent indicator="line" />}
           />
           <Bar
             dataKey="value"

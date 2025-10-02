@@ -164,8 +164,8 @@ export function InteractivePieChart({
         >
           <PieChart>
             <ChartTooltip
-              content={<ChartTooltipContent />}
               cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
             />
             <Pie
               data={data}

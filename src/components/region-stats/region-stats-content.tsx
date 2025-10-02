@@ -98,39 +98,62 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
         </section>
       )}
 
-      {/* Material Breakdown */}
-      {regionData.litterData.materialBreakdown.length > 0 && (
+      {/* Litter Breakdown - Material and Source Tabs */}
+      {(regionData.litterData.materialBreakdown.length > 0 || regionData.litterData.sourceBreakdown.length > 0) && (
         <section className="space-y-3">
-          <InteractivePieChart
-            data={regionData.litterData.materialBreakdown.map((item, index) => ({
-              name: item.material,
-              value: item.count,
-              percentage: item.percentage,
-              fill: Object.values(chartColors)[index % Object.values(chartColors).length]
-            }))}
-            title="Material Breakdown"
-            description="Breakdown by material type"
-            height={250}
-            className="w-full"
-          />
-        </section>
-      )}
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Litter Breakdown
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Breakdown by material type and source
+            </p>
+          </div>
 
-      {/* Source Breakdown */}
-      {regionData.litterData.sourceBreakdown.length > 0 && (
-        <section className="space-y-3">
-          <InteractivePieChart
-            data={regionData.litterData.sourceBreakdown.map((item, index) => ({
-              name: item.source,
-              value: item.count,
-              percentage: item.percentage,
-              fill: Object.values(chartColors)[index % Object.values(chartColors).length]
-            }))}
-            title="Source Breakdown"
-            description="Breakdown by source type"
-            height={250}
-            className="w-full"
-          />
+          <Tabs defaultValue="material" className="w-full">
+            <TabsList>
+              <TabsTrigger value="material">By Material</TabsTrigger>
+              <TabsTrigger value="source">By Source</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="material" className="mt-4">
+              {regionData.litterData.materialBreakdown.length > 0 ? (
+                <InteractivePieChart
+                  data={regionData.litterData.materialBreakdown.map((item, index) => ({
+                    name: item.material,
+                    value: item.count,
+                    percentage: item.percentage,
+                    fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                  }))}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  No material breakdown data available
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="source" className="mt-4">
+              {regionData.litterData.sourceBreakdown.length > 0 ? (
+                <InteractivePieChart
+                  data={regionData.litterData.sourceBreakdown.map((item, index) => ({
+                    name: item.source,
+                    value: item.count,
+                    percentage: item.percentage,
+                    fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                  }))}
+                  height={250}
+                  className="w-full"
+                />
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-8">
+                  No source breakdown data available
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </section>
       )}
 

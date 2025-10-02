@@ -25,7 +25,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
 
   return (
-    <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs">
+    <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs pb-3 gap-2">
       <CardHeader>
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <div className="flex items-center justify-between gap-2">
@@ -76,9 +76,9 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50"
+            className="w-full flex items-center justify-between px-6 py-1 hover:bg-muted/50"
           >
-            <span className="text-xs font-medium">View Average Litter Trend</span>
+            <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
             <ChevronRight
               className={`h-4 w-4 transition-transform duration-200 ${
                 isTrendOpen ? 'rotate-90' : ''

@@ -91,11 +91,13 @@ export function LitterTrendChart({
           <defs>
             <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
               <stop
+                key="stop-1"
                 offset="5%"
                 stopColor="var(--color-averageLitterPer100m)"
                 stopOpacity={0.8}
               />
               <stop
+                key="stop-2"
                 offset="95%"
                 stopColor="var(--color-averageLitterPer100m)"
                 stopOpacity={0.1}

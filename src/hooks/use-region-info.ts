@@ -221,28 +221,36 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
       // Process materials data (represents top litter items)
       if (materialsResponse?.ok) {
         const materialsData: { data: { materials: MaterialBreakdown[] } } = await materialsResponse.json()
-        
+
         topItems = materialsData.data.materials.slice(0, 5).map(item => ({
           category: item.material.name,
           count: item.total,
           percentage: item.presence
         }))
 
+        // Calculate total avgPer100m for percentage calculation
+        const totalAvgPer100m = materialsData.data.materials.reduce((sum, item) => sum + item.avgPer100m, 0)
+
         materialBreakdown = materialsData.data.materials.map(item => ({
           material: item.material.name,
           count: item.total,
-          percentage: item.presence
+          avgPer100m: item.avgPer100m,
+          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0
         }))
       }
 
-      // Process sources data  
+      // Process sources data
       if (sourcesResponse?.ok) {
         const sourcesData: { data: { sources: SourceBreakdown[] } } = await sourcesResponse.json()
-        
+
+        // Calculate total avgPer100m for percentage calculation
+        const totalAvgPer100m = sourcesData.data.sources.reduce((sum, item) => sum + item.avgPer100m, 0)
+
         sourceBreakdown = sourcesData.data.sources.map(item => ({
           source: item.source.name,
           count: item.total,
-          percentage: item.presence
+          avgPer100m: item.avgPer100m,
+          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0
         }))
       }
 

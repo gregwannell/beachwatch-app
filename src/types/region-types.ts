@@ -23,11 +23,13 @@ export interface RegionData {
     materialBreakdown: Array<{
       material: string
       count: number
+      avgPer100m: number
       percentage: number
     }>
     sourceBreakdown: Array<{
       source: string
       count: number
+      avgPer100m: number
       percentage: number
     }>
     topLitterItems?: Array<{

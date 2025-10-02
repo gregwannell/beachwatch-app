@@ -203,14 +203,17 @@ export function InteractivePieChart({
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {activeData.value.toLocaleString()}
+                          {activeData.value % 1 === 0
+                            ? activeData.value.toLocaleString()
+                            : activeData.value.toFixed(1)
+                          }
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          {activeData.percentage !== undefined 
+                          {activeData.percentage !== undefined
                             ? `${activeData.percentage.toFixed(1)}%`
                             : "Items"
                           }

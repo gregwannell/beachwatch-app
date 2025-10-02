@@ -121,7 +121,7 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
                 <InteractivePieChart
                   data={regionData.litterData.materialBreakdown.map((item, index) => ({
                     name: item.material,
-                    value: item.count,
+                    value: item.avgPer100m,
                     percentage: item.percentage,
                     fill: Object.values(chartColors)[index % Object.values(chartColors).length]
                   }))}
@@ -140,7 +140,7 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
                 <InteractivePieChart
                   data={regionData.litterData.sourceBreakdown.map((item, index) => ({
                     name: item.source,
-                    value: item.count,
+                    value: item.avgPer100m,
                     percentage: item.percentage,
                     fill: Object.values(chartColors)[index % Object.values(chartColors).length]
                   }))}

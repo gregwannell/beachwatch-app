@@ -15,21 +15,16 @@ import { ChartPatterns, generateChartAriaLabel, generateChartDescription } from 
 import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError, ChartEmptyState } from "./chart-error"
 
-// Utility function to truncate long item names for labels
-function truncateLabel(label: string, maxLength: number = 20): string {
-  return label.length > maxLength ? `${label.slice(0, maxLength)}...` : label
-}
-
 export function HorizontalBarChart({
   data,
   className,
-  height = 250, // Increased slightly to accommodate full names
+  height = 300, // Increased to accommodate top labels
   maxItems = 5,
   showPercentage = false,
   loading = false,
   error,
   onRetry,
-  barThickness = 32, // New prop to control bar thickness
+  barThickness = 24, // New prop to control bar thickness
 }: BarChartProps) {
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
@@ -44,12 +39,8 @@ export function HorizontalBarChart({
   }, [data, maxItems])
 
   const chartConfig = React.useMemo(() => {
-    const config: ChartConfig = {
-      label: {
-        color: "hsl(var(--background))",
-      },
-    }
-    
+    const config: ChartConfig = {}
+
     // Add color configuration for each item (like pie chart)
     processedData.forEach((item) => {
       config[item.name] = {
@@ -57,7 +48,7 @@ export function HorizontalBarChart({
         color: item.fill,
       }
     })
-    
+
     return config
   }, [processedData])
 
@@ -119,8 +110,10 @@ export function HorizontalBarChart({
           data={processedData}
           layout="vertical"
           margin={{
+            top: 20,
             right: 16,
           }}
+          barCategoryGap="25%"
         >
           <CartesianGrid horizontal={false} />
           <XAxis
@@ -142,7 +135,6 @@ export function HorizontalBarChart({
           />
           <Bar
             dataKey="value"
-            nameKey="name"
             layout="vertical"
             radius={4}
             maxBarSize={barThickness}
@@ -152,19 +144,24 @@ export function HorizontalBarChart({
             ))}
             <LabelList
               dataKey="name"
-              position="insideLeft"
-              offset={8}
-              fill="white"
-              fontSize={12}
-              fontWeight="500"
-              style={{ textShadow: '0 0 3px rgba(0,0,0,0.3)' }}
-              formatter={(value: string) => truncateLabel(value, 10)}
+              content={({ x, y, value }) => (
+                <text
+                  x={x! + 2}              // shift right slightly from the bar start
+                  y={y! - 6}              // place above the bar
+                  fill="var(--foreground)"
+                  fontSize={12}
+                  fontWeight={500}
+                  textAnchor="start"
+                >
+                  {value}
+                </text>
+              )}
             />
             <LabelList
               dataKey="value"
-              position="right"
-              offset={8}
-              className="fill-foreground"
+              position="insideRight"
+              offset={5}
+              fill="#ffffff"
               fontSize={12}
               formatter={(value: number) => formatChartValue(value, false)}
             />

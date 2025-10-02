@@ -123,12 +123,13 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
                     name: item.material,
                     value: item.avgPer100m,
                     percentage: item.percentage,
-                    fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                    fill: Object.values(chartColors)[index % Object.values(chartColors).length],
+                    yearOverYearChange: item.yearOverYearChange
                   }))}
                   title="Material Breakdown"
                   description="Breakdown by material type"
                   height={250}
-                  centerLabel="Total"
+                  centerLabel="Avg/100m"
                   className="w-full"
                 />
               ) : (
@@ -145,12 +146,13 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
                     name: item.source,
                     value: item.avgPer100m,
                     percentage: item.percentage,
-                    fill: Object.values(chartColors)[index % Object.values(chartColors).length]
+                    fill: Object.values(chartColors)[index % Object.values(chartColors).length],
+                    yearOverYearChange: item.yearOverYearChange
                   }))}
                   title="Source Breakdown"
                   description="Breakdown by source type"
                   height={250}
-                  centerLabel="Total"
+                  centerLabel="Avg/100m"
                   className="w-full"
                 />
               ) : (

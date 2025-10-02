@@ -19,6 +19,7 @@ interface SourceBreakdown {
   total: number
   avgPer100m: number
   presence: number
+  yearOverYearChange?: number
 }
 
 interface SourcesData {
@@ -82,6 +83,8 @@ export async function GET(request: NextRequest) {
     }
     
     const validatedYears = yearValidation.years
+    const currentYear = validatedYears?.year
+
     if (validatedYears?.year) {
       aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
@@ -89,8 +92,20 @@ export async function GET(request: NextRequest) {
         .gte('year', validatedYears.startYear.toString())
         .lte('year', validatedYears.endYear.toString())
     }
-    
+
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
+
+    // Also fetch previous year data for year-over-year comparison
+    let previousYearAggregateIds: number[] = []
+    if (currentYear && regionId) {
+      const { data: prevAggregates } = await supabase
+        .from('annual_region_aggregates')
+        .select('id')
+        .eq('name_id', parseInt(regionId))
+        .eq('year', (currentYear - 1).toString())
+
+      previousYearAggregateIds = prevAggregates?.map(agg => agg.id) || []
+    }
     
     if (aggregateError) {
       const dbError = handleDatabaseError(aggregateError)
@@ -144,15 +159,38 @@ export async function GET(request: NextRequest) {
         { status: dbError.status }
       )
     }
-    
+
+    // Fetch previous year sources data for year-over-year comparison
+    let previousYearSources: { [sourceId: number]: number } = {}
+    if (previousYearAggregateIds.length > 0) {
+      const { data: prevSourceAggregates } = await supabase
+        .from('annual_source_aggregates')
+        .select('source_id, avg_per_100m')
+        .in('aggregate_id', previousYearAggregateIds)
+
+      const prevSourceGroups: { [sourceId: number]: number[] } = {}
+      prevSourceAggregates?.forEach(agg => {
+        if (!prevSourceGroups[agg.source_id]) {
+          prevSourceGroups[agg.source_id] = []
+        }
+        prevSourceGroups[agg.source_id].push(agg.avg_per_100m)
+      })
+
+      // Calculate average for previous year
+      Object.entries(prevSourceGroups).forEach(([sourceId, values]) => {
+        previousYearSources[parseInt(sourceId)] =
+          values.reduce((sum, val) => sum + val, 0) / values.length
+      })
+    }
+
     // Group and sum by source
-    const sourceGroups: { [sourceId: number]: { 
-      source: any, 
-      total: number, 
-      avgPer100m: number[], 
-      presence: number[] 
+    const sourceGroups: { [sourceId: number]: {
+      source: any,
+      total: number,
+      avgPer100m: number[],
+      presence: number[]
     } } = {}
-    
+
     sourceAggregates?.forEach(agg => {
       const sourceId = agg.source_id
       if (!sourceGroups[sourceId]) {
@@ -167,17 +205,28 @@ export async function GET(request: NextRequest) {
       sourceGroups[sourceId].avgPer100m.push(agg.avg_per_100m)
       sourceGroups[sourceId].presence.push(agg.presence)
     })
-    
-    // Calculate final breakdown
-    const sources: SourceBreakdown[] = Object.values(sourceGroups).map(group => ({
-      source: {
-        id: group.source?.id || 0,
-        name: group.source?.source || 'Unknown'
-      },
-      total: group.total,
-      avgPer100m: Math.round((group.avgPer100m.reduce((sum, val) => sum + val, 0) / group.avgPer100m.length) * 100) / 100,
-      presence: Math.round((group.presence.reduce((sum, val) => sum + val, 0) / group.presence.length) * 100) / 100
-    })).sort((a, b) => b.total - a.total)
+
+    // Calculate final breakdown with year-over-year changes
+    const sources: SourceBreakdown[] = Object.values(sourceGroups).map(group => {
+      const currentAvg = Math.round((group.avgPer100m.reduce((sum, val) => sum + val, 0) / group.avgPer100m.length) * 100) / 100
+      const prevAvg = previousYearSources[group.source?.id]
+
+      let yearOverYearChange: number | undefined
+      if (prevAvg !== undefined && prevAvg > 0) {
+        yearOverYearChange = ((currentAvg - prevAvg) / prevAvg) * 100
+      }
+
+      return {
+        source: {
+          id: group.source?.id || 0,
+          name: group.source?.source || 'Unknown'
+        },
+        total: group.total,
+        avgPer100m: currentAvg,
+        presence: Math.round((group.presence.reduce((sum, val) => sum + val, 0) / group.presence.length) * 100) / 100,
+        yearOverYearChange
+      }
+    }).sort((a, b) => b.total - a.total)
     
     // Calculate summary
     const totalLitter = sources.reduce((sum, source) => sum + source.total, 0)

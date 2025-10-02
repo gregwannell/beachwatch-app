@@ -25,12 +25,14 @@ export interface RegionData {
       count: number
       avgPer100m: number
       percentage: number
+      yearOverYearChange?: number
     }>
     sourceBreakdown: Array<{
       source: string
       count: number
       avgPer100m: number
       percentage: number
+      yearOverYearChange?: number
     }>
     topLitterItems?: Array<{
       item: {

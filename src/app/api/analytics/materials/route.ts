@@ -19,6 +19,7 @@ interface MaterialBreakdown {
   total: number
   avgPer100m: number
   presence: number
+  yearOverYearChange?: number
 }
 
 interface MaterialsData {
@@ -84,6 +85,8 @@ export async function GET(request: NextRequest) {
     }
     
     const validatedYears = yearValidation.years
+    const currentYear = validatedYears?.year
+
     if (validatedYears?.year) {
       aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
@@ -91,8 +94,20 @@ export async function GET(request: NextRequest) {
         .gte('year', validatedYears.startYear.toString())
         .lte('year', validatedYears.endYear.toString())
     }
-    
+
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
+
+    // Also fetch previous year data for year-over-year comparison
+    let previousYearAggregateIds: number[] = []
+    if (currentYear && regionId) {
+      const { data: prevAggregates } = await supabase
+        .from('annual_region_aggregates')
+        .select('id')
+        .eq('name_id', parseInt(regionId))
+        .eq('year', (currentYear - 1).toString())
+
+      previousYearAggregateIds = prevAggregates?.map(agg => agg.id) || []
+    }
     
     if (aggregateError) {
       console.error('Aggregate IDs query error:', aggregateError)
@@ -152,14 +167,37 @@ export async function GET(request: NextRequest) {
     }
     
     const materialsMap = new Map(materials_lookup?.map(m => [m.id, m.material]) || [])
-    
+
+    // Fetch previous year materials data for year-over-year comparison
+    let previousYearMaterials: { [materialId: number]: number } = {}
+    if (previousYearAggregateIds.length > 0) {
+      const { data: prevMaterialAggregates } = await supabase
+        .from('annual_material_aggregates')
+        .select('material_id, avg_per_100m')
+        .in('aggregate_id', previousYearAggregateIds)
+
+      const prevMaterialGroups: { [materialId: number]: number[] } = {}
+      prevMaterialAggregates?.forEach(agg => {
+        if (!prevMaterialGroups[agg.material_id]) {
+          prevMaterialGroups[agg.material_id] = []
+        }
+        prevMaterialGroups[agg.material_id].push(agg.avg_per_100m)
+      })
+
+      // Calculate average for previous year
+      Object.entries(prevMaterialGroups).forEach(([materialId, values]) => {
+        previousYearMaterials[parseInt(materialId)] =
+          values.reduce((sum, val) => sum + val, 0) / values.length
+      })
+    }
+
     // Group and sum by material
-    const materialGroups: { [materialId: number]: { 
-      total: number, 
-      avgPer100m: number[], 
-      presence: number[] 
+    const materialGroups: { [materialId: number]: {
+      total: number,
+      avgPer100m: number[],
+      presence: number[]
     } } = {}
-    
+
     materialAggregates?.forEach(agg => {
       const materialId = agg.material_id
       if (!materialGroups[materialId]) {
@@ -173,17 +211,28 @@ export async function GET(request: NextRequest) {
       materialGroups[materialId].avgPer100m.push(agg.avg_per_100m)
       materialGroups[materialId].presence.push(agg.presence)
     })
-    
-    // Calculate final breakdown
-    const materials: MaterialBreakdown[] = Object.entries(materialGroups).map(([materialId, group]) => ({
-      material: {
-        id: parseInt(materialId),
-        name: materialsMap.get(parseInt(materialId)) || 'Unknown'
-      },
-      total: group.total,
-      avgPer100m: Math.round((group.avgPer100m.reduce((sum, val) => sum + val, 0) / group.avgPer100m.length) * 100) / 100,
-      presence: Math.round((group.presence.reduce((sum, val) => sum + val, 0) / group.presence.length) * 100) / 100
-    })).sort((a, b) => b.total - a.total)
+
+    // Calculate final breakdown with year-over-year changes
+    const materials: MaterialBreakdown[] = Object.entries(materialGroups).map(([materialId, group]) => {
+      const currentAvg = Math.round((group.avgPer100m.reduce((sum, val) => sum + val, 0) / group.avgPer100m.length) * 100) / 100
+      const prevAvg = previousYearMaterials[parseInt(materialId)]
+
+      let yearOverYearChange: number | undefined
+      if (prevAvg !== undefined && prevAvg > 0) {
+        yearOverYearChange = ((currentAvg - prevAvg) / prevAvg) * 100
+      }
+
+      return {
+        material: {
+          id: parseInt(materialId),
+          name: materialsMap.get(parseInt(materialId)) || 'Unknown'
+        },
+        total: group.total,
+        avgPer100m: currentAvg,
+        presence: Math.round((group.presence.reduce((sum, val) => sum + val, 0) / group.presence.length) * 100) / 100,
+        yearOverYearChange
+      }
+    }).sort((a, b) => b.total - a.total)
     
     // Calculate summary
     const totalLitter = materials.reduce((sum, material) => sum + material.total, 0)

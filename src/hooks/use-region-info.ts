@@ -35,6 +35,7 @@ interface MaterialBreakdown {
   total: number
   avgPer100m: number
   presence: number
+  yearOverYearChange?: number
 }
 
 interface SourceBreakdown {
@@ -45,6 +46,7 @@ interface SourceBreakdown {
   total: number
   avgPer100m: number
   presence: number
+  yearOverYearChange?: number
 }
 
 interface LitterItemBreakdown {
@@ -235,7 +237,8 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           material: item.material.name,
           count: item.total,
           avgPer100m: item.avgPer100m,
-          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0
+          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          yearOverYearChange: item.yearOverYearChange
         }))
       }
 
@@ -250,7 +253,8 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           source: item.source.name,
           count: item.total,
           avgPer100m: item.avgPer100m,
-          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0
+          percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          yearOverYearChange: item.yearOverYearChange
         }))
       }
 

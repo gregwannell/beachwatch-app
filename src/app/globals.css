@@ -64,6 +64,10 @@
   --color-forest-800: var(--forest-800);
   --color-forest-900: var(--forest-900);
   --color-forest-950: var(--forest-950);
+  --color-mcs-teal: var(--mcs-teal);
+  --color-mcs-orange: var(--mcs-orange);
+  --color-mcs-navy: var(--mcs-navy);
+  --color-mcs-light-blue: var(--mcs-light-blue);
 }
 
 :root {
@@ -139,6 +143,12 @@
   --forest-800: oklch(0.25 0.12 140);
   --forest-900: oklch(0.15 0.08 140);
   --forest-950: oklch(0.08 0.04 140);
+
+  /* MCS Brand Colors */
+  --mcs-teal: #00B8C8;
+  --mcs-orange: #F7941D;
+  --mcs-navy: #2B3647;
+  --mcs-light-blue: #E8F4F8;
 }
 
 .dark {

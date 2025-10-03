@@ -22,6 +22,43 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent dark:from-blue-950/40 dark:via-blue-950/20 dark:to-transparent" />
       </div>
 
+      {/* Fixed Navigation Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 dark:bg-blue-950/80 border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Left: Small MCS Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <Image
+              src="/mcs-logo.png"
+              alt="Marine Conservation Society"
+              width={200}
+              height={48}
+              className="h-10 w-auto"
+              priority
+            />
+          </Link>
+
+          {/* Center: Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="/" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+              Home
+            </Link>
+            <Link href="#" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+              How to Use
+            </Link>
+            <Link href="#" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+              Contact
+            </Link>
+          </nav>
+
+          {/* Right: Small Explore Button */}
+          <Button asChild size="sm" className="bg-mcs-orange hover:bg-mcs-orange/90 text-white rounded-full">
+            <Link href="/explore">
+              Explore the Data
+            </Link>
+          </Button>
+        </div>
+      </header>
+
       {/* Content overlay */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12">
         {/* Logo and branding */}

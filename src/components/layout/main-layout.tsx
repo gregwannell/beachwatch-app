@@ -28,10 +28,10 @@ export function MainLayout({
       
       {/* Left Sidebar Provider */}
       <SidebarProvider>
-        <Sidebar side="left" className="border-r bg-gradient-subtle" aria-label="Data filters">
-          <SidebarHeader className="border-b p-4 bg-background/50 backdrop-blur-sm">
+        <Sidebar side="left" variant="inset" aria-label="Data filters">
+          <SidebarHeader className="bg-background/50 backdrop-blur-sm">
             <h2 className="font-semibold text-xl flex items-center gap-2">
-              <Waves className="h-8 w-8 text-primary" />
+              <img src="/MCS_logo_Stacked_Ink.png" alt="Marine Conservation Society" className="h-8" />
               Beachwatch Data Explorer
             </h2>
           </SidebarHeader>
@@ -62,27 +62,25 @@ export function MainLayout({
 
         <SidebarInset className="flex-1">
           {/* Main Content Area - Map */}
-          <div className="h-screen">
-            <div className="h-full relative" role="main" aria-label="Interactive map">
-              {/* Floating Sidebar Trigger */}
-              <div className="absolute top-4 left-4 z-[1000]">
-                <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
-              </div>
+          <div className="h-screen relative" role="main" aria-label="Interactive map">
+            {/* Floating Sidebar Trigger */}
+            <div className="absolute top-4 left-4 z-[1000]">
+              <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
+            </div>
 
-              <div className="absolute inset-0" id="main-content">
-                {children || (
-                  <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">
-                    <div className="text-center">
-                      <div className="text-2xl font-semibold text-ocean-600 dark:text-ocean-400 mb-2">
-                        Interactive Map
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Map component will be rendered here
-                      </div>
+            <div className="h-full" id="main-content">
+              {children || (
+                <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">
+                  <div className="text-center">
+                    <div className="text-2xl font-semibold text-ocean-600 dark:text-ocean-400 mb-2">
+                      Interactive Map
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Map component will be rendered here
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </SidebarInset>

@@ -7,11 +7,23 @@ import Image from 'next/image'
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-blue-950 dark:via-background dark:to-blue-950">
-      {/* Background pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/50 to-transparent dark:via-background/50" />
+    <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-16 md:pt-20">
+      {/* Beach scene illustration as background */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/Littered Beach Full Scene.png"
+          alt="Beach scene illustration"
+          width={3000}
+          height={600}
+          className="w-full h-full object-cover object-center"
+          priority
+        />
+        {/* Gradient overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-transparent dark:from-blue-950/40 dark:via-blue-950/20 dark:to-transparent" />
+      </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      {/* Content overlay */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-12">
         {/* Logo and branding */}
         <div className="flex justify-center mb-8">
           <Image
@@ -19,56 +31,43 @@ export function HeroSection() {
             alt="Marine Conservation Society"
             width={400}
             height={96}
-            className="h-24 w-auto"
+            className="h-24 w-auto drop-shadow-lg"
             priority
           />
         </div>
 
         {/* Main headline */}
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-6">
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-mcs-navy dark:text-white mb-6 drop-shadow-md">
           <span className="block">Explore UK</span>
-          <span className="block text-primary">Beach Litter Data</span>
+          <span className="block">Beach Litter Data</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
+        <p className="text-xl md:text-2xl text-mcs-navy dark:text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed drop-shadow-sm">
           Discover comprehensive beach litter survey data from across the UK.
           Visualize trends, explore regional patterns, and understand the impact
           of marine pollution on our coastlines.
         </p>
 
-        {/* Key stats */}
-        <div className="flex flex-wrap justify-center gap-6 mb-12 text-sm font-medium">
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-background/50 rounded-full border">
-            <Map className="h-4 w-4 text-primary" />
-            <span>Regional Coverage</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-background/50 rounded-full border">
-            <BarChart3 className="h-4 w-4 text-primary" />
-            <span>Interactive Analytics</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/50 dark:bg-background/50 rounded-full border">
-            <Waves className="h-4 w-4 text-primary" />
-            <span>Environmental Impact</span>
-          </div>
-        </div>
-
         {/* CTA Button */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button asChild size="lg" className="text-lg px-8 py-6 h-auto">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+          <Button asChild size="lg" className="text-lg px-8 py-3 h-auto bg-mcs-orange hover:bg-mcs-orange/90 text-white shadow-lg rounded-full">
             <Link href="/explore" className="flex items-center gap-2">
               Explore the Data
-              <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 h-auto">
+          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto border-2 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white/20 backdrop-blur-sm shadow-lg rounded-full">
             <Link href="#features">
               Learn More
             </Link>
           </Button>
         </div>
 
+        {/* Powered by text */}
+        <p className="text-sm text-mcs-navy/80 dark:text-white/80">
+          Powered by Marine Conservation Society volunteer survey data
+        </p>
       </div>
     </section>
   )

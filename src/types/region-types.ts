@@ -51,6 +51,12 @@ export interface RegionData {
       percentDifference: number
       multiplier: number
     }
+    plasticPolystyreneComparison?: {
+      regionalAvgPer100m: number
+      regionalShare: number
+      ukShare: number
+      shareDifference: number
+    }
     trendData?: Array<{
       year: number
       averageLitterPer100m: number

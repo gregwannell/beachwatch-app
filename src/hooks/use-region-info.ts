@@ -202,7 +202,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 
       // Fetch detailed breakdown data in parallel
       const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse] = await Promise.all([
+      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse, ukMaterialsResponse] = await Promise.all([
         fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
@@ -211,6 +211,10 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         // Don't filter by year - we need all years for comparison
         region.name !== 'United Kingdom'
           ? fetch(`/api/regions/1?includeAggregates=true`).catch(() => null)
+          : null,
+        // Fetch UK material breakdown for plastic/polystyrene comparison
+        region.name !== 'United Kingdom'
+          ? fetch(`/api/analytics/materials?regionId=1&limit=5${yearQueryParam}`).catch(() => null)
           : null
       ])
 
@@ -311,6 +315,35 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         }
       }
 
+      // Calculate plastic/polystyrene comparison
+      let plasticPolystyreneComparison: RegionData['litterData']['plasticPolystyreneComparison'] = undefined
+      if (ukMaterialsResponse?.ok && materialBreakdown.length > 0) {
+        const ukMaterialsData: { data: { materials: MaterialBreakdown[] } } = await ukMaterialsResponse.json()
+
+        // Find plastic/polystyrene in regional data
+        const regionalPlastic = materialBreakdown.find(m =>
+          m.material.toLowerCase().includes('plastic') || m.material.toLowerCase().includes('polystyrene')
+        )
+
+        // Find plastic/polystyrene in UK data
+        const ukPlastic = ukMaterialsData.data.materials.find(m =>
+          m.material.name.toLowerCase().includes('plastic') || m.material.name.toLowerCase().includes('polystyrene')
+        )
+
+        if (regionalPlastic && ukPlastic) {
+          // Calculate total avgPer100m for UK materials to get percentage
+          const ukTotalAvgPer100m = ukMaterialsData.data.materials.reduce((sum, item) => sum + item.avgPer100m, 0)
+          const ukPlasticShare = ukTotalAvgPer100m > 0 ? (ukPlastic.avgPer100m / ukTotalAvgPer100m) * 100 : 0
+
+          plasticPolystyreneComparison = {
+            regionalAvgPer100m: regionalPlastic.avgPer100m,
+            regionalShare: regionalPlastic.percentage,
+            ukShare: ukPlasticShare,
+            shareDifference: regionalPlastic.percentage - ukPlasticShare
+          }
+        }
+      }
+
       // Calculate aggregate totals from filtered aggregates
       const totalLitter = filteredAggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
       const totalLengthSurveyed = filteredAggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
@@ -333,6 +366,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           averageLitterPer100m,
           yearOverYearChange,
           ukAverageComparison,
+          plasticPolystyreneComparison,
           trendData,
           totalLitter,
           totalLengthSurveyed,

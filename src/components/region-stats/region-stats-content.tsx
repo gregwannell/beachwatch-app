@@ -55,6 +55,38 @@ function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; sel
                 </p>
               </div>
             )}
+
+            {regionData.litterData.sourceBreakdown && regionData.litterData.sourceBreakdown.length > 0 && (
+              <div className="p-4 rounded-lg border bg-card">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Info className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">Top Litter Source</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <strong>{regionData.litterData.sourceBreakdown[0].source}</strong> is the primary source
+                  ({regionData.litterData.sourceBreakdown[0].avgPer100m.toFixed(1)} per 100m, {regionData.litterData.sourceBreakdown[0].percentage.toFixed(1)}% share)
+                </p>
+              </div>
+            )}
+
+            {regionData.litterData.plasticPolystyreneComparison && (
+              <div className="p-4 rounded-lg border bg-card">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Info className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-medium">Plastic/Polystyrene</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <strong>{regionData.litterData.plasticPolystyreneComparison.regionalAvgPer100m.toFixed(1)} per 100m</strong> ({regionData.litterData.plasticPolystyreneComparison.regionalShare.toFixed(1)}% of litter).
+                  {regionData.litterData.plasticPolystyreneComparison.shareDifference > 0 ? (
+                    <> This is <strong>{Math.abs(regionData.litterData.plasticPolystyreneComparison.shareDifference).toFixed(1)}% higher</strong> than the UK average ({regionData.litterData.plasticPolystyreneComparison.ukShare.toFixed(1)}%).</>
+                  ) : regionData.litterData.plasticPolystyreneComparison.shareDifference < 0 ? (
+                    <> This is <strong>{Math.abs(regionData.litterData.plasticPolystyreneComparison.shareDifference).toFixed(1)}% lower</strong> than the UK average ({regionData.litterData.plasticPolystyreneComparison.ukShare.toFixed(1)}%).</>
+                  ) : (
+                    <> This matches the UK average ({regionData.litterData.plasticPolystyreneComparison.ukShare.toFixed(1)}%).</>
+                  )}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

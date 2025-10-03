@@ -1,13 +1,13 @@
 import type { ChartConfig } from "@/components/ui/chart"
 
-// Modern, vibrant color palette inspired by shadcn charts
-// These colors are designed to be visually appealing and distinguishable
+// MCS brand colors from globals.css
+// These colors align with Marine Conservation Society branding
 export const chartColors = {
-  primary: "hsl(221, 83%, 53%)",    // Bright blue like the reference
-  secondary: "hsl(212, 95%, 68%)",  // Light blue
-  tertiary: "hsl(262, 83%, 58%)",   // Purple
-  quaternary: "hsl(142, 76%, 36%)", // Green
-  quinary: "hsl(346, 87%, 43%)",    // Red/pink
+  primary: "var(--mcs-clear-blue)",
+  secondary: "var(--mcs-orange)",
+  tertiary: "var(--mcs-teal)",
+  quaternary: "var(--mcs-navy)",
+  quinary: "var(--mcs-red)",
 } as const
 
 // Pattern definitions for additional accessibility

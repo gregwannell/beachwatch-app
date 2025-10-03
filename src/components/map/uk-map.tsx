@@ -25,13 +25,13 @@ const UK_BOUNDS = new LatLngBounds(
 
 // Geographic region colors
 const REGION_COLORS = {
-  scotland: '#5f99de',        // Blue
-  england: '#ecab3b',         // Orange
-  wales: '#e46558',           // Red
-  northernIreland: '#8bc53d', // Green
-  guernsey: '#20263e',        // Dark blue
-  jersey: '#20263e',          // Dark blue
-  isleOfMan: '#d5e4f6'        // Light blue
+  scotland: 'var(--mcs-clear-blue)',        // Blue
+  england: 'var(--mcs-orange)',         // Orange
+  wales: 'var(--mcs-red)',           // Red
+  northernIreland: 'var(--mcs-green)', // Green
+  guernsey: 'var(--mcs-navy)',        // Dark blue
+  jersey: 'var(--mcs-navy)',          // Dark blue
+  isleOfMan: 'var(--mcs-light-blue)'        // Light blue
 }
 
 // Function to calculate bounds from GeoJSON geometry
@@ -150,7 +150,7 @@ export function UKMap({
 
       if (combinedBounds) {
         mapRef.current.fitBounds(combinedBounds, {
-          padding: [20, 20],
+          padding: [20, 40],
           maxZoom: 8  // Country-level zoom when fitting multiple regions
         })
       }

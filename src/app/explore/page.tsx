@@ -256,7 +256,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <Card className="h-full overflow-hidden rounded-none border-0 py-4 shadow-lg">
+          <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
             <div className="h-full flex flex-col lg:flex-row">
               {/* Map Section */}
               <div className="relative flex-1 h-1/2 lg:h-full lg:w-[70%] overflow-hidden">

@@ -10,8 +10,8 @@ import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
-import { Button } from '@/components/ui/button'
-import { BarChart3, X } from 'lucide-react'
+import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
 import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 
@@ -34,7 +34,6 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
 export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(1) // Default to UK (region ID 1)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
-  const [isStatsOpen, setIsStatsOpen] = useState(false)
   const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
   const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
 
@@ -245,7 +244,7 @@ export default function Home() {
       }
       regionData={regionData || undefined}
     >
-      <div className="h-full w-full">
+      <div className="h-full w-full p-4">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -257,69 +256,54 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <>
+          <Card className="h-full overflow-hidden rounded-xl border shadow-lg">
+            <div className="h-full flex flex-col lg:flex-row">
+              {/* Map Section */}
+              <div className="relative flex-1 h-1/2 lg:h-full lg:w-[70%] overflow-hidden">
+                {/* Show loading overlay only during very first map load */}
+                {isLoading && !hasLoadedInitialRegions ? (
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
+                    <div className="space-y-4 text-center">
+                      <div className="text-2xl">🗺️</div>
+                      <Skeleton className="h-8 w-48 mx-auto" />
+                      <p className="text-sm text-muted-foreground">Loading interactive map...</p>
+                    </div>
+                  </div>
+                ) : null}
 
-            {/* Floating Stats Button */}
-            <div className="absolute top-4 right-4 z-[10000] pointer-events-auto">
-              <Button
-                variant="default"
-                size="lg"
-                className="shadow-lg bg-white text-foreground hover:bg-gray-50 border border-border"
-                onClick={() => setIsStatsOpen(true)}
-              >
-                <BarChart3 className="w-5 h-5 mr-2" />
-                Show Stats
-              </Button>
-            </div>
+                <UKMap
+                  regions={regions}
+                  selectedRegionId={effectiveSelectedRegionId}
+                  onRegionClick={handleRegionClick}
+                  onRegionHover={handleRegionHover}
+                  mapTheme={mapTheme}
+                  resetToUKView={resetMapView}
+                  zoomToRegionId={zoomToRegionId}
+                  className="h-full w-full"
+                />
 
-            {/* Custom Stats Panel */}
-            <div className={`
-              fixed top-0 right-0 h-full w-[30%] bg-background border-l border-border shadow-2xl
-              transform transition-transform duration-300 ease-in-out z-[10003]
-              ${isStatsOpen ? 'translate-x-0' : 'translate-x-full'}
-            `}>
-              <div className="flex flex-col h-full">
-                {/* Content */}
-                <div className="flex-1 overflow-auto">
-                  <RegionStatsContent
-                    regionData={regionData || undefined}
-                    isLoading={isRegionLoading}
-                    onRegionSelect={handleRegionSelect}
-                    selectedYear={filters.yearRange.startYear}
-                  />
-                </div>
+                {/* Region name tooltip */}
+                <RegionTooltip
+                  hoverState={hoverState}
+                  regions={regions}
+                />
+              </div>
+
+              {/* Separator */}
+              <Separator orientation="vertical" className="hidden lg:block" />
+              <Separator orientation="horizontal" className="lg:hidden" />
+
+              {/* Stats Panel */}
+              <div className="h-1/2 lg:h-full lg:w-[30%] overflow-auto bg-background">
+                <RegionStatsContent
+                  regionData={regionData || undefined}
+                  isLoading={isRegionLoading}
+                  onRegionSelect={handleRegionSelect}
+                  selectedYear={filters.yearRange.startYear}
+                />
               </div>
             </div>
-
-            {/* Show loading overlay only during very first map load */}
-            {isLoading && !hasLoadedInitialRegions ? (
-              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
-                <div className="space-y-4 text-center">
-                  <div className="text-2xl">🗺️</div>
-                  <Skeleton className="h-8 w-48 mx-auto" />
-                  <p className="text-sm text-muted-foreground">Loading interactive map...</p>
-                </div>
-              </div>
-            ) : null}
-
-            <UKMap
-              regions={regions}
-              selectedRegionId={effectiveSelectedRegionId}
-              onRegionClick={handleRegionClick}
-              onRegionHover={handleRegionHover}
-              mapTheme={mapTheme}
-              resetToUKView={resetMapView}
-              zoomToRegionId={zoomToRegionId}
-              className="h-full w-full"
-            />
-
-            {/* Region name tooltip */}
-            <RegionTooltip
-              hoverState={hoverState}
-              regions={regions}
-            />
-
-          </>
+          </Card>
         )}
       </div>
     </MainLayout>

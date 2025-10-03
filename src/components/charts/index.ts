@@ -9,6 +9,7 @@ export { InteractivePieChart } from './interactive-pie-chart'
 export { DonutPieChart } from './donut-pie-chart'
 export { TopLitterItemsChart } from './top-litter-items-chart'
 export { LitterTrendChart } from './litter-trend-chart'
+export { LitterBreakdownChart } from './litter-breakdown-chart'
 
 // State management
 export { ChartSkeleton } from './chart-skeleton'

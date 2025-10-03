@@ -3,6 +3,13 @@
 import * as React from "react"
 import { HorizontalBarChart } from "./horizontal-bar-chart"
 import type { BarChartData, ChartProps } from "./types"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface LitterItemData {
   item: {
@@ -41,7 +48,7 @@ export function TopLitterItemsChart({
 }: TopLitterItemsChartProps) {
   const chartData = React.useMemo((): BarChartData[] => {
     if (!data || data.length === 0) return []
-    
+
     return data
       .slice(0, maxItems)
       .map((item) => ({
@@ -53,32 +60,30 @@ export function TopLitterItemsChart({
   }, [data, maxItems, showAvgPer100m])
 
   return (
-    <div className="space-y-3">
-      {title && (
-        <div className="space-y-1">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            {title}
-          </h3>
-          {description && (
-            <p className="text-xs text-muted-foreground">
-              {description}
-            </p>
-          )}
-        </div>
-      )}
-      
-      <HorizontalBarChart
-        data={chartData}
-        className={className}
-        height={height}
-        maxItems={maxItems}
-        showPercentage={showPercentage}
-        showCount={showCount}
-        loading={loading}
-        error={error}
-        onRetry={onRetry}
-        barThickness={barThickness}
-      />
-    </div>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        {description && (
+          <CardDescription className="text-xs">
+            {description}
+          </CardDescription>
+        )}
+      </CardHeader>
+      <CardContent>
+        <HorizontalBarChart
+          data={chartData}
+          height={height}
+          maxItems={maxItems}
+          showPercentage={showPercentage}
+          showCount={showCount}
+          loading={loading}
+          error={error}
+          onRetry={onRetry}
+          barThickness={barThickness}
+        />
+      </CardContent>
+    </Card>
   )
 }

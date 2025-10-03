@@ -108,7 +108,7 @@ export function HorizontalBarChart({
       >
         <ChartContainer
           config={chartConfig}
-          className="min-h-[200px] w-full rounded-lg border bg-card shadow-sm"
+          className="min-h-[200px] w-full"
           style={{ height }}
         >
         <BarChart
@@ -121,7 +121,7 @@ export function HorizontalBarChart({
           }}
           barCategoryGap="25%"
         >
-          <CartesianGrid horizontal={false} />
+          <CartesianGrid horizontal={false} vertical={false} />
           <XAxis
             type="number"
             dataKey="value"

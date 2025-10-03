@@ -36,7 +36,7 @@ export function LitterTrendChart({
   const chartConfig = {
     averageLitterPer100m: {
       label: "Litter per 100m",
-      color: "var(--chart-1)",
+      color: "var(--mcs-clear-blue)",
     },
   } satisfies ChartConfig
 

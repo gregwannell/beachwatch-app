@@ -5,13 +5,6 @@ import { Label, Pie, PieChart } from "recharts"
 import { ArrowUp, ArrowDown, Minus } from "lucide-react"
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
@@ -68,20 +61,19 @@ export function DonutPieChart({
 
   if (!data || data.length === 0) {
     return (
-      <Card className={className}>
-
-        <CardContent className="flex items-center justify-center h-[200px]">
+      <div className={className}>
+        <div className="flex items-center justify-center h-[200px]">
           <div className="text-center text-muted-foreground">
             <p>No data available</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card className={`flex flex-col pt-0 ${className}`}>
-      <CardContent className="flex-1">
+    <div className={className}>
+      <div className="flex-1">
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -196,7 +188,7 @@ export function DonutPieChart({
             })}
           </ul>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

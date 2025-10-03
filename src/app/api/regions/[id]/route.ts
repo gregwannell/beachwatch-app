@@ -39,22 +39,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .single()
     
     const { data: region, error: regionError } = await regionQuery
-    
-    if (regionError) {
-      if (regionError.code === 'PGRST116') {
+
+    if (regionError || !region) {
+      if (regionError?.code === 'PGRST116') {
         return NextResponse.json(
           { error: 'Region not found' },
           { status: 404 }
         )
       }
-      
+
       console.error('Database error:', regionError)
       return NextResponse.json(
-        { error: 'Failed to fetch region', details: regionError.message },
+        { error: 'Failed to fetch region', details: regionError?.message || 'Unknown error' },
         { status: 500 }
       )
     }
-    
+
     // Validate and process geometry
     if (includeGeometry && region.geometry) {
       const isValid = validateRegionGeometry(region.geometry)

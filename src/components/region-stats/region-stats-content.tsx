@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { InteractivePieChart, DonutPieChart, TopLitterItemsChart } from "@/components/charts"
-import { chartColors } from "@/components/charts/chart-config"
+import { InteractivePieChart, TopLitterItemsChart, LitterBreakdownChart } from "@/components/charts"
 import { Info, ExternalLink, PieChart, Users, AlertTriangle } from "lucide-react"
 import { motion } from "motion/react"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
@@ -84,85 +83,28 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
     <div className="space-y-6">
       {/* Top Litter Items */}
       {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
-        <section className="space-y-3">
-          <TopLitterItemsChart
-            data={regionData.litterData.topLitterItems}
-            title="Top Litter Items"
-            description="Most common litter items by average per 100m"
-            height={220}
-            maxItems={5}
-            showAvgPer100m={true}
-            className="w-full"
-            barThickness={30}
-          />
-        </section>
+        <TopLitterItemsChart
+          data={regionData.litterData.topLitterItems}
+          title="Top Litter Items"
+          description="Most common litter items by average per 100m"
+          height={220}
+          maxItems={5}
+          showAvgPer100m={true}
+          className="w-full"
+          barThickness={30}
+        />
       )}
 
       {/* Litter Breakdown - Material and Source Tabs */}
       {(regionData.litterData.materialBreakdown.length > 0 || regionData.litterData.sourceBreakdown.length > 0) && (
-        <section className="space-y-3">
-          <div className="space-y-1">
-            <h3 className="text-sm font-medium text-muted-foreground">
-              Litter Breakdown
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Breakdown by material type and source
-            </p>
-          </div>
-
-          <Tabs defaultValue="material" className="w-full">
-            <TabsList>
-              <TabsTrigger value="material">By Material</TabsTrigger>
-              <TabsTrigger value="source">By Source</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="material" className="mt-4">
-              {regionData.litterData.materialBreakdown.length > 0 ? (
-                <DonutPieChart
-                  data={regionData.litterData.materialBreakdown.map((item, index) => ({
-                    name: item.material,
-                    value: item.avgPer100m,
-                    percentage: item.percentage,
-                    fill: Object.values(chartColors)[index % Object.values(chartColors).length],
-                    yearOverYearChange: item.yearOverYearChange
-                  }))}
-                  title="Material Breakdown"
-                  description="Breakdown by material type"
-                  height={250}
-                  centerLabel="Avg/100m"
-                  className="w-full"
-                />
-              ) : (
-                <div className="text-sm text-muted-foreground text-center py-8">
-                  No material breakdown data available
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="source" className="mt-4">
-              {regionData.litterData.sourceBreakdown.length > 0 ? (
-                <DonutPieChart
-                  data={regionData.litterData.sourceBreakdown.map((item, index) => ({
-                    name: item.source,
-                    value: item.avgPer100m,
-                    percentage: item.percentage,
-                    fill: Object.values(chartColors)[index % Object.values(chartColors).length],
-                    yearOverYearChange: item.yearOverYearChange
-                  }))}
-                  title="Source Breakdown"
-                  description="Breakdown by source type"
-                  height={250}
-                  centerLabel="Avg/100m"
-                  className="w-full"
-                />
-              ) : (
-                <div className="text-sm text-muted-foreground text-center py-8">
-                  No source breakdown data available
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </section>
+        <LitterBreakdownChart
+          materialBreakdown={regionData.litterData.materialBreakdown}
+          sourceBreakdown={regionData.litterData.sourceBreakdown}
+          title="Litter Breakdown"
+          description="Breakdown by material type and source"
+          height={250}
+          className="w-full"
+        />
       )}
 
       {/* Partial data notification */}

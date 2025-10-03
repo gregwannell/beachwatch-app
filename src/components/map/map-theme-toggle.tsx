@@ -1,7 +1,7 @@
 'use client'
 
 import { Sun, Moon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { type MapTheme } from '@/lib/map-themes'
 
 interface MapThemeToggleProps {
@@ -15,24 +15,20 @@ export function MapThemeToggle({
   onThemeChange,
   className = ""
 }: MapThemeToggleProps) {
-  const handleToggle = () => {
-    onThemeChange(theme === 'light' ? 'dark' : 'light')
+  const handleToggle = (checked: boolean) => {
+    onThemeChange(checked ? 'dark' : 'light')
   }
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={handleToggle}
-      className={className}
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} map theme`}
-      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} map theme`}
-    >
-      {theme === 'light' ? (
-        <Moon className="h-4 w-4" />
-      ) : (
-        <Sun className="h-4 w-4" />
-      )}
-    </Button>
+    <div className={`flex items-center gap-2 ${className}`}>
+      <Sun className="h-4 w-4 text-muted-foreground" />
+      <Switch
+        id="map-theme-toggle"
+        checked={theme === 'dark'}
+        onCheckedChange={handleToggle}
+        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} map theme`}
+      />
+      <Moon className="h-4 w-4 text-muted-foreground" />
+    </div>
   )
 }

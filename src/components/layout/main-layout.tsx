@@ -1,11 +1,8 @@
 "use client"
 
-import { Button } from '@/components/ui/button'
-import { Menu, Waves } from 'lucide-react'
-import { useState } from 'react'
-import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader } from '@/components/ui/sidebar'
-import { Separator } from '@/components/ui/separator'
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { Waves } from 'lucide-react'
+import Image from 'next/image'
+import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar'
 import type { RegionData } from '@/types/region-types'
 
 interface MainLayoutProps {
@@ -19,43 +16,6 @@ export function MainLayout({
   sidebar,
   regionData
 }: MainLayoutProps) {
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-
-  // Generate breadcrumb hierarchy
-  const getBreadcrumbHierarchy = () => {
-    if (!regionData) return []
-
-    const hierarchy = []
-
-    // Always start with United Kingdom unless we're already at UK level
-    if (regionData.name !== 'United Kingdom') {
-      hierarchy.push({ level: 'country', name: 'United Kingdom' })
-    }
-
-    if (regionData.level === 'region' && regionData.parentName) {
-      // For regions: UK > [Country/County] > Region
-      // The parentName could be either a country or county depending on data structure
-      hierarchy.push({ level: 'parent', name: regionData.parentName })
-      hierarchy.push({ level: 'region', name: regionData.name })
-    } else if (regionData.level === 'county') {
-      // For counties: UK > [Country if exists] > County
-      if (regionData.parentName && regionData.parentName !== 'United Kingdom') {
-        hierarchy.push({ level: 'country', name: regionData.parentName })
-      }
-      hierarchy.push({ level: 'county', name: regionData.name })
-    } else if (regionData.level === 'country' || regionData.level === 'Crown Dependency') {
-      // For countries: UK > Country
-      hierarchy.push({ level: regionData.level, name: regionData.name })
-    } else {
-      // For UK itself or other levels: just the region name
-      hierarchy.push({ level: regionData.level, name: regionData.name })
-    }
-
-    return hierarchy
-  }
-
-  const breadcrumbHierarchy = getBreadcrumbHierarchy()
-
   return (
     <div className="flex h-screen bg-background">
       {/* Skip link for keyboard navigation */}
@@ -87,73 +47,28 @@ export function MainLayout({
               </div>
             )}
           </SidebarContent>
+          <SidebarFooter className="border-t p-4">
+            <div className="flex justify-left">
+              <Image
+                src="/mcs-logo.png"
+                alt="Marine Conservation Society"
+                width={200}
+                height={60}
+                className="h-15 w-auto opacity-80"
+              />
+            </div>
+          </SidebarFooter>
         </Sidebar>
 
         <SidebarInset className="flex-1">
-          {/* Header */}
-          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm" role="banner">
-            <div className="flex h-16 items-center gap-2 sm:gap-4 px-4 sm:px-6">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mr-2 h-4" />
-              
-              <div className="flex items-center justify-between flex-1">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="hidden sm:flex items-center space-x-2">
-                      <img
-                        src="/mcs-logo.png"
-                        alt="Marine Conservation Society"
-                        className="h-8 w-auto"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Regional Breadcrumb */}
-                  {breadcrumbHierarchy.length > 0 && (
-                    <div className="hidden md:block">
-                      <Breadcrumb>
-                        <BreadcrumbList>
-                          {breadcrumbHierarchy.map((item, index) => (
-                            <div key={index} className="flex items-center">
-                              {index > 0 && <BreadcrumbSeparator />}
-                              <BreadcrumbItem>
-                                {index === breadcrumbHierarchy.length - 1 ? (
-                                  <BreadcrumbPage className="font-medium">
-                                    {item.name}
-                                  </BreadcrumbPage>
-                                ) : (
-                                  <BreadcrumbLink className="text-muted-foreground">
-                                    {item.name}
-                                  </BreadcrumbLink>
-                                )}
-                              </BreadcrumbItem>
-                            </div>
-                          ))}
-                        </BreadcrumbList>
-                      </Breadcrumb>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="md:hidden"
-                    onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-                    aria-label="Toggle mobile filters"
-                    aria-expanded={mobileFiltersOpen}
-                  >
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </header>
-
           {/* Main Content Area - Map */}
-          <div className="h-[calc(100vh-4rem)]">
+          <div className="h-screen">
             <div className="h-full relative" role="main" aria-label="Interactive map">
+              {/* Floating Sidebar Trigger */}
+              <div className="absolute top-4 left-4 z-[1000]">
+                <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
+              </div>
+
               <div className="absolute inset-0" id="main-content">
                 {children || (
                   <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">

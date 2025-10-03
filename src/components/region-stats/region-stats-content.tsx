@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { InteractivePieChart, TopLitterItemsChart, LitterBreakdownChart } from "@/components/charts"
 import { Info, ExternalLink, PieChart, Users, AlertTriangle } from "lucide-react"
 import { motion } from "motion/react"
@@ -117,8 +118,6 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
       {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
         <TopLitterItemsChart
           data={regionData.litterData.topLitterItems}
-          title="Top Litter Items"
-          description="Most common litter items by average per 100m"
           height={220}
           maxItems={5}
           showAvgPer100m={true}
@@ -132,8 +131,6 @@ function LitterStatsTab({ regionData }: { regionData: RegionData }) {
         <LitterBreakdownChart
           materialBreakdown={regionData.litterData.materialBreakdown}
           sourceBreakdown={regionData.litterData.sourceBreakdown}
-          title="Litter Breakdown"
-          description="Breakdown by material type and source"
           height={250}
           className="w-full"
         />
@@ -250,21 +247,81 @@ export function RegionStatsContent({
     )
   }
 
+  // Generate breadcrumb hierarchy
+  const getBreadcrumbHierarchy = () => {
+    if (!regionData) return []
+
+    const hierarchy = []
+
+    // Always start with United Kingdom unless we're already at UK level
+    if (regionData.name !== 'United Kingdom') {
+      hierarchy.push({ level: 'country', name: 'United Kingdom' })
+    }
+
+    if (regionData.level === 'region' && regionData.parentName) {
+      // For regions: UK > [Country/County] > Region
+      hierarchy.push({ level: 'parent', name: regionData.parentName })
+      hierarchy.push({ level: 'region', name: regionData.name })
+    } else if (regionData.level === 'county') {
+      // For counties: UK > [Country if exists] > County
+      if (regionData.parentName && regionData.parentName !== 'United Kingdom') {
+        hierarchy.push({ level: 'country', name: regionData.parentName })
+      }
+      hierarchy.push({ level: 'county', name: regionData.name })
+    } else if (regionData.level === 'country' || regionData.level === 'Crown Dependency') {
+      // For countries: UK > Country
+      hierarchy.push({ level: regionData.level, name: regionData.name })
+    } else {
+      // For UK itself or other levels: just the region name
+      hierarchy.push({ level: regionData.level, name: regionData.name })
+    }
+
+    return hierarchy
+  }
+
+  const breadcrumbHierarchy = getBreadcrumbHierarchy()
+
   return (
-    <div className="space-y-4 p-6">
+    <div className="space-y-4 px-6 py-2">
       {/* Header with region name and status badge */}
-      <div className="space-y-2">
-        <div className="flex items-baseline gap-2">
-          <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-          {selectedYear && (
-            <span className="text-sm text-muted-foreground font-normal">
-              {selectedYear}
-            </span>
-          )}
+      <div className="space-y-1">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+            {selectedYear && (
+              <span className="text-sm text-muted-foreground font-normal">
+                {selectedYear}
+              </span>
+            )}
+          </div>
+          <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit flex-shrink-0">
+            {regionData.hasData ? "Data Available" : "No Data"}
+          </Badge>
         </div>
-        <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit">
-          {regionData.hasData ? "Data Available" : "No Data"}
-        </Badge>
+
+        {/* Regional Breadcrumb */}
+        {breadcrumbHierarchy.length > 0 && (
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumbHierarchy.map((item, index) => (
+                <div key={index} className="flex items-center ">
+                  {index > 0 && <BreadcrumbSeparator />}
+                  <BreadcrumbItem>
+                    {index === breadcrumbHierarchy.length - 1 ? (
+                      <BreadcrumbPage className="font-medium text-xs">
+                        {item.name}
+                      </BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink className="text-muted-foreground text-xs">
+                        {item.name}
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </div>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        )}
       </div>
 
       {/* Low survey count warning */}
@@ -311,15 +368,15 @@ export function RegionStatsContent({
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4 mt-6">
+        <TabsContent value="overview" className="space-y-4 mt-3">
           <OverviewTab regionData={regionData} selectedYear={selectedYear} />
         </TabsContent>
 
-        <TabsContent value="litter" className="space-y-4 mt-6">
+        <TabsContent value="litter" className="space-y-4 mt-3">
           <LitterStatsTab regionData={regionData} />
         </TabsContent>
 
-        <TabsContent value="engagement" className="space-y-4 mt-6">
+        <TabsContent value="engagement" className="space-y-4 mt-3">
           <EngagementTab regionData={regionData} />
         </TabsContent>
       </Tabs>

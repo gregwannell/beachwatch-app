@@ -35,7 +35,7 @@ export function TopLitterItemsChart({
   data,
   className,
   height = 220,
-  title = "Top Litter Items",
+  title = "Top 5 Litter Items",
   description = "Top litter items by average per 100m",
   maxItems = 5,
   showAvgPer100m = true,

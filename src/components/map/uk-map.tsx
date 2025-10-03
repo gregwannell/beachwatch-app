@@ -263,12 +263,15 @@ export function UKMap({
         touchZoom={true}
         doubleClickZoom={true}
         dragging={true}
-        zoomControl={true}
+        zoomControl={false}
         className="w-full h-full rounded-lg"
         keyboard={true}
         attributionControl={true}
-        whenReady={() => {
-          // Map is ready for use
+        whenReady={(e) => {
+          // Add zoom control to bottom-right
+          L.control.zoom({
+            position: 'bottomright'
+          }).addTo(e.target)
         }}
       >
         <TileLayer

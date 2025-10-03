@@ -25,6 +25,8 @@ export function HorizontalBarChart({
   error,
   onRetry,
   barThickness = 24, // New prop to control bar thickness
+  animationDuration = 1000,
+  animationEasing = "ease-out",
 }: BarChartProps) {
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
@@ -142,6 +144,8 @@ export function HorizontalBarChart({
             layout="vertical"
             radius={4}
             maxBarSize={barThickness}
+            animationDuration={animationDuration}
+            animationEasing={animationEasing}
           >
             {processedData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />

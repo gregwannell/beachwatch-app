@@ -29,6 +29,8 @@ export interface ChartProps {
   loading?: boolean
   error?: string
   onRetry?: () => void
+  animationDuration?: number
+  animationEasing?: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out"
 }
 
 export interface BarChartProps extends ChartProps {

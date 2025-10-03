@@ -34,6 +34,8 @@ interface DonutPieChartProps {
   className?: string
   height?: number
   centerLabel?: string
+  animationDuration?: number
+  animationEasing?: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out"
 }
 
 export function DonutPieChart({
@@ -42,7 +44,9 @@ export function DonutPieChart({
   description,
   className,
   height = 300,
-  centerLabel = "Avg/100m"
+  centerLabel = "Avg/100m",
+  animationDuration = 800,
+  animationEasing = "ease-out"
 }: DonutPieChartProps) {
   const totalValue = React.useMemo(() => {
     return data.reduce((acc, curr) => acc + curr.value, 0)
@@ -99,6 +103,8 @@ export function DonutPieChart({
               nameKey="name"
               innerRadius={60}
               strokeWidth={5}
+              animationDuration={animationDuration}
+              animationEasing={animationEasing}
             >
               <Label
                 content={({ viewBox }) => {

@@ -39,7 +39,8 @@
       "mcp__browsermcp__browser_screenshot",
       "mcp__browsermcp__browser_navigate",
       "Read(//c/Users/Greg/Pictures/Screenshots/**)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(cat:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

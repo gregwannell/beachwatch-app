@@ -127,12 +127,14 @@ export default function Home() {
   })
 
   // Debug logging
-  console.log('Map debug:', { 
-    regionsCount: regions.length, 
-    isLoading, 
-    error: error?.message,
-    firstRegion: regions[0]
-  })
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Map debug:', {
+      regionsCount: regions.length,
+      isLoading,
+      error: error?.message,
+      firstRegion: regions[0]
+    })
+  }
 
   // Fetch region info for the sidebar (including UK as default)
   const { data: regionData, isLoading: isRegionLoading } = useRegionInfo(
@@ -182,7 +184,9 @@ export default function Home() {
   }
 
   const handleRegionHover = (regionId: number | null) => {
-    console.log('handleRegionHover called with:', regionId)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('handleRegionHover called with:', regionId)
+    }
     setHoveredRegionId(regionId)
   }
 

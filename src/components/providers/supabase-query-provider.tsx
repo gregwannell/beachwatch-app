@@ -64,8 +64,10 @@ export function SupabaseQueryProvider({
               table: 'regions'
             },
             async (payload) => {
-              console.log('Regions change detected:', payload.eventType, payload.new?.id)
-              
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Regions change detected:', payload.eventType, payload.new?.id)
+              }
+
               // Invalidate related queries based on change type
               switch (payload.eventType) {
                 case 'INSERT':
@@ -104,7 +106,9 @@ export function SupabaseQueryProvider({
             }
           )
           .subscribe((status) => {
-            console.log('Regions subscription status:', status)
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Regions subscription status:', status)
+            }
             setIsConnected(status === 'SUBSCRIBED')
           })
 
@@ -121,8 +125,10 @@ export function SupabaseQueryProvider({
               table: 'annual_region_aggregates'
             },
             async (payload) => {
-              console.log('Aggregates change detected:', payload.eventType)
-              
+              if (process.env.NODE_ENV === 'development') {
+                console.log('Aggregates change detected:', payload.eventType)
+              }
+
               // Invalidate region statistics and specific region data
               queryClient.invalidateQueries({
                 queryKey: regionKeys.statistics()

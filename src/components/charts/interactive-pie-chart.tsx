@@ -112,7 +112,6 @@ export function InteractivePieChart({
               className="h-7 w-[170px] rounded-lg pl-2.5"
               aria-label="Select a value"
               onClick={(e) => {
-                console.log('SelectTrigger clicked', e)
                 e.stopPropagation()
               }}
             >
@@ -136,7 +135,6 @@ export function InteractivePieChart({
                     value={itemName}
                     className="rounded-lg cursor-pointer"
                     onSelect={() => {
-                      console.log('SelectItem selected:', itemName)
                       setActiveItem(itemName)
                     }}
                   >

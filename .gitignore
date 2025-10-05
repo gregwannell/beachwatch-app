@@ -65,3 +65,6 @@ node_modules/
 # Database import files with credentials
 *.load
 import-data.bat 
+
+# MCP configuration with tokens
+.mcp.json

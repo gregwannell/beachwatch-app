@@ -244,9 +244,11 @@ export class CacheOptimizer {
         sizeFreed += dataSize
       }
     })
-    
-    console.log(`Cache optimization: removed ${removed} queries, freed ${Math.round(sizeFreed / 1024)}KB`)
-    
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Cache optimization: removed ${removed} queries, freed ${Math.round(sizeFreed / 1024)}KB`)
+    }
+
     return { removed, sizeFreed: Math.round(sizeFreed / 1024) }
   }
   
@@ -307,17 +309,23 @@ export class CacheOptimizer {
 export class CacheWarming {
   
   static async warmCacheForProduction() {
-    console.log('Starting cache warming...')
-    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Starting cache warming...')
+    }
+
     try {
       // Step 1: Essential data
       await CachePreloadingStrategies.preloadEssentialData()
-      console.log('✓ Essential data preloaded')
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✓ Essential data preloaded')
+      }
+
       // Step 2: Search suggestions
       await CachePreloadingStrategies.preloadSearchSuggestions()
-      console.log('✓ Search suggestions preloaded')
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✓ Search suggestions preloaded')
+      }
+
       // Step 3: Major regions with geometry (top-level regions)
       const majorRegionTypes = ['UK', 'Country']
       for (const type of majorRegionTypes) {
@@ -327,10 +335,14 @@ export class CacheWarming {
           ...CACHE_STRATEGIES.GEOMETRY_DATA
         })
       }
-      console.log('✓ Major regions with geometry preloaded')
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✓ Major regions with geometry preloaded')
+      }
+
       const stats = CacheOptimizer.analyzeCacheUsage()
-      console.log(`Cache warming complete: ${stats.totalQueries} queries, ${stats.memoryUsage}KB`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Cache warming complete: ${stats.totalQueries} queries, ${stats.memoryUsage}KB`)
+      }
       
     } catch (error) {
       console.error('Cache warming failed:', error)

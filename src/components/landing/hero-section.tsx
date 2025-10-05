@@ -82,7 +82,7 @@ export function HeroSection() {
         {/* Subtitle */}
         <p className="text-xl md:text-2xl text-mcs-navy dark:text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed drop-shadow-sm">
           Discover comprehensive beach litter survey data from across the UK.
-          Visualize trends, explore regional patterns, and understand the impact
+          Visualise trends, explore regional patterns, and understand the impact
           of marine pollution on our coastlines.
         </p>
 

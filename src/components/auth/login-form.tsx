@@ -42,9 +42,9 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Welcome to Beachwatch</CardTitle>
+        <CardTitle>Welcome to the Beachwatch Data App Beta</CardTitle>
         <CardDescription>
-          Sign in to access the beach litter data explorer
+          Sign in using the tester credentials you have been provided.
         </CardDescription>
       </CardHeader>
       <CardContent>

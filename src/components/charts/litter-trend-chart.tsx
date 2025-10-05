@@ -35,7 +35,7 @@ export function LitterTrendChart({
   // Chart configuration
   const chartConfig = {
     averageLitterPer100m: {
-      label: "Litter per 100m",
+      label: "Avg/100m",
       color: "var(--mcs-clear-blue)",
     },
   } satisfies ChartConfig
@@ -86,7 +86,7 @@ export function LitterTrendChart({
       >
         <AreaChart
           data={chartData}
-          margin={{ top: 0, right: 10, left: 10, bottom: 0 }}
+          margin={{ top: 30, right: 10, left: 10, bottom: 15 }}
         >
           <defs>
             <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
@@ -112,7 +112,10 @@ export function LitterTrendChart({
             hide={true}
           />
           <ChartTooltip
-            content={<ChartTooltipContent />}
+            content={<ChartTooltipContent labelFormatter={(value, payload) => {
+              const dataPoint = payload?.[0]?.payload
+              return dataPoint?.year ? `${dataPoint.year}` : value
+            }} />}
             cursor={{
               stroke: "var(--color-averageLitterPer100m)",
               strokeWidth: 1,

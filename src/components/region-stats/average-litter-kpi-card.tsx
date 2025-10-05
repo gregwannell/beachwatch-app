@@ -53,7 +53,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
               <p className="mt-2 text-xs">
                First, we work out how much litter is found per 100 metres of beach, so every
                stretch is measured in the same way. For each beach stretch, we then find the
-               middle result (median) from all its surveys, which gives a fair "typical" value.
+               middle result (median) from all its surveys, which gives a fair &ldquo;typical&rdquo; value.
                Finally, we take the middle of those typical values across all beaches, so no single
                beach or unusual survey dominates the result.
               </p>

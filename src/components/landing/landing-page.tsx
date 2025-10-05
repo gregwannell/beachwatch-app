@@ -3,10 +3,10 @@
 import { HeroSection } from './hero-section'
 import { FeaturesSection } from './features-section'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
 import { toast } from 'sonner'
 
-export function LandingPage() {
+function LogoutToastHandler() {
   const searchParams = useSearchParams()
   const hasShownToast = useRef(false)
 
@@ -19,8 +19,15 @@ export function LandingPage() {
     }
   }, [searchParams])
 
+  return null
+}
+
+export function LandingPage() {
   return (
     <main className="min-h-screen">
+      <Suspense fallback={null}>
+        <LogoutToastHandler />
+      </Suspense>
       <HeroSection />
       <FeaturesSection />
     </main>

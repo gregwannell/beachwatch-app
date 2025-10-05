@@ -169,7 +169,7 @@ export async function GET(request: NextRequest) {
     const materialsMap = new Map(materials_lookup?.map(m => [m.id, m.material]) || [])
 
     // Fetch previous year materials data for year-over-year comparison
-    let previousYearMaterials: { [materialId: number]: number } = {}
+    const previousYearMaterials: { [materialId: number]: number } = {}
     if (previousYearAggregateIds.length > 0) {
       const { data: prevMaterialAggregates } = await supabase
         .from('annual_material_aggregates')
@@ -267,5 +267,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export const dynamic = 'force-dynamic'
 export const revalidate = 900 // 15 minutes cache for materials data

@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch previous year sources data for year-over-year comparison
-    let previousYearSources: { [sourceId: number]: number } = {}
+    const previousYearSources: { [sourceId: number]: number } = {}
     if (previousYearAggregateIds.length > 0) {
       const { data: prevSourceAggregates } = await supabase
         .from('annual_source_aggregates')
@@ -261,5 +261,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export const dynamic = 'force-dynamic'
 export const revalidate = 900 // 15 minutes cache for sources data

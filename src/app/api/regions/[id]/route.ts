@@ -13,31 +13,27 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const supabase = createServerClient()
     const { searchParams } = new URL(request.url)
     const regionId = parseInt(id)
-    
+
     if (isNaN(regionId)) {
       return NextResponse.json(
         { error: 'Invalid region ID' },
         { status: 400 }
       )
     }
-    
+
     const includeGeometry = searchParams.get('includeGeometry') !== 'false'
     const includeChildren = searchParams.get('includeChildren') === 'true'
     const includeParent = searchParams.get('includeParent') === 'true'
     const includeAggregates = searchParams.get('includeAggregates') === 'true'
     const year = searchParams.get('year')
-    
-    // Base region query
+
+    // Base region query - use explicit type to avoid conditional type issues
     const regionQuery = supabase
       .from('regions')
-      .select(
-        includeGeometry 
-          ? 'id, name, parent_id, type, code, geometry, has_data, created_at, updated_at'
-          : 'id, name, parent_id, type, code, has_data, created_at, updated_at'
-      )
+      .select('*')
       .eq('id', regionId)
       .single()
-    
+
     const { data: region, error: regionError } = await regionQuery
 
     if (regionError || !region) {
@@ -60,13 +56,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       const isValid = validateRegionGeometry(region.geometry)
       if (!isValid) {
         console.warn(`Invalid geometry for region ${region.id}: ${region.name}`)
-        // Cast to any to allow geometry modification
-        ;(region as any).geometry = null
+        region.geometry = null
       }
     }
-    
+
     const response: any = {
-      region,
+      region: includeGeometry ? region : {
+        ...region,
+        geometry: undefined  // Remove geometry if not requested
+      },
       boundaryData: includeGeometry ? createBoundaryData(region.geometry) : undefined
     }
     
@@ -143,5 +141,4 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export const dynamic = 'force-dynamic'
 export const revalidate = 300 // 5 minutes cache

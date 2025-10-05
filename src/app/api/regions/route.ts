@@ -3,6 +3,9 @@ import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry } from '@/lib/geometry-utils'
 import type { Tables } from '@/lib/database.types'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient()
@@ -57,7 +60,7 @@ export async function GET(request: NextRequest) {
     
     // Validate geometry data if included
     const validatedData = data?.map(region => {
-      if (includeGeometry && region.geometry) {
+      if (includeGeometry && 'geometry' in region && region.geometry) {
         const isValid = validateRegionGeometry(region.geometry)
         if (!isValid) {
           console.warn(`Invalid geometry for region ${region.id}: ${region.name}`)
@@ -82,6 +85,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Rate limiting headers
-export const dynamic = 'force-dynamic'
 export const revalidate = 300 // 5 minutes cache

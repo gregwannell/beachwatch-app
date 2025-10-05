@@ -4,6 +4,7 @@ import { Waves } from 'lucide-react'
 import Image from 'next/image'
 import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar'
 import type { RegionData } from '@/types/region-types'
+import { LogoutButton } from '@/components/auth/logout-button'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -25,7 +26,7 @@ export function MainLayout({
       >
         Skip to main content
       </a>
-      
+
       {/* Left Sidebar Provider */}
       <SidebarProvider>
         <Sidebar side="left" variant="inset" aria-label="Data filters">
@@ -47,7 +48,10 @@ export function MainLayout({
               </div>
             )}
           </SidebarContent>
-          <SidebarFooter className="border-t p-4">
+          <SidebarFooter className="border-t p-4 space-y-4">
+            <div className="flex justify-start">
+              <LogoutButton />
+            </div>
             <div className="flex justify-left">
               <Image
                 src="/mcs-logo.png"

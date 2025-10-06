@@ -32,7 +32,7 @@ export function MainLayout({
         <Sidebar side="left" variant="inset" aria-label="Data filters">
           <SidebarHeader className="bg-background/50 backdrop-blur-sm">
             <h2 className="font-semibold text-xl flex items-center gap-2">
-              <img src="/MCS_logo_Stacked_Ink.png" alt="Marine Conservation Society" className="h-8" />
+              <img src="/MCS_Logo_Stacked_Ink.png" alt="Marine Conservation Society" className="h-8" />
               Beachwatch Data Explorer
             </h2>
           </SidebarHeader>

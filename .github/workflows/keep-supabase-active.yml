@@ -1,0 +1,57 @@
+name: Keep Supabase Active
+
+# Runs daily at 12:00 UTC to prevent Free Plan project from being paused
+on:
+  schedule:
+    # Runs every day at 12:00 UTC (noon)
+    - cron: '0 12 * * *'
+
+  # Allows manual triggering from GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  ping-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Supabase Database
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "🔄 Pinging Supabase database to keep project active..."
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+
+          # Make a simple query to the regions table (fetches only 1 row)
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X GET "$SUPABASE_URL/rest/v1/regions?limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+
+          # Extract HTTP status code (last line)
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+
+          # Extract response body (everything except last line)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP Status: $HTTP_CODE"
+
+          # Check if request was successful
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Successfully pinged Supabase database"
+            echo "Response preview: ${BODY:0:100}..."
+            exit 0
+          else
+            echo "❌ Failed to ping Supabase database"
+            echo "Response: $BODY"
+            exit 1
+          fi
+
+      - name: Report Status
+        if: always()
+        run: |
+          if [ $? -eq 0 ]; then
+            echo "✅ Workflow completed successfully"
+          else
+            echo "❌ Workflow failed - check logs above"
+          fi

@@ -79,13 +79,6 @@ export function HeroSection() {
           <span className="block">Beach Litter Data</span>
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-mcs-navy dark:text-gray-200 max-w-3xl mx-auto mb-8 leading-relaxed drop-shadow-sm">
-          Discover comprehensive beach litter survey data from across the UK.
-          Visualise trends, explore regional patterns, and understand the impact
-          of marine pollution on our coastlines.
-        </p>
-
         {/* CTA Button */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
           <Button asChild size="lg" className="text-lg px-8 py-3 h-auto bg-mcs-orange hover:bg-mcs-orange/90 text-white shadow-lg rounded-full">

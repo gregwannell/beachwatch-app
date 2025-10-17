@@ -27,9 +27,9 @@ export function MainLayout({
         Skip to main content
       </a>
 
-      {/* Left Sidebar Provider */}
+      {/* Left Sidebar Provider - Hidden on mobile, visible on desktop */}
       <SidebarProvider>
-        <Sidebar side="left" variant="inset" aria-label="Data filters">
+        <Sidebar side="left" variant="inset" aria-label="Data filters" className="hidden lg:flex">
           <SidebarHeader className="bg-background/50 backdrop-blur-sm">
             <h2 className="font-semibold text-xl flex items-center gap-2">
               <img src="/MCS_Logo_Stacked_Ink.png" alt="Marine Conservation Society" className="h-8" />
@@ -67,8 +67,8 @@ export function MainLayout({
         <SidebarInset className="flex-1">
           {/* Main Content Area - Map */}
           <div className="h-screen relative" role="main" aria-label="Interactive map">
-            {/* Floating Sidebar Trigger */}
-            <div className="absolute top-4 left-4 z-[1000]">
+            {/* Floating Sidebar Trigger - Desktop only */}
+            <div className="hidden lg:block absolute top-4 left-4 z-[1000]">
               <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
             </div>
 

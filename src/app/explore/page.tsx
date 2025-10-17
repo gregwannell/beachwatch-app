@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
+import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
@@ -238,17 +239,19 @@ export default function Home() {
   return (
     <MainLayout
       sidebar={
-        <FilterSidebar
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          onMapReset={handleMapReset}
-          mapTheme={mapTheme}
-          onMapThemeChange={setMapTheme}
-        />
+        <div className="hidden lg:block">
+          <FilterSidebar
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onMapReset={handleMapReset}
+            mapTheme={mapTheme}
+            onMapThemeChange={setMapTheme}
+          />
+        </div>
       }
       regionData={regionData || undefined}
     >
-      <div className="h-full w-full">
+      <div className="h-full w-full relative">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -260,10 +263,25 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
+          <Card className="h-full lg:h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
             <div className="h-full flex flex-col lg:flex-row">
               {/* Map Section */}
               <div className="relative flex-1 h-1/2 lg:h-full lg:w-[70%] overflow-hidden">
+                {/* Mobile Filter Bar - Positioned over the map */}
+                {filterOptions && (
+                  <div className="lg:hidden absolute top-4 left-4 right-4 z-[1001]">
+                    <MobileFilterBar
+                      filters={filters}
+                      onFiltersChange={handleFiltersChange}
+                      onMapReset={handleMapReset}
+                      regions={filterOptions.regions}
+                      availableYears={filterOptions.availableYears}
+                      mapTheme={mapTheme}
+                      onMapThemeChange={setMapTheme}
+                      isLoading={isLoading}
+                    />
+                  </div>
+                )}
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">

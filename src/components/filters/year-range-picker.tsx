@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from "react"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { YearRangeFilter } from "@/types/filter-types"
 
@@ -37,9 +36,8 @@ export function YearRangePicker({
 
   return (
     <div className={className}>
-      <Label className="text-xs mb-2 block">Select Year</Label>
-      <Select 
-        value={value.startYear.toString()} 
+      <Select
+        value={value.startYear.toString()}
         onValueChange={handleYearChange}
       >
         <SelectTrigger className="w-full">

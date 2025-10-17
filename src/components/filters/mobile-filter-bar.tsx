@@ -1,13 +1,12 @@
 'use client'
 
 import * as React from "react"
-import { Search, SlidersHorizontal, Calendar, Palette, RotateCcw } from "lucide-react"
+import { Search, SlidersHorizontal, Palette, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -20,12 +19,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
 import { FilterState, FilterRegion } from "@/types/filter-types"
 import { HierarchicalRegionSelect } from "./hierarchical-region-select"
 import { MapThemeToggle } from "@/components/map/map-theme-toggle"
 import { type MapTheme } from "@/lib/map-themes"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 
 interface MobileFilterBarProps {
   filters: FilterState

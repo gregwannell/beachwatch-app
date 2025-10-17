@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { InteractivePieChart, TopLitterItemsChart, LitterBreakdownChart } from "@/components/charts"
 import { Info, ExternalLink, PieChart, Users, AlertTriangle } from "lucide-react"
-import { motion } from "motion/react"
 import type { RegionData, SuggestedRegion } from '@/types/region-types'
 
 // Import extracted components
@@ -326,11 +325,7 @@ export function RegionStatsContent({
 
       {/* Low survey count warning */}
       {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
-        <motion.div
-          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        >
+        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
             <AlertTriangle className="h-5 w-5 text-orange-600" />
             <AlertDescription>
@@ -351,7 +346,7 @@ export function RegionStatsContent({
               </div>
             </AlertDescription>
           </Alert>
-        </motion.div>
+        </div>
       )}
 
       {/* Tabbed Interface */}

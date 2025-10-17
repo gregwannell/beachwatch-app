@@ -37,7 +37,6 @@
     "leaflet": "^1.9.4",
     "leaflet-providers": "^2.0.0",
     "lucide-react": "^0.539.0",
-    "motion": "^12.23.22",
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",

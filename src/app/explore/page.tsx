@@ -9,13 +9,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
-import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav'
+import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
 import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -34,7 +35,14 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
 
 
 export default function Home() {
-  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(1) // Default to UK (region ID 1)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const regionIdParam = searchParams.get('region')
+  const yearParam = searchParams.get('year')
+
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(
+    regionIdParam ? parseInt(regionIdParam) : 1
+  ) // Default to UK (region ID 1)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
   const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
@@ -51,20 +59,53 @@ export default function Home() {
   const [zoomToRegionId, setZoomToRegionId] = useState<number | null>(null)
   const [pendingZoom, setPendingZoom] = useState<number | null>(null)
   
-  // Filter state management
+  // Filter state management - initialize from URL params
   const [filters, setFilters] = useState<FilterState>({
-    region: { selectedRegionId: 1 }, // Start with UK selected to match selectedRegionId initial state
+    region: { selectedRegionId: regionIdParam ? parseInt(regionIdParam) : 1 },
     yearRange: {
-      startYear: 2024,
-      endYear: 2024,
+      startYear: yearParam ? parseInt(yearParam) : 2024,
+      endYear: yearParam ? parseInt(yearParam) : 2024,
       mode: 'single'
     },
     categories: {}
   })
 
+  // Sync state when URL params change (from stats page navigation)
+  useEffect(() => {
+    if (regionIdParam) {
+      const regionId = parseInt(regionIdParam)
+      setSelectedRegionId(regionId)
+      setFilters(prev => ({
+        ...prev,
+        region: { selectedRegionId: regionId }
+      }))
+    }
+    if (yearParam) {
+      const year = parseInt(yearParam)
+      setFilters(prev => ({
+        ...prev,
+        yearRange: {
+          startYear: year,
+          endYear: year,
+          mode: 'single'
+        }
+      }))
+    }
+  }, [regionIdParam, yearParam])
+
   // Handle filter changes and sync selectedRegionId for regional stats
   const handleFiltersChange = (newFilters: FilterState) => {
     setFilters(newFilters)
+
+    // Update URL with new params
+    const params = new URLSearchParams()
+    if (newFilters.region.selectedRegionId) {
+      params.set('region', newFilters.region.selectedRegionId.toString())
+    }
+    if (newFilters.yearRange.startYear) {
+      params.set('year', newFilters.yearRange.startYear.toString())
+    }
+    router.push(`/explore?${params.toString()}`, { scroll: false })
 
     // Sync selectedRegionId when region filter changes
     if (newFilters.region.selectedRegionId !== filters.region.selectedRegionId) {
@@ -266,9 +307,43 @@ export default function Home() {
           </div>
         ) : (
           <Card className="h-full lg:h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
-            <div className="h-full flex flex-col lg:flex-row">
+            {/* Mobile: Full-height map only */}
+            <div className="h-full flex flex-col lg:hidden">
+              <div className="relative flex-1 overflow-hidden">
+                {/* Show loading overlay only during very first map load */}
+                {isLoading && !hasLoadedInitialRegions ? (
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
+                    <div className="space-y-4 text-center">
+                      <div className="text-2xl">🗺️</div>
+                      <Skeleton className="h-8 w-48 mx-auto" />
+                      <p className="text-sm text-muted-foreground">Loading interactive map...</p>
+                    </div>
+                  </div>
+                ) : null}
+
+                <UKMap
+                  regions={regions}
+                  selectedRegionId={effectiveSelectedRegionId}
+                  onRegionClick={handleRegionClick}
+                  onRegionHover={handleRegionHover}
+                  mapTheme={mapTheme}
+                  resetToUKView={resetMapView}
+                  zoomToRegionId={zoomToRegionId}
+                  className="h-full w-full"
+                />
+
+                {/* Region name tooltip */}
+                <RegionTooltip
+                  hoverState={hoverState}
+                  regions={regions}
+                />
+              </div>
+            </div>
+
+            {/* Desktop: Split view (70% map / 30% stats) */}
+            <div className="hidden lg:flex lg:flex-row h-full">
               {/* Map Section */}
-              <div className="relative flex-1 h-1/2 lg:h-full lg:w-[70%] overflow-hidden">
+              <div className="relative flex-[70%] overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
@@ -299,11 +374,10 @@ export default function Home() {
               </div>
 
               {/* Separator */}
-              <Separator orientation="vertical" className="hidden lg:block" />
-              <Separator orientation="horizontal" className="lg:hidden" />
+              <Separator orientation="vertical" />
 
               {/* Stats Panel */}
-              <div className="h-1/2 lg:h-full lg:w-[30%] overflow-auto bg-background">
+              <div className="flex-[30%] overflow-auto bg-background">
                 <RegionStatsContent
                   regionData={regionData || undefined}
                   isLoading={isRegionLoading}
@@ -335,7 +409,7 @@ export default function Home() {
       )}
 
       {/* Mobile Bottom Navigation */}
-      <MobileBottomNav onFilterClick={() => setIsMobileFilterOpen(true)} />
+      <ModernMobileNav onFilterClick={() => setIsMobileFilterOpen(true)} />
     </MainLayout>
   )
 }

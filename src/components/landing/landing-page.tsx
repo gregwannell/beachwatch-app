@@ -2,7 +2,7 @@
 
 import { HeroSection } from './hero-section'
 import { FeaturesSection } from './features-section'
-import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav'
+import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, Suspense } from 'react'
 import { toast } from 'sonner'
@@ -33,7 +33,7 @@ export function LandingPage() {
         <HeroSection />
         <FeaturesSection />
       </main>
-      <MobileBottomNav />
+      <ModernMobileNav />
     </>
   )
 }

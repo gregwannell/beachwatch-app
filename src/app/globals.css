@@ -68,6 +68,11 @@
   --color-mcs-orange: var(--mcs-orange);
   --color-mcs-navy: var(--mcs-navy);
   --color-mcs-light-blue: var(--mcs-light-blue);
+  @keyframes strok {
+  100% {
+    stroke-dashoffset: 400;
+    }
+  }
 }
 
 :root {
@@ -117,7 +122,7 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-  
+
   /* Ocean color scheme */
   --ocean-50: oklch(0.98 0.02 220);
   --ocean-100: oklch(0.94 0.05 220);
@@ -243,21 +248,21 @@
   .transition-smooth {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .hover-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Gradient backgrounds */
   .bg-gradient-subtle {
     background: linear-gradient(135deg, var(--background) 0%, var(--muted) 100%);
   }
-  
+
   /* Focus enhancements */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
@@ -266,5 +271,142 @@
   /* iOS safe area support */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  /* Modern Mobile Menu Component Styles */
+  :root {
+    --component-inactive-color: var(--muted-foreground);
+    --component-bg: var(--card);
+    --component-shadow: var(--border);
+    --component-active-bg: var(--secondary);
+    --component-line-inactive-color: var(--border);
+    --component-active-color-default: var(--accent-foreground);
+  }
+
+  .dark {
+    --component-inactive-color: var(--muted-foreground);
+    --component-bg: var(--card);
+    --component-shadow: var(--border);
+    --component-active-bg: var(--secondary);
+    --component-line-inactive-color: var(--muted-foreground);
+    --component-active-color-default: var(--accent-foreground);
+  }
+
+  @keyframes iconBounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    20% {
+      transform: translateY(-0.3em);
+    }
+    40% {
+      transform: translateY(0);
+    }
+    60% {
+      transform: translateY(-0.1em);
+    }
+    80% {
+      transform: translateY(0);
+    }
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: var(--component-bg);
+    border-top: 1px solid var(--component-shadow);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+    background-color: hsl(var(--background) / 0.8);
+  }
+
+  .menu__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--component-inactive-color);
+    min-width: 2rem;
+  }
+
+  .menu__item:hover {
+    color: var(--component-active-color);
+  }
+
+  .menu__item.active {
+    color: var(--component-active-color);
+  }
+
+  .menu__item.active .menu__icon {
+    animation: iconBounce 0.6s ease;
+  }
+
+  .menu__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  .menu__icon .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .menu__text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    position: relative;
+    white-space: nowrap;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .menu__text.active {
+    opacity: 1;
+    max-width: 200px;
+  }
+
+  .menu__text.active::after {
+    content: '';
+    position: absolute;
+    bottom: -0.25rem;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--component-active-color);
+    animation: slideUnderline 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideUnderline {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .menu {
+      display: none;
+    }
   }
 }

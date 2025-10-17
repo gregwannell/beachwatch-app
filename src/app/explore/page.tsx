@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
+import { MobileBottomNav } from '@/components/layout/mobile-bottom-nav'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
@@ -37,6 +38,7 @@ export default function Home() {
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
   const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
   // Create hover state object for tooltip
   const hoverState = {
@@ -251,7 +253,7 @@ export default function Home() {
       }
       regionData={regionData || undefined}
     >
-      <div className="h-full w-full relative">
+      <div className="h-full w-full relative pb-20 lg:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -267,21 +269,6 @@ export default function Home() {
             <div className="h-full flex flex-col lg:flex-row">
               {/* Map Section */}
               <div className="relative flex-1 h-1/2 lg:h-full lg:w-[70%] overflow-hidden">
-                {/* Mobile Filter Bar - Positioned over the map */}
-                {filterOptions && (
-                  <div className="lg:hidden absolute top-4 left-4 right-4 z-[1001]">
-                    <MobileFilterBar
-                      filters={filters}
-                      onFiltersChange={handleFiltersChange}
-                      onMapReset={handleMapReset}
-                      regions={filterOptions.regions}
-                      availableYears={filterOptions.availableYears}
-                      mapTheme={mapTheme}
-                      onMapThemeChange={setMapTheme}
-                      isLoading={isLoading}
-                    />
-                  </div>
-                )}
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
@@ -328,6 +315,27 @@ export default function Home() {
           </Card>
         )}
       </div>
+
+      {/* Hidden Mobile Filter Bar - Controlled via bottom nav */}
+      {filterOptions && (
+        <div className="hidden">
+          <MobileFilterBar
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onMapReset={handleMapReset}
+            regions={filterOptions.regions}
+            availableYears={filterOptions.availableYears}
+            mapTheme={mapTheme}
+            onMapThemeChange={setMapTheme}
+            isLoading={isLoading}
+            isOpen={isMobileFilterOpen}
+            onOpenChange={setIsMobileFilterOpen}
+          />
+        </div>
+      )}
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav onFilterClick={() => setIsMobileFilterOpen(true)} />
     </MainLayout>
   )
 }

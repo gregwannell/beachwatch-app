@@ -40,7 +40,13 @@
       "mcp__browsermcp__browser_navigate",
       "Read(//c/Users/Greg/Pictures/Screenshots/**)",
       "Bash(git log:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__resize_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__take_snapshot"
     ]
   },
   "enableAllProjectMcpServers": true,

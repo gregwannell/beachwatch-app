@@ -34,6 +34,8 @@ interface MobileFilterBarProps {
   mapTheme?: MapTheme
   onMapThemeChange?: (theme: MapTheme) => void
   isLoading?: boolean
+  isOpen?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export function MobileFilterBar({
@@ -45,10 +47,16 @@ export function MobileFilterBar({
   mapTheme = 'light',
   onMapThemeChange,
   isLoading = false,
+  isOpen: externalIsOpen,
+  onOpenChange: externalOnOpenChange,
 }: MobileFilterBarProps) {
   const [searchTerm, setSearchTerm] = React.useState("")
   const [isSearchOpen, setIsSearchOpen] = React.useState(false)
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false)
+  const [internalIsDrawerOpen, setInternalIsDrawerOpen] = React.useState(false)
+
+  // Use external control if provided, otherwise use internal state
+  const isDrawerOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsDrawerOpen
+  const setIsDrawerOpen = externalOnOpenChange || setInternalIsDrawerOpen
 
   // No expanded filter state needed anymore (removed collapsibles)
 

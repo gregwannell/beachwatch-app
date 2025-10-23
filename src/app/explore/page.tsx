@@ -4,12 +4,13 @@ import { MainLayout } from '@/components/layout/main-layout'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
 import { useFilterOptions } from '@/hooks/use-filter-options'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
+import { FloatingFilterButton } from '@/components/filters/floating-filter-button'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
@@ -279,6 +280,20 @@ export default function Home() {
   // Sync the selected region between filters and map
   const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId
 
+  // Calculate active filter count for the floating button badge
+  const activeFilterCount = useMemo(() => {
+    let count = 0
+    // Count region filter (if not UK/default)
+    if (filters.region.selectedRegionId && filters.region.selectedRegionId !== 1) {
+      count++
+    }
+    // Count year filter (if not default year 2024)
+    if (filters.yearRange.startYear !== 2024) {
+      count++
+    }
+    return count
+  }, [filters.region.selectedRegionId, filters.yearRange.startYear])
+
   return (
     <MainLayout
       sidebar={
@@ -336,6 +351,12 @@ export default function Home() {
                 <RegionTooltip
                   hoverState={hoverState}
                   regions={regions}
+                />
+
+                {/* Floating filter button - mobile only */}
+                <FloatingFilterButton
+                  onClick={() => setIsMobileFilterOpen(true)}
+                  activeFilterCount={activeFilterCount}
                 />
               </div>
             </div>
@@ -409,7 +430,7 @@ export default function Home() {
       )}
 
       {/* Mobile Bottom Navigation */}
-      <ModernMobileNav onFilterClick={() => setIsMobileFilterOpen(true)} />
+      <ModernMobileNav />
     </MainLayout>
   )
 }

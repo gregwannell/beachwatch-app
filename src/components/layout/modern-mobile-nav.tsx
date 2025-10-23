@@ -1,15 +1,11 @@
 "use client"
 
-import { Home, Droplet, SlidersHorizontal, BarChart3 } from 'lucide-react'
+import { Home, Droplet, BarChart3 } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useMemo, useCallback } from 'react'
 import { InteractiveMenu, type InteractiveMenuItem } from '@/components/ui/modern-mobile-menu'
 
-interface ModernMobileNavProps {
-  onFilterClick?: () => void
-}
-
-export function ModernMobileNav({ onFilterClick }: ModernMobileNavProps) {
+export function ModernMobileNav() {
   const pathname = usePathname()
   const router = useRouter()
 
@@ -22,7 +18,6 @@ export function ModernMobileNav({ onFilterClick }: ModernMobileNavProps) {
     { label: 'Home', icon: Home },
     { label: 'Explore', icon: Droplet },
     { label: 'Stats', icon: BarChart3 },
-    { label: 'Filters', icon: SlidersHorizontal },
   ], [])
 
   // Determine active index based on pathname
@@ -40,13 +35,8 @@ export function ModernMobileNav({ onFilterClick }: ModernMobileNavProps) {
       case 2:
         router.push('/stats')
         break
-      case 3:
-        if (onFilterClick) {
-          onFilterClick()
-        }
-        break
     }
-  }, [router, onFilterClick])
+  }, [router])
 
   // Use primary color as accent
   const accentColor = 'var(--primary)'

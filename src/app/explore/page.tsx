@@ -11,6 +11,7 @@ import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { FloatingFilterButton } from '@/components/filters/floating-filter-button'
+import { FloatingResetButton } from '@/components/filters/floating-reset-button'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
@@ -163,6 +164,33 @@ export default function Home() {
 
   // Fetch filter options for region lookup
   const { data: filterOptions } = useFilterOptions()
+
+  const handleResetFilters = () => {
+    if (!filterOptions) return
+
+    // Create the reset filters
+    const resetFilters: FilterState = {
+      region: { selectedRegionId: 1 }, // Set to UK (region ID 1)
+      yearRange: {
+        startYear: filterOptions.availableYears.max,
+        endYear: filterOptions.availableYears.max,
+        mode: 'single' as const
+      },
+      categories: {},
+    }
+
+    // Apply the filters - this will trigger handleFiltersChange
+    handleFiltersChange(resetFilters)
+
+    // Also trigger the direct map reset to ensure polygon layers return to countries view
+    handleMapReset()
+  }
+
+  // Calculate if any filters are active
+  const hasActiveFilters = filterOptions
+    ? (filters.region.selectedRegionId !== null && filters.region.selectedRegionId !== 1) ||
+      filters.yearRange.startYear !== filterOptions.availableYears.max
+    : false
 
   // Fetch map regions data
   const { data: regions = [], isLoading, error } = useMapRegions({
@@ -357,6 +385,12 @@ export default function Home() {
                 <FloatingFilterButton
                   onClick={() => setIsMobileFilterOpen(true)}
                   activeFilterCount={activeFilterCount}
+                />
+
+                {/* Floating reset button - mobile only, appears when filters are active */}
+                <FloatingResetButton
+                  onClick={handleResetFilters}
+                  hasActiveFilters={hasActiveFilters}
                 />
               </div>
             </div>

@@ -11,16 +11,13 @@ import { HierarchicalRegionSelect } from "./hierarchical-region-select"
 import { YearRangePicker } from "./year-range-picker"
 import { useFilterOptions } from "@/hooks/use-filter-options"
 import { FilterState } from "@/types/filter-types"
-import { MapThemeToggle } from "@/components/map/map-theme-toggle"
-import { type MapTheme, DEFAULT_MAP_THEME } from "@/lib/map-themes"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface FilterSidebarProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
   onMapReset?: () => void
   className?: string
-  mapTheme?: MapTheme
-  onMapThemeChange?: (theme: MapTheme) => void
 }
 
 export function FilterSidebar({
@@ -28,8 +25,6 @@ export function FilterSidebar({
   onFiltersChange,
   onMapReset,
   className,
-  mapTheme = DEFAULT_MAP_THEME,
-  onMapThemeChange,
 }: FilterSidebarProps) {
   const { data: filterOptions, isLoading, error } = useFilterOptions()
 
@@ -185,29 +180,20 @@ export function FilterSidebar({
         </CardContent>
       </Card>
 
-      {/* Map Theme Filter */}
-      {onMapThemeChange && (
-        <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Palette className="h-4 w-4 text-primary" />
-              Map Style
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
-                {mapTheme === 'light' ? 'Light Theme' : 'Dark Theme'}
-              </span>
-              <MapThemeToggle
-                theme={mapTheme}
-                onThemeChange={onMapThemeChange}
-                className="shrink-0"
-              />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Theme Toggle */}
+      <Card className="border-0 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <Palette className="h-4 w-4 text-primary" />
+            Theme
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-center">
+            <ThemeToggle />
+          </div>
+        </CardContent>
+      </Card>
 
     </div>
   )

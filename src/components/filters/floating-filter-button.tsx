@@ -20,7 +20,7 @@ export function FloatingFilterButton({
       onClick={onClick}
       size="icon"
       className={cn(
-        'fixed top-4 right-4 z-[1000] h-12 w-12 rounded-full shadow-lg',
+        'fixed top-[4.5rem] right-4 z-[1000] h-12 w-12 rounded-full shadow-lg',
         'bg-primary text-primary-foreground hover:bg-primary/90',
         'lg:hidden', // Only show on mobile
         className

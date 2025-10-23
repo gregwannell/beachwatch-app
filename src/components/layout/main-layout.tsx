@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar'
 import type { RegionData } from '@/types/region-types'
 import { LogoutButton } from '@/components/auth/logout-button'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { MobileHeader } from './mobile-header'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -19,6 +21,9 @@ export function MainLayout({
 }: MainLayoutProps) {
   return (
     <div className="flex h-screen bg-background">
+      {/* Mobile Header - Only visible on mobile */}
+      <MobileHeader />
+
       {/* Skip link for keyboard navigation */}
       <a
         href="#main-content"
@@ -49,8 +54,9 @@ export function MainLayout({
             )}
           </SidebarContent>
           <SidebarFooter className="border-t p-4 space-y-4">
-            <div className="flex justify-start">
+            <div className="flex justify-between items-center">
               <LogoutButton />
+              <ThemeToggle />
             </div>
             <div className="flex justify-left">
               <Image
@@ -66,7 +72,7 @@ export function MainLayout({
 
         <SidebarInset className="flex-1">
           {/* Main Content Area - Map */}
-          <div className="h-screen relative" role="main" aria-label="Interactive map">
+          <div className="h-screen relative pt-12 lg:pt-0" role="main" aria-label="Interactive map">
             {/* Floating Sidebar Trigger - Desktop only */}
             <div className="hidden lg:block absolute top-4 left-4 z-[1000]">
               <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />

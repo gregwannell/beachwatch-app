@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Waves, Map, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function HeroSection() {
   return (
@@ -50,12 +51,15 @@ export function HeroSection() {
             </Link>
           </nav>
 
-          {/* Right: Small Explore Button */}
-          <Button asChild size="sm" className="bg-mcs-orange hover:bg-mcs-orange/90 text-white rounded-full">
-            <Link href="/explore">
-              Explore the Data
-            </Link>
-          </Button>
+          {/* Right: Theme Toggle and Explore Button */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button asChild size="sm" className="bg-mcs-orange hover:bg-mcs-orange/90 text-white rounded-full">
+              <Link href="/explore">
+                Explore the Data
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -68,7 +72,7 @@ export function HeroSection() {
             alt="Marine Conservation Society"
             width={400}
             height={96}
-            className="h-24 w-auto drop-shadow-lg"
+            className="h-12 w-auto drop-shadow-lg"
             priority
           />
         </div>
@@ -80,14 +84,14 @@ export function HeroSection() {
         </h1>
 
         {/* CTA Button */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
-          <Button asChild size="lg" className="text-lg px-8 py-3 h-auto bg-mcs-orange hover:bg-mcs-orange/90 text-white shadow-lg rounded-full">
+        <div className="flex flex-row gap-4 justify-center items-center mb-6">
+          <Button asChild size="lg" className="text-lg px-8 py-3 h-auto w-44 bg-mcs-orange hover:bg-mcs-orange/90 text-white shadow-lg rounded-full">
             <Link href="/explore" className="flex items-center gap-2">
-              Explore the Data
+              Explore
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto border-2 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white/20 backdrop-blur-sm shadow-lg rounded-full">
+          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white/20 backdrop-blur-sm shadow-lg rounded-full">
             <Link href="#features">
               Learn More
             </Link>
@@ -96,7 +100,7 @@ export function HeroSection() {
 
         {/* Powered by text */}
         <p className="text-sm text-mcs-navy/80 dark:text-white/80">
-          Powered by Marine Conservation Society volunteer survey data
+          Powered by Marine Conservation Society data
         </p>
       </div>
     </section>

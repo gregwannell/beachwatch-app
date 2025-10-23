@@ -21,8 +21,6 @@ import {
 } from "@/components/ui/popover"
 import { FilterState, FilterRegion } from "@/types/filter-types"
 import { HierarchicalRegionSelect } from "./hierarchical-region-select"
-import { MapThemeToggle } from "@/components/map/map-theme-toggle"
-import { type MapTheme } from "@/lib/map-themes"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 
 interface MobileFilterBarProps {
@@ -31,8 +29,6 @@ interface MobileFilterBarProps {
   onMapReset?: () => void
   regions: FilterRegion[]
   availableYears: { min: number; max: number }
-  mapTheme?: MapTheme
-  onMapThemeChange?: (theme: MapTheme) => void
   isLoading?: boolean
   isOpen?: boolean
   onOpenChange?: (open: boolean) => void
@@ -44,8 +40,6 @@ export function MobileFilterBar({
   onMapReset,
   regions,
   availableYears,
-  mapTheme = 'light',
-  onMapThemeChange,
   isLoading = false,
   isOpen: externalIsOpen,
   onOpenChange: externalOnOpenChange,
@@ -302,28 +296,6 @@ export function MobileFilterBar({
                   ))}
                 </SelectContent>
               </Select>
-
-              {/* Map Theme Filter */}
-              {onMapThemeChange && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">
-                    Map Style
-                  </label>
-                  <div className="flex items-center justify-between px-4 py-3 border rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Palette className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">
-                        {mapTheme === 'light' ? 'Light Theme' : 'Dark Theme'}
-                      </span>
-                    </div>
-                    <MapThemeToggle
-                      theme={mapTheme}
-                      onThemeChange={onMapThemeChange}
-                      className="shrink-0"
-                    />
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 

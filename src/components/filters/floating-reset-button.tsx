@@ -23,7 +23,7 @@ export function FloatingResetButton({
       size="icon"
       variant="outline"
       className={cn(
-        'fixed top-4 right-20 z-[1000] h-12 w-12 rounded-full shadow-lg',
+        'fixed top-[4.5rem] right-20 z-[1000] h-12 w-12 rounded-full shadow-lg',
         'bg-background/95 backdrop-blur-sm border-muted-foreground/20',
         'hover:bg-accent hover:border-destructive/50',
         'transition-all duration-300 ease-in-out',

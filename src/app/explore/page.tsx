@@ -19,6 +19,8 @@ import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
 import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTheme } from 'next-themes'
+import Image from 'next/image'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -41,14 +43,17 @@ export default function Home() {
   const searchParams = useSearchParams()
   const regionIdParam = searchParams.get('region')
   const yearParam = searchParams.get('year')
+  const { theme } = useTheme()
 
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(
     regionIdParam ? parseInt(regionIdParam) : 1
   ) // Default to UK (region ID 1)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
-  const [mapTheme, setMapTheme] = useState<MapTheme>(DEFAULT_MAP_THEME)
   const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+
+  // Sync map theme with app theme
+  const mapTheme: MapTheme = (theme === 'dark' ? 'dark' : 'light') as MapTheme
 
   // Create hover state object for tooltip
   const hoverState = {
@@ -330,8 +335,6 @@ export default function Home() {
             filters={filters}
             onFiltersChange={handleFiltersChange}
             onMapReset={handleMapReset}
-            mapTheme={mapTheme}
-            onMapThemeChange={setMapTheme}
           />
         </div>
       }
@@ -374,6 +377,17 @@ export default function Home() {
                   zoomToRegionId={zoomToRegionId}
                   className="h-full w-full"
                 />
+
+                {/* MCS Logo overlay */}
+                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
+                  <Image
+                    src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
+                    alt="Marine Conservation Society"
+                    width={150}
+                    height={150}
+                    className="w-18 h-auto drop-shadow-md"
+                  />
+                </div>
 
                 {/* Region name tooltip */}
                 <RegionTooltip
@@ -421,6 +435,17 @@ export default function Home() {
                   className="h-full w-full"
                 />
 
+                {/* MCS Logo overlay */}
+                <div className="absolute top-4 left-4 z-[900] pointer-events-none">
+                  <Image
+                    src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
+                    alt="Marine Conservation Society"
+                    width={150}
+                    height={150}
+                    className="w-24 h-auto drop-shadow-md"
+                  />
+                </div>
+
                 {/* Region name tooltip */}
                 <RegionTooltip
                   hoverState={hoverState}
@@ -454,8 +479,6 @@ export default function Home() {
             onMapReset={handleMapReset}
             regions={filterOptions.regions}
             availableYears={filterOptions.availableYears}
-            mapTheme={mapTheme}
-            onMapThemeChange={setMapTheme}
             isLoading={isLoading}
             isOpen={isMobileFilterOpen}
             onOpenChange={setIsMobileFilterOpen}

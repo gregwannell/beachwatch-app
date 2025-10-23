@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-16 md:pt-20">
+    <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-0 md:pt-20">
       {/* Beach scene illustration as background */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -23,7 +23,7 @@ export function HeroSection() {
       </div>
 
       {/* Fixed Navigation Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 dark:bg-blue-950/80 border-b border-white/20">
+      <header className="hidden md:block fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 dark:bg-blue-950/80 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Left: Small MCS Logo */}
           <Link href="/" className="flex-shrink-0">

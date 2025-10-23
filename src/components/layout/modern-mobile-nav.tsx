@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Droplet, BarChart3 } from 'lucide-react'
+import { Home, Earth, ChartLine } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useMemo, useCallback } from 'react'
 import { InteractiveMenu, type InteractiveMenuItem } from '@/components/ui/modern-mobile-menu'
@@ -16,8 +16,8 @@ export function ModernMobileNav() {
   // Create menu items for the app
   const menuItems: InteractiveMenuItem[] = useMemo(() => [
     { label: 'Home', icon: Home },
-    { label: 'Explore', icon: Droplet },
-    { label: 'Stats', icon: BarChart3 },
+    { label: 'Explore', icon: Earth },
+    { label: 'Stats', icon: ChartLine },
   ], [])
 
   // Determine active index based on pathname

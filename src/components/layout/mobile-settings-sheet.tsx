@@ -46,7 +46,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-[80%] sm:w-[320px] p-0">
+      <SheetContent side="right" className="w-[80%] sm:w-[320px] p-0">
         <SheetHeader className="p-6 pb-4">
           <div className="flex justify-center mb-4">
             <Image

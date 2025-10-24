@@ -12,6 +12,8 @@ import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { FloatingFilterButton } from '@/components/filters/floating-filter-button'
 import { FloatingResetButton } from '@/components/filters/floating-reset-button'
+import { FloatingStatsButton } from '@/components/region-stats/floating-stats-button'
+import { MobileRegionStatsSheet } from '@/components/region-stats/mobile-region-stats-sheet'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
@@ -51,6 +53,7 @@ export default function Home() {
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
   const [hasLoadedInitialRegions, setHasLoadedInitialRegions] = useState(false)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [isMobileStatsOpen, setIsMobileStatsOpen] = useState(false)
 
   // Sync map theme with app theme
   const mapTheme: MapTheme = (theme === 'dark' ? 'dark' : 'light') as MapTheme
@@ -395,6 +398,11 @@ export default function Home() {
                   regions={regions}
                 />
 
+                {/* Floating stats button - mobile only */}
+                <FloatingStatsButton
+                  onClick={() => setIsMobileStatsOpen(true)}
+                />
+
                 {/* Floating filter button - mobile only */}
                 <FloatingFilterButton
                   onClick={() => setIsMobileFilterOpen(true)}
@@ -485,6 +493,18 @@ export default function Home() {
           />
         </div>
       )}
+
+      {/* Mobile Stats Sheet */}
+      <div className="lg:hidden">
+        <MobileRegionStatsSheet
+          open={isMobileStatsOpen}
+          onOpenChange={setIsMobileStatsOpen}
+          regionData={regionData || undefined}
+          isLoading={isRegionLoading}
+          selectedYear={filters.yearRange.startYear}
+          onRegionSelect={handleRegionSelect}
+        />
+      </div>
 
       {/* Mobile Bottom Navigation */}
       <ModernMobileNav />

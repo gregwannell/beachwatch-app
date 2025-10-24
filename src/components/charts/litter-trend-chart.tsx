@@ -133,6 +133,7 @@ export function LitterTrendChart({
               if (selectedYear && payload.year === selectedYear) {
                 return (
                   <circle
+                    key={`dot-${payload.year}`}
                     cx={cx}
                     cy={cy}
                     r={6}

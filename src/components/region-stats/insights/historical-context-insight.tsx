@@ -28,13 +28,13 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
   const iconColor = isGoodPerformance ? "text-green-600" : "text-orange-600"
 
   return (
-    <div className="p-4 rounded-lg border bg-card">
-      <div className="flex items-center space-x-2 mb-2">
+    <div className="p-5 rounded-xl border bg-card min-h-[140px] flex flex-col">
+      <div className="flex items-center space-x-2 mb-3">
         <Info className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium">Historical Context</span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 flex-1">
         {/* Historical average comparison */}
         <div className="flex items-start space-x-2">
           <IconComponent className={`w-4 h-4 mt-0.5 flex-shrink-0 ${iconColor}`} />

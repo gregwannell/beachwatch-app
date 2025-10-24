@@ -232,7 +232,7 @@ export function MobileFilterBar({
             )}
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="max-h-[85vh] z-[9999]">
+        <DrawerContent className="max-h-[85vh]">
           <DrawerHeader className="text-left">
             <DrawerTitle className="flex items-center justify-between">
               <span>Filters</span>

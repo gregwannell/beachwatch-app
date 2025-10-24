@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { animate, motion, useMotionValue, useTransform } from "framer-motion"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
@@ -22,6 +23,10 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   const [isTrendOpen, setIsTrendOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
 
+  // Animation setup for count-up effect
+  const count = useMotionValue(0)
+  const rounded = useTransform(count, (latest) => latest.toFixed(1))
+
   // Detect screen size
   useEffect(() => {
     const checkMobile = () => {
@@ -39,6 +44,15 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   if (!regionData.litterData) return null
 
   const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
+
+  // Animate count-up when value changes
+  useEffect(() => {
+    const controls = animate(count, averageLitterPer100m, {
+      duration: 1.5,
+      ease: "easeOut"
+    })
+    return () => controls.stop()
+  }, [averageLitterPer100m, count])
 
   // Shared content for both Drawer and Dialog
   const calculationContent = (
@@ -107,7 +121,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
         </div>
 
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {averageLitterPer100m.toFixed(1)}
+          <motion.span>{rounded}</motion.span>
         </CardTitle>
         <YearOverYearBadge change={yearOverYearChange} />
       </CardHeader>

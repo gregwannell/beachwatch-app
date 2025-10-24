@@ -13,12 +13,12 @@ export function PlasticComparisonInsight({ plasticPolystyreneComparison }: Plast
   const { regionalAvgPer100m, regionalShare, ukShare, shareDifference } = plasticPolystyreneComparison
 
   return (
-    <div className="p-4 rounded-lg border bg-card">
-      <div className="flex items-center space-x-2 mb-2">
+    <div className="p-5 rounded-xl border bg-card min-h-[140px] flex flex-col">
+      <div className="flex items-center space-x-2 mb-3">
         <Info className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium">Plastic/Polystyrene</span>
       </div>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-muted-foreground flex-1">
         <strong>{regionalAvgPer100m.toFixed(1)} per 100m</strong> ({regionalShare.toFixed(1)}% of litter).
         {shareDifference > 0 ? (
           <> This is <strong>{Math.abs(shareDifference).toFixed(1)}% higher</strong> than the UK average ({ukShare.toFixed(1)}%).</>

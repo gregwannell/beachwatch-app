@@ -16,6 +16,7 @@ import { LitterCollectionStats } from './litter-collection-stats'
 import { EmptyState } from './empty-state'
 import { EngagementStats } from './engagement-stats'
 import { LoadingSkeleton } from './loading-skeleton'
+import { HistoricalContextInsight } from './historical-context-insight'
 
 interface RegionStatsContentProps {
   regionData?: RegionData
@@ -43,6 +44,9 @@ function OverviewTab({ regionData, selectedYear }: { regionData: RegionData; sel
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-muted-foreground">Key Insights</h3>
           <div className="grid gap-3">
+            {/* Historical Context Insight */}
+            <HistoricalContextInsight regionData={regionData} selectedYear={selectedYear} />
+
             {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
               <div className="p-4 rounded-lg border bg-card">
                 <div className="flex items-center space-x-2 mb-2">

@@ -19,6 +19,7 @@ interface RegionStatsContentProps {
   isLoading?: boolean
   onRegionSelect?: (regionId: string) => void
   selectedYear?: number
+  hideHeader?: boolean
 }
 
 export function RegionStatsContent({
@@ -26,6 +27,7 @@ export function RegionStatsContent({
   isLoading = false,
   onRegionSelect,
   selectedYear,
+  hideHeader = false,
 }: RegionStatsContentProps) {
   if (isLoading) {
     return <LoadingSkeleton />
@@ -67,45 +69,47 @@ export function RegionStatsContent({
   return (
     <div className="space-y-4 px-6 py-2">
       {/* Header with region name and status badge */}
-      <div className="space-y-1">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-            {selectedYear && (
-              <span className="text-sm text-muted-foreground font-normal">
-                {selectedYear}
-              </span>
-            )}
+      {!hideHeader && (
+        <div className="space-y-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+              {selectedYear && (
+                <span className="text-sm text-muted-foreground font-normal">
+                  {selectedYear}
+                </span>
+              )}
+            </div>
+            <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit flex-shrink-0">
+              {regionData.hasData ? "Data Available" : "No Data"}
+            </Badge>
           </div>
-          <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit flex-shrink-0">
-            {regionData.hasData ? "Data Available" : "No Data"}
-          </Badge>
-        </div>
 
-        {/* Regional Breadcrumb */}
-        {breadcrumbHierarchy.length > 0 && (
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbHierarchy.map((item, index) => (
-                <div key={index} className="flex items-center ">
-                  {index > 0 && <BreadcrumbSeparator />}
-                  <BreadcrumbItem>
-                    {index === breadcrumbHierarchy.length - 1 ? (
-                      <BreadcrumbPage className="font-medium text-xs">
-                        {item.name}
-                      </BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink className="text-muted-foreground text-xs">
-                        {item.name}
-                      </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                </div>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
-        )}
-      </div>
+          {/* Regional Breadcrumb */}
+          {breadcrumbHierarchy.length > 0 && (
+            <Breadcrumb>
+              <BreadcrumbList>
+                {breadcrumbHierarchy.map((item, index) => (
+                  <div key={index} className="flex items-center ">
+                    {index > 0 && <BreadcrumbSeparator />}
+                    <BreadcrumbItem>
+                      {index === breadcrumbHierarchy.length - 1 ? (
+                        <BreadcrumbPage className="font-medium text-xs">
+                          {item.name}
+                        </BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink className="text-muted-foreground text-xs">
+                          {item.name}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                  </div>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
+        </div>
+      )}
 
       {/* Low survey count warning */}
       {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (

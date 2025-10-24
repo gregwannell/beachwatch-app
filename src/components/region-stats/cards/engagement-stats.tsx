@@ -1,6 +1,6 @@
 import { BarChart3, Users, Ruler } from "lucide-react"
 import { formatNumber, formatBeachLength } from "@/lib/format-number"
-import { YearOverYearBadge } from "./year-over-year-badge"
+import { YearOverYearBadge } from "../components"
 import type { RegionData } from '@/types/region-types'
 
 interface EngagementStatsProps {

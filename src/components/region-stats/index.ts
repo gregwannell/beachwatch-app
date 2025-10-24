@@ -1,11 +1,32 @@
 // Main component
 export { RegionStatsContent } from './region-stats-content'
 
-// Extracted components
-export { YearOverYearBadge } from './year-over-year-badge'
-export { AverageLitterKpiCard } from './average-litter-kpi-card'
-export { EmptyState } from './empty-state'
-export { EngagementStats } from './engagement-stats'
-export { HistoricalContextInsight } from './historical-context-insight'
-export { AverageLitterChart } from './average-litter-chart'
-export { LoadingSkeleton } from './loading-skeleton'
+// Tab components
+export { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
+
+// Card components
+export { AverageLitterKpiCard, LitterCollectionStats, EngagementStats } from './cards'
+
+// Insight components
+export {
+  HistoricalContextInsight,
+  TopLitterItemInsight,
+  TopSourceInsight,
+  PlasticComparisonInsight
+} from './insights'
+
+// Small reusable components
+export { EmptyState, LoadingSkeleton, YearOverYearBadge, UkComparisonText } from './components'
+
+// Charts
+export { AverageLitterChart } from './charts'
+
+// Utilities
+export {
+  calculateHistoricalStats,
+  getRankingSuffix,
+  getRankingText,
+  getBreadcrumbHierarchy,
+  type HistoricalStats,
+  type BreadcrumbItem
+} from './utils'

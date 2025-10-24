@@ -2,106 +2,11 @@
 
 import { Info, TrendingDown, TrendingUp, Award } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
+import { calculateHistoricalStats, getRankingText } from '../utils'
 
 interface HistoricalContextInsightProps {
   regionData: RegionData
   selectedYear?: number
-}
-
-interface HistoricalStats {
-  historicalAverage: number
-  percentDifference: number
-  isAboveAverage: boolean
-  ranking: number
-  totalYears: number
-  bestYear: { year: number; value: number }
-  worstYear: { year: number; value: number }
-  isBestEver: boolean
-  isWorstEver: boolean
-}
-
-function calculateHistoricalStats(
-  trendData: NonNullable<RegionData['litterData']>['trendData'],
-  currentValue: number,
-  selectedYear?: number
-): HistoricalStats | null {
-  if (!trendData || trendData.length === 0) return null
-
-  // Filter to last 10 years only
-  const currentYear = selectedYear || new Date().getFullYear()
-  const tenYearsAgo = currentYear - 10
-  const recentTrends = trendData.filter(trend => trend.year >= tenYearsAgo)
-
-  if (recentTrends.length === 0) return null
-
-  // Calculate historical average from last 10 years
-  const historicalAverage = recentTrends.reduce((sum, trend) => sum + trend.averageLitterPer100m, 0) / recentTrends.length
-
-  // Sort trends by litter amount (ascending = best to worst)
-  const sortedTrends = [...recentTrends].sort((a, b) => a.averageLitterPer100m - b.averageLitterPer100m)
-
-  // Find current year's ranking
-  const ranking = sortedTrends.findIndex(trend =>
-    trend.year === currentYear || trend.averageLitterPer100m === currentValue
-  ) + 1
-
-  // Get best and worst years from last 10 years
-  const bestYear = { year: sortedTrends[0].year, value: sortedTrends[0].averageLitterPer100m }
-  const worstYear = {
-    year: sortedTrends[sortedTrends.length - 1].year,
-    value: sortedTrends[sortedTrends.length - 1].averageLitterPer100m
-  }
-
-  // Calculate percent difference from historical average
-  const percentDifference = historicalAverage > 0
-    ? ((currentValue - historicalAverage) / historicalAverage) * 100
-    : 0
-
-  const isBestEver = ranking === 1
-  const isWorstEver = ranking === sortedTrends.length
-
-  return {
-    historicalAverage,
-    percentDifference: Math.round(Math.abs(percentDifference) * 10) / 10,
-    isAboveAverage: percentDifference > 0,
-    ranking,
-    totalYears: recentTrends.length,
-    bestYear,
-    worstYear,
-    isBestEver,
-    isWorstEver
-  }
-}
-
-function getRankingSuffix(rank: number): string {
-  if (rank === 1) return "st"
-  if (rank === 2) return "nd"
-  if (rank === 3) return "rd"
-  return "th"
-}
-
-function getRankingText(stats: HistoricalStats): string {
-  if (stats.isBestEver) {
-    return "Best year in the last 10 years"
-  }
-  if (stats.isWorstEver) {
-    return `Highest levels in the last 10 years`
-  }
-
-  // For other rankings, show whichever is more meaningful
-  // If in the better half, show "best", otherwise show "worst"
-  const midpoint = Math.ceil(stats.totalYears / 2)
-
-  if (stats.ranking <= midpoint) {
-    // Show as "best"
-    const suffix = getRankingSuffix(stats.ranking)
-    return `${stats.ranking}${suffix} best year in the last 10 years`
-  } else {
-    // Show as "worst" (calculate from the other end)
-    const worstRanking = stats.totalYears - stats.ranking + 1
-    const suffix = getRankingSuffix(worstRanking)
-    return `${worstRanking}${suffix} worst year in the last 10 years`
-  }
 }
 
 export function HistoricalContextInsight({ regionData, selectedYear }: HistoricalContextInsightProps) {

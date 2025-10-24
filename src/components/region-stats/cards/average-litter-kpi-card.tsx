@@ -6,9 +6,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Info, ChevronDown, ChevronRight } from "lucide-react"
-import { YearOverYearBadge } from "./year-over-year-badge"
-import { UkComparisonText } from "./uk-comparison-text"
-import { AverageLitterChart } from "./average-litter-chart"
+import { YearOverYearBadge, UkComparisonText } from "../components"
+import { AverageLitterChart } from "../charts"
 import type { RegionData } from '@/types/region-types'
 
 interface AverageLitterKpiCardProps {

@@ -1,11 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Info, ChevronDown, ChevronRight } from "lucide-react"
+import { Info, ChevronRight } from "lucide-react"
 import { YearOverYearBadge, UkComparisonText } from "../components"
 import { AverageLitterChart } from "../charts"
 import type { RegionData } from '@/types/region-types'
@@ -18,47 +20,91 @@ interface AverageLitterKpiCardProps {
 export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitterKpiCardProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isTrendOpen, setIsTrendOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+
+    // Check on mount
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   if (!regionData.litterData) return null
 
   const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
 
+  // Shared content for both Drawer and Dialog
+  const calculationContent = (
+    <div className="text-sm text-muted-foreground space-y-3">
+      <p className="font-semibold">How is this calculated?</p>
+      <p className="text-sm">
+        First, we work out how much litter is found per 100 metres of beach, so every
+        stretch is measured in the same way. For each beach stretch, we then find the
+        middle result (median) from all its surveys, which gives a fair &ldquo;typical&rdquo; value.
+        Finally, we take the middle of those typical values across all beaches, so no single
+        beach or unusual survey dominates the result.
+      </p>
+    </div>
+  )
+
   return (
     <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs pb-3 gap-2">
       <CardHeader>
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center justify-between gap-2">
-            <CardDescription>Average Litter per 100m</CardDescription>
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-auto w-auto p-1 hover:bg-primary/10"
-                aria-label="Toggle calculation information"
-              >
-                <Info className="h-4 w-4 text-muted-foreground" />
-                <ChevronDown
-                  className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${
-                    isOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
+        <div className="flex items-center justify-between gap-2">
+          <CardDescription>Average Litter per 100m</CardDescription>
 
-          <CollapsibleContent className="mt-2">
-            <div className="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground">
-              <p><strong>How is this calculated?</strong></p>
-              <p className="mt-2 text-xs">
-               First, we work out how much litter is found per 100 metres of beach, so every
-               stretch is measured in the same way. For each beach stretch, we then find the
-               middle result (median) from all its surveys, which gives a fair &ldquo;typical&rdquo; value.
-               Finally, we take the middle of those typical values across all beaches, so no single
-               beach or unusual survey dominates the result.
-              </p>
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+          {/* Conditionally render Drawer (mobile) or Dialog (desktop) */}
+          {isMobile ? (
+            <Drawer open={isOpen} onOpenChange={setIsOpen}>
+              <DrawerTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto w-auto p-1 hover:bg-primary/10"
+                  aria-label="View calculation information"
+                >
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Average Litter Calculation</DrawerTitle>
+                  <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
+                </DrawerHeader>
+                <div className="px-4 pb-6">
+                  {calculationContent}
+                </div>
+              </DrawerContent>
+            </Drawer>
+          ) : (
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto w-auto p-1 hover:bg-primary/10"
+                  aria-label="View calculation information"
+                >
+                  <Info className="h-4 w-4 text-muted-foreground" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Average Litter Calculation</DialogTitle>
+                  <DialogDescription>Understanding how we calculate this metric</DialogDescription>
+                </DialogHeader>
+                {calculationContent}
+              </DialogContent>
+            </Dialog>
+          )}
+        </div>
 
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {averageLitterPer100m.toFixed(1)}

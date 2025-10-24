@@ -6,9 +6,9 @@ import { signIn } from './actions'
 export default async function LoginPage() {
   const session = await getSession()
 
-  // If already logged in, redirect to home
+  // If already logged in, redirect to explore
   if (session) {
-    redirect('/')
+    redirect('/explore')
   }
 
   return (

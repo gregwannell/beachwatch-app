@@ -86,6 +86,13 @@ export function DonutPieChart({
                 <ChartTooltipContent
                   indicator="line"
                   nameKey="name"
+                  formatter={(value, name) => {
+                    const itemData = data.find(item => item.name === name)
+                    const percentage = itemData?.percentage !== undefined
+                      ? itemData.percentage
+                      : ((itemData?.value || 0) / totalValue) * 100
+                    return `${name}: ${percentage.toFixed(1)}%`
+                  }}
                 />
               }
             />
@@ -97,40 +104,8 @@ export function DonutPieChart({
               strokeWidth={5}
               animationDuration={animationDuration}
               animationEasing={animationEasing}
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {totalValue % 1 === 0
-                            ? totalValue.toLocaleString()
-                            : totalValue.toFixed(1)
-                          }
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          {centerLabel}
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </Pie>
+            />
+
           </PieChart>
         </ChartContainer>
 

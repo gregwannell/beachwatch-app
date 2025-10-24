@@ -98,6 +98,10 @@ export function InteractivePieChart({
 
   const activeData = data[activeIndex] || data[0]
 
+  const totalValue = React.useMemo(() => {
+    return data.reduce((acc, curr) => acc + curr.value, 0)
+  }, [data])
+
   return (
     <Card data-chart={id} className={`flex flex-col ${className}`}>
       <ChartStyle id={id} config={chartConfig} />
@@ -163,7 +167,18 @@ export function InteractivePieChart({
           <PieChart>
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
+              content={
+                <ChartTooltipContent
+                  indicator="line"
+                  formatter={(value, name) => {
+                    const itemData = data.find(item => item.name === name)
+                    const percentage = itemData?.percentage !== undefined
+                      ? itemData.percentage
+                      : ((itemData?.value || 0) / totalValue) * 100
+                    return `${name}: ${percentage.toFixed(1)}%`
+                  }}
+                />
+              }
             />
             <Pie
               data={data}
@@ -185,43 +200,7 @@ export function InteractivePieChart({
                   />
                 </g>
               )}
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {activeData.value % 1 === 0
-                            ? activeData.value.toLocaleString()
-                            : activeData.value.toFixed(1)
-                          }
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          {activeData.percentage !== undefined
-                            ? `${activeData.percentage.toFixed(1)}%`
-                            : "Items"
-                          }
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </Pie>
+            />
           </PieChart>
         </ChartContainer>
       </CardContent>

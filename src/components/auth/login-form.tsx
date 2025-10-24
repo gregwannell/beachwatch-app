@@ -29,7 +29,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         toast.error(result.error)
       } else {
         toast.success('Logged in successfully')
-        router.push('/')
+        router.push('/explore')
         router.refresh()
       }
     } catch (error) {

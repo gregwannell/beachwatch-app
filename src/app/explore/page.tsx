@@ -343,7 +343,7 @@ export default function Home() {
       }
       regionData={regionData || undefined}
     >
-      <div className="h-full w-full relative pb-20 lg:pb-0">
+      <div className="h-full w-full relative pb-20 md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -355,9 +355,9 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <Card className="h-full lg:h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
+          <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
             {/* Mobile: Full-height map only */}
-            <div className="h-full flex flex-col lg:hidden">
+            <div className="h-full flex flex-col md:hidden">
               <div className="relative flex-1 overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
@@ -417,10 +417,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Desktop: Split view (70% map / 30% stats) */}
-            <div className="hidden lg:flex lg:flex-row h-full">
+            {/* Tablet & Desktop: Split view with responsive widths */}
+            <div className="hidden md:flex md:flex-row h-full">
               {/* Map Section */}
-              <div className="relative flex-[70%] overflow-hidden">
+              <div className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
@@ -465,7 +465,7 @@ export default function Home() {
               <Separator orientation="vertical" />
 
               {/* Stats Panel */}
-              <div className="flex-[30%] overflow-auto bg-background">
+              <div className="w-full md:w-[50%] md:max-w-[600px] lg:w-[40%] lg:max-w-[550px] xl:w-[35%] xl:max-w-[600px] 2xl:w-[30%] 2xl:max-w-[700px] overflow-auto bg-background">
                 <RegionStatsContent
                   regionData={regionData || undefined}
                   isLoading={isRegionLoading}
@@ -495,7 +495,7 @@ export default function Home() {
       )}
 
       {/* Mobile Stats Sheet */}
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <MobileRegionStatsSheet
           open={isMobileStatsOpen}
           onOpenChange={setIsMobileStatsOpen}

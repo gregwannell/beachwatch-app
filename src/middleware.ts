@@ -39,9 +39,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // If user is authenticated and trying to access login page, redirect to home
+  // If user is authenticated and trying to access login page, redirect to explore
   if (session && isLoginPage) {
-    const redirectUrl = new URL('/', request.url)
+    const redirectUrl = new URL('/explore', request.url)
     return NextResponse.redirect(redirectUrl)
   }
 

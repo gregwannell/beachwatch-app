@@ -37,7 +37,7 @@ export function ModernMobileNav() {
   const accentColor = 'var(--primary)'
 
   return (
-    <div className="lg:hidden pb-safe">
+    <div className="md:hidden pb-safe">
       <InteractiveMenu
         items={menuItems}
         accentColor={accentColor}

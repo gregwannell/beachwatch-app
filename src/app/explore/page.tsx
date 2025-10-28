@@ -8,6 +8,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { FilterSidebar } from '@/components/filters/filter-sidebar'
+import { MapFilterBar } from '@/components/filters/map-filter-bar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { FloatingFilterButton } from '@/components/filters/floating-filter-button'
@@ -334,11 +335,7 @@ export default function Home() {
     <MainLayout
       sidebar={
         <div className="hidden lg:block">
-          <FilterSidebar
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            onMapReset={handleMapReset}
-          />
+          <FilterSidebar />
         </div>
       }
       regionData={regionData || undefined}
@@ -421,6 +418,17 @@ export default function Home() {
             <div className="hidden md:flex md:flex-row h-full">
               {/* Map Section */}
               <div className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
+                {/* Map Filter Bar - Desktop only */}
+                {filterOptions && (
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[950] max-w-[600px] w-[calc(100%-2rem)]">
+                    <MapFilterBar
+                      filters={filters}
+                      onFiltersChange={handleFiltersChange}
+                      onMapReset={handleMapReset}
+                    />
+                  </div>
+                )}
+
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">

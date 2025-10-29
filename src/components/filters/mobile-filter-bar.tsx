@@ -258,6 +258,7 @@ export function MobileFilterBar({
                     region: { selectedRegionId: regionId }
                   })
                 }
+                variant="inline"
                 className="w-full"
               />
 

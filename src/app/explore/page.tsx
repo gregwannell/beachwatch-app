@@ -77,7 +77,8 @@ export default function Home() {
       endYear: yearParam ? parseInt(yearParam) : 2024,
       mode: 'single'
     },
-    categories: {}
+    categories: {},
+    dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Default: show all, no highlight
   })
 
   // Sync state when URL params change (from stats page navigation)
@@ -87,7 +88,8 @@ export default function Home() {
       setSelectedRegionId(regionId)
       setFilters(prev => ({
         ...prev,
-        region: { selectedRegionId: regionId }
+        region: { selectedRegionId: regionId },
+        dataAvailability: prev.dataAvailability
       }))
     }
     if (yearParam) {
@@ -98,7 +100,8 @@ export default function Home() {
           startYear: year,
           endYear: year,
           mode: 'single'
-        }
+        },
+        dataAvailability: prev.dataAvailability
       }))
     }
   }, [regionIdParam, yearParam])
@@ -185,6 +188,7 @@ export default function Home() {
         mode: 'single' as const
       },
       categories: {},
+      dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Preserve default data availability settings
     }
 
     // Apply the filters - this will trigger handleFiltersChange
@@ -204,13 +208,26 @@ export default function Home() {
   const { data: regions = [], isLoading, error } = useMapRegions({
     includeGeometry: true,
     onlyWithData: false,
-    parentId: parentRegionId
+    parentId: parentRegionId,
+    includeSurveyCounts: true,
+    year: filters.yearRange.startYear
+  })
+
+  // Apply data availability filter
+  const filteredRegions = regions.filter(region => {
+    // If showNoData is true, show all regions
+    if (filters.dataAvailability.showNoData) {
+      return true
+    }
+    // Otherwise, only show regions with year-specific data
+    return region.total_surveys !== undefined && region.total_surveys > 0
   })
 
   // Debug logging
   if (process.env.NODE_ENV === 'development') {
     console.log('Map debug:', {
       regionsCount: regions.length,
+      filteredRegionsCount: filteredRegions.length,
       isLoading,
       error: error?.message,
       firstRegion: regions[0]
@@ -227,29 +244,47 @@ export default function Home() {
   const handleRegionClick = (regionId: number) => {
     // Find the clicked region to check its type
     const clickedRegion = regions.find(r => r.id === regionId)
-    
+
     if (!clickedRegion) return
-    
+
     // Check if this region can be drilled down (Countries and Crown Dependencies have children)
     const canDrillDown = clickedRegion.type === 'Country' || clickedRegion.type === 'Crown Dependency'
-    
+
     if (canDrillDown) {
       // For countries/crown dependencies: show their stats in sidebar AND drill down
       setSelectedRegionId(regionId)
       setParentRegionId(regionId)
-      // Update filter for the country level
-      handleFiltersChange({
+      // Update filter state directly without triggering URL change
+      setFilters({
         ...filters,
-        region: { selectedRegionId: regionId }
+        region: { selectedRegionId: regionId },
+        dataAvailability: filters.dataAvailability
       })
+
+      // Update URL with new region
+      const params = new URLSearchParams()
+      params.set('region', regionId.toString())
+      if (filters.yearRange.startYear) {
+        params.set('year', filters.yearRange.startYear.toString())
+      }
+      router.push(`/explore?${params.toString()}`, { scroll: false })
     } else {
       // For counties/unitary authorities: show their stats in sidebar
       setSelectedRegionId(regionId)
-      // Update filter when a region is clicked on the map
-      handleFiltersChange({
+      // Update filter state directly without triggering URL change
+      setFilters({
         ...filters,
-        region: { selectedRegionId: regionId }
+        region: { selectedRegionId: regionId },
+        dataAvailability: filters.dataAvailability
       })
+
+      // Update URL with new region
+      const params = new URLSearchParams()
+      params.set('region', regionId.toString())
+      if (filters.yearRange.startYear) {
+        params.set('year', filters.yearRange.startYear.toString())
+      }
+      router.push(`/explore?${params.toString()}`, { scroll: false })
     }
   }
 
@@ -260,7 +295,8 @@ export default function Home() {
     setSelectedRegionId(numericRegionId)
     handleFiltersChange({
       ...filters,
-      region: { selectedRegionId: numericRegionId }
+      region: { selectedRegionId: numericRegionId },
+      dataAvailability: filters.dataAvailability
     })
   }
 
@@ -360,11 +396,12 @@ export default function Home() {
                 ) : null}
 
                 <UKMap
-                  regions={regions}
+                  regions={filteredRegions}
                   selectedRegionId={effectiveSelectedRegionId}
                   onRegionClick={handleRegionClick}
                   onRegionHover={handleRegionHover}
                   mapTheme={mapTheme}
+                  highlightLimitedSurveys={filters.dataAvailability.highlightLimitedSurveys}
                   resetToUKView={resetMapView}
                   zoomToRegionId={zoomToRegionId}
                   className="h-full w-full"
@@ -384,7 +421,7 @@ export default function Home() {
                 {/* Region name tooltip */}
                 <RegionTooltip
                   hoverState={hoverState}
-                  regions={regions}
+                  regions={filteredRegions}
                 />
 
                 {/* Floating stats button - mobile only */}
@@ -416,6 +453,7 @@ export default function Home() {
                     <MapFilterBar
                       filters={filters}
                       onFiltersChange={handleFiltersChange}
+                      onMapReset={handleMapReset}
                     />
                   </div>
                 )}
@@ -432,11 +470,12 @@ export default function Home() {
                 ) : null}
 
                 <UKMap
-                  regions={regions}
+                  regions={filteredRegions}
                   selectedRegionId={effectiveSelectedRegionId}
                   onRegionClick={handleRegionClick}
                   onRegionHover={handleRegionHover}
                   mapTheme={mapTheme}
+                  highlightLimitedSurveys={filters.dataAvailability.highlightLimitedSurveys}
                   resetToUKView={resetMapView}
                   zoomToRegionId={zoomToRegionId}
                   className="h-full w-full"
@@ -456,7 +495,7 @@ export default function Home() {
                 {/* Region name tooltip */}
                 <RegionTooltip
                   hoverState={hoverState}
-                  regions={regions}
+                  regions={filteredRegions}
                 />
               </div>
 

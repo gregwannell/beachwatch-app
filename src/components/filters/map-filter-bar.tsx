@@ -9,12 +9,14 @@ interface MapFilterBarProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
   className?: string
+  onMapReset?: () => void
 }
 
 export function MapFilterBar({
   filters,
   onFiltersChange,
   className,
+  onMapReset,
 }: MapFilterBarProps) {
   const { data: filterOptions, isLoading } = useFilterOptions()
 
@@ -42,6 +44,7 @@ export function MapFilterBar({
         regions={filterOptions.regions}
         availableYears={filterOptions.availableYears}
         activeFilterCount={activeFilterCount}
+        onMapReset={onMapReset}
       />
     </div>
   )

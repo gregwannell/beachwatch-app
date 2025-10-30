@@ -10,18 +10,20 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient()
     const { searchParams } = new URL(request.url)
-    
+
     // Query parameters
     const type = searchParams.get('type')
     const hasData = searchParams.get('hasData')
     const parentId = searchParams.get('parentId')
     const includeGeometry = searchParams.get('includeGeometry') !== 'false'
+    const includeSurveyCounts = searchParams.get('includeSurveyCounts') === 'true'
+    const year = searchParams.get('year')
     const limit = searchParams.get('limit')
-    
+
     let query = supabase
       .from('regions')
       .select(
-        includeGeometry 
+        includeGeometry
           ? 'id, name, parent_id, type, code, geometry, has_data, created_at, updated_at'
           : 'id, name, parent_id, type, code, has_data, created_at, updated_at'
       )
@@ -49,7 +51,7 @@ export async function GET(request: NextRequest) {
     }
     
     const { data, error } = await query
-    
+
     if (error) {
       console.error('Database error:', error)
       return NextResponse.json(
@@ -57,9 +59,9 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     // Validate geometry data if included
-    const validatedData = data?.map(region => {
+    let validatedData = data?.map(region => {
       if (includeGeometry && 'geometry' in region && region.geometry) {
         const isValid = validateRegionGeometry(region.geometry)
         if (!isValid) {
@@ -69,11 +71,45 @@ export async function GET(request: NextRequest) {
       }
       return region
     }) || []
-    
+
+    // Add survey counts if requested
+    if (includeSurveyCounts && validatedData.length > 0) {
+      const regionIds = validatedData.map(r => r.id)
+
+      let aggregatesQuery = supabase
+        .from('annual_region_aggregates')
+        .select('name_id, total_surveys')
+        .in('name_id', regionIds)
+
+      // Apply year filter if provided
+      if (year) {
+        aggregatesQuery = aggregatesQuery.eq('year', parseInt(year))
+      }
+
+      const { data: aggregates, error: aggregatesError } = await aggregatesQuery
+
+      if (aggregatesError) {
+        console.error('Survey counts query error:', aggregatesError)
+      } else if (aggregates) {
+        // Sum total_surveys per region
+        const surveyCounts = aggregates.reduce((acc, agg) => {
+          acc[agg.name_id] = (acc[agg.name_id] || 0) + agg.total_surveys
+          return acc
+        }, {} as Record<number, number>)
+
+        // Add survey counts to region data
+        validatedData = validatedData.map(region => ({
+          ...region,
+          total_surveys: surveyCounts[region.id] || 0
+        }))
+      }
+    }
+
     return NextResponse.json({
       data: validatedData,
       count: validatedData.length,
-      includeGeometry
+      includeGeometry,
+      includeSurveyCounts
     })
     
   } catch (error) {

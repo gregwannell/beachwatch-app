@@ -9,6 +9,7 @@ export interface MapRegion {
   geometry: RegionGeometry | null
   has_data: boolean
   type: string
+  total_surveys?: number
 }
 
 // Props for the main map component
@@ -18,6 +19,7 @@ export interface MapComponentProps {
   onRegionClick?: (regionId: number) => void
   onRegionHover?: (regionId: number | null) => void
   className?: string
+  highlightLimitedSurveys?: boolean
 }
 
 // Map bounds for UK

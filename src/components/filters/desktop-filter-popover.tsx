@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/popover'
 import { HierarchicalRegionSelect } from './hierarchical-region-select'
 import { YearRangePicker } from './year-range-picker'
+import { DataAvailabilityFilter } from './data-availability-filter'
 import type { FilterState, FilterRegion } from '@/types/filter-types'
 
 interface DesktopFilterPopoverProps {
@@ -19,6 +20,7 @@ interface DesktopFilterPopoverProps {
   regions: FilterRegion[]
   availableYears: { min: number; max: number }
   activeFilterCount: number
+  onMapReset?: () => void
 }
 
 export function DesktopFilterPopover({
@@ -27,6 +29,7 @@ export function DesktopFilterPopover({
   regions,
   availableYears,
   activeFilterCount,
+  onMapReset,
 }: DesktopFilterPopoverProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [draftFilters, setDraftFilters] = useState<FilterState>(filters)
@@ -49,10 +52,12 @@ export function DesktopFilterPopover({
         endYear: availableYears.max,
         mode: 'single'
       },
-      categories: { selectedCategories: [] }
+      categories: { selectedCategories: [] },
+      dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Default: show all, no highlight
     }
     setDraftFilters(defaultFilters)
     onFiltersChange(defaultFilters)
+    onMapReset?.()
     setIsOpen(false)
   }
 
@@ -117,6 +122,19 @@ export function DesktopFilterPopover({
               })
             }
             availableYears={availableYears}
+            className="w-full"
+          />
+
+          {/* Data Availability Filter */}
+          <DataAvailabilityFilter
+            showNoData={draftFilters.dataAvailability.showNoData}
+            highlightLimitedSurveys={draftFilters.dataAvailability.highlightLimitedSurveys}
+            onChange={(filters) =>
+              setDraftFilters({
+                ...draftFilters,
+                dataAvailability: filters
+              })
+            }
             className="w-full"
           />
         </div>

@@ -120,7 +120,8 @@ export function UKMap({
   className = "w-full h-full",
   mapTheme = DEFAULT_MAP_THEME,
   resetToUKView = false,
-  zoomToRegionId = null
+  zoomToRegionId = null,
+  highlightLimitedSurveys = false
 }: UKMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
@@ -198,10 +199,16 @@ export function UKMap({
     const baseColor = getRegionColor(region, regions)
     const isSelected = selectedRegionId === region.id
     const isHovered = hoveredRegionId === region.id
+    const hasLimitedSurveys = region.total_surveys !== undefined && region.total_surveys > 0 && region.total_surveys < 5
+
+    // Use orange border for regions with limited surveys (only if highlighting is enabled)
+    const shouldHighlight = highlightLimitedSurveys && hasLimitedSurveys
+    const borderColor = shouldHighlight ? '#ea580c' : baseColor
+    const borderWeight = shouldHighlight ? 3 : (isSelected ? 3 : (isHovered ? 3 : 1))
 
     return {
-      color: baseColor,
-      weight: isSelected ? 3 : (isHovered ? 3 : 1),
+      color: borderColor,
+      weight: borderWeight,
       opacity: 1,
       fillColor: baseColor,
       fillOpacity: isSelected ? 0.8 : (isHovered ? 0.8 : 0.5),
@@ -251,6 +258,17 @@ export function UKMap({
 
   return (
     <div className={className} role="application" aria-label="Interactive UK regions map">
+      {/* Map Legend - only show when highlighting is enabled */}
+      {highlightLimitedSurveys && (
+        <div className="absolute top-4 left-4 z-[1000] bg-white dark:bg-gray-800 rounded-lg shadow-lg px-3 py-2 border border-gray-200 dark:border-gray-700">
+          <div className="text-xs font-semibold mb-2 text-gray-900 dark:text-gray-100">Legend</div>
+          <div className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
+            <div className="w-4 h-3 border-2 border-orange-600 rounded"></div>
+            <span>Limited surveys (&lt;5)</span>
+          </div>
+        </div>
+      )}
+
       <MapContainer
         ref={mapRef}
         bounds={UK_BOUNDS}

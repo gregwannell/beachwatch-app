@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/popover"
 import { FilterState, FilterRegion } from "@/types/filter-types"
 import { HierarchicalRegionSelect } from "./hierarchical-region-select"
+import { DataAvailabilityFilter } from "./data-availability-filter"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 
 interface MobileFilterBarProps {
@@ -140,6 +141,7 @@ export function MobileFilterBar({
         mode: 'single' as const
       },
       categories: {},
+      dataAvailability: { showNoData: true, highlightLimitedSurveys: false }
     }
     setDraftFilters(resetFilters)
     onFiltersChange(resetFilters)
@@ -297,6 +299,19 @@ export function MobileFilterBar({
                   ))}
                 </SelectContent>
               </Select>
+
+              {/* Data Availability Filter */}
+              <DataAvailabilityFilter
+                showNoData={draftFilters.dataAvailability.showNoData}
+                highlightLimitedSurveys={draftFilters.dataAvailability.highlightLimitedSurveys}
+                onChange={(filters) =>
+                  setDraftFilters({
+                    ...draftFilters,
+                    dataAvailability: filters
+                  })
+                }
+                className="w-full"
+              />
             </div>
           </div>
 

@@ -26,11 +26,17 @@ export interface CategoryFilter {
   [key: string]: unknown
 }
 
+export interface DataAvailabilityFilter {
+  showNoData: boolean
+  highlightLimitedSurveys: boolean
+}
+
 // Combined filter state
 export interface FilterState {
   region: RegionFilter
   yearRange: YearRangeFilter
   categories: CategoryFilter
+  dataAvailability: DataAvailabilityFilter
 }
 
 // Available filter options (populated from API)

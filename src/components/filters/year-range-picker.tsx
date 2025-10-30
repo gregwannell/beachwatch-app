@@ -43,7 +43,7 @@ export function YearRangePicker({
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select a year" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent position="popper" className="max-h-[300px]">
           {yearOptions.map((year) => (
             <SelectItem key={year} value={year.toString()}>
               {year} {year === maxYear && '(Latest)'}

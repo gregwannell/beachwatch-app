@@ -41,7 +41,12 @@ export function YearRangePicker({
         onValueChange={handleYearChange}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a year" />
+          <div className="flex items-center justify-between w-full">
+            <span className="text-sm font-medium text-foreground">Year</span>
+            <span className="text-sm text-muted-foreground">
+              {value.startYear}
+            </span>
+          </div>
         </SelectTrigger>
         <SelectContent position="popper" className="max-h-[300px]">
           {yearOptions.map((year) => (

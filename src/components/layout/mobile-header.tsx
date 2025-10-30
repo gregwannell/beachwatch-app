@@ -13,7 +13,7 @@ export function MobileHeader() {
 
   return (
     <>
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-[1001] h-12 bg-primary dark:bg-card border-b border-primary-foreground/10 dark:border-border shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-[1001] h-12 bg-primary dark:bg-card border-b border-primary-foreground/10 dark:border-border shadow-sm">
         <div className="h-full px-4 flex items-center justify-between">
           {/* MCS Logo */}
           <div className="flex items-center">

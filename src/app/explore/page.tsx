@@ -7,7 +7,6 @@ import { useFilterOptions } from '@/hooks/use-filter-options'
 import { useState, useEffect, useMemo } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
-import { FilterSidebar } from '@/components/filters/filter-sidebar'
 import { MapFilterBar } from '@/components/filters/map-filter-bar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
@@ -332,14 +331,7 @@ export default function Home() {
   }, [filters.region.selectedRegionId, filters.yearRange.startYear])
 
   return (
-    <MainLayout
-      sidebar={
-        <div className="hidden lg:block">
-          <FilterSidebar />
-        </div>
-      }
-      regionData={regionData || undefined}
-    >
+    <MainLayout>
       <div className="h-full w-full relative pb-20 md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
@@ -420,11 +412,10 @@ export default function Home() {
               <div className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
                 {/* Map Filter Bar - Desktop only */}
                 {filterOptions && (
-                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[950] max-w-[600px] w-[calc(100%-2rem)]">
+                  <div className="absolute top-4 right-6 z-[950]">
                     <MapFilterBar
                       filters={filters}
                       onFiltersChange={handleFiltersChange}
-                      onMapReset={handleMapReset}
                     />
                   </div>
                 )}
@@ -452,7 +443,7 @@ export default function Home() {
                 />
 
                 {/* MCS Logo overlay */}
-                <div className="absolute top-4 left-4 z-[900] pointer-events-none">
+                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"

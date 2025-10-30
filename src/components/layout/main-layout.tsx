@@ -1,27 +1,17 @@
 "use client"
 
-import { Waves } from 'lucide-react'
-import Image from 'next/image'
-import { SidebarProvider, SidebarInset, SidebarTrigger, Sidebar, SidebarContent, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar'
-import type { RegionData } from '@/types/region-types'
-import { LogoutButton } from '@/components/auth/logout-button'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { MobileHeader } from './mobile-header'
 
 interface MainLayoutProps {
   children: React.ReactNode
-  sidebar?: React.ReactNode
-  regionData?: RegionData
 }
 
 export function MainLayout({
   children,
-  sidebar,
-  regionData
 }: MainLayoutProps) {
   return (
     <div className="flex h-screen bg-background">
-      {/* Mobile Header - Only visible on mobile */}
+      {/* Header - Visible on all screen sizes */}
       <MobileHeader />
 
       {/* Skip link for keyboard navigation */}
@@ -32,69 +22,23 @@ export function MainLayout({
         Skip to main content
       </a>
 
-      {/* Left Sidebar Provider - Hidden on mobile, visible on desktop */}
-      <SidebarProvider>
-        <Sidebar side="left" variant="inset" aria-label="Data filters" className="hidden lg:flex">
-          <SidebarHeader className="bg-background/50 backdrop-blur-sm">
-            <h2 className="font-semibold text-xl flex items-center gap-2">
-              <img src="/MCS_Logo_Stacked_Ink.png" alt="Marine Conservation Society" className="h-8" />
-              Beachwatch Data Explorer
-            </h2>
-          </SidebarHeader>
-          <SidebarContent className="overflow-auto" role="region" aria-label="Filter controls">
-            {sidebar || (
-              <div className="p-4">
-                <h3 className="font-medium text-sm text-muted-foreground mb-3">
-                  Data Filters
-                </h3>
-                <div className="space-y-4">
-                  <div className="text-sm">Filter controls will go here</div>
+      {/* Main Content Area */}
+      <div className="flex-1 h-screen relative pt-12" role="main" aria-label="Interactive map">
+        <div className="h-full" id="main-content">
+          {children || (
+            <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">
+              <div className="text-center">
+                <div className="text-2xl font-semibold text-ocean-600 dark:text-ocean-400 mb-2">
+                  Interactive Map
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Map component will be rendered here
                 </div>
               </div>
-            )}
-          </SidebarContent>
-          <SidebarFooter className="border-t p-4 space-y-4">
-            <div className="flex justify-between items-center">
-              <LogoutButton />
-              <ThemeToggle />
             </div>
-            <div className="flex justify-left">
-              <Image
-                src="/mcs-logo.png"
-                alt="Marine Conservation Society"
-                width={200}
-                height={60}
-                className="h-15 w-auto opacity-80"
-              />
-            </div>
-          </SidebarFooter>
-        </Sidebar>
-
-        <SidebarInset className="flex-1">
-          {/* Main Content Area - Map */}
-          <div className="h-screen relative pt-12 lg:pt-0" role="main" aria-label="Interactive map">
-            {/* Floating Sidebar Trigger - Desktop only */}
-            <div className="hidden lg:block absolute top-4 left-4 z-[1000]">
-              <SidebarTrigger className="bg-background border border-border shadow-lg hover:bg-accent" />
-            </div>
-
-            <div className="h-full" id="main-content">
-              {children || (
-                <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">
-                  <div className="text-center">
-                    <div className="text-2xl font-semibold text-ocean-600 dark:text-ocean-400 mb-2">
-                      Interactive Map
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Map component will be rendered here
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

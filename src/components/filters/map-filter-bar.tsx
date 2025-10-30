@@ -74,61 +74,67 @@ export function MapFilterBar({
   }
 
   return (
-    <div className={`flex items-center gap-2 flex-wrap ${className}`}>
-      {/* Region Select - Compact */}
-      <div className="min-w-[200px] bg-background/95 backdrop-blur-sm rounded-lg shadow-lg">
-        <HierarchicalRegionSelect
-          regions={filterOptions.regions}
-          selectedRegionId={filters.region.selectedRegionId}
-          onRegionChange={handleRegionChange}
-          placeholder="All regions"
-          className="w-full"
-        />
-      </div>
-
-      {/* Year Picker - Compact */}
-      <div className="min-w-[140px] bg-background/95 backdrop-blur-sm rounded-lg shadow-lg">
-        <YearRangePicker
-          value={filters.yearRange}
-          onChange={handleYearRangeChange}
-          availableYears={filterOptions.availableYears}
-          className="w-full"
-        />
-      </div>
-
-      {/* Reset Button */}
-      {hasActiveFilters && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleResetFilters}
-          className="h-10 bg-background/95 backdrop-blur-sm shadow-lg"
-          aria-label="Reset all filters"
-        >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Reset
-        </Button>
-      )}
-
-      {/* Active Filters Summary */}
-      {hasActiveFilters && (
-        <div className="flex items-center gap-2 flex-wrap bg-background/95 backdrop-blur-sm rounded-lg shadow-lg px-3 py-2 border border-primary/20">
-          <Info className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium">Active:</span>
-          {filters.region.selectedRegionId && filters.region.selectedRegionId !== 1 && (
-            <Badge variant="secondary" className="text-xs">
-              {filterOptions.regions.find(r =>
-                r.id === filters.region.selectedRegionId
-              )?.name}
-            </Badge>
-          )}
-          {filters.yearRange.startYear !== filterOptions.availableYears.max && (
-            <Badge variant="secondary" className="text-xs">
-              {filters.yearRange.startYear}
-            </Badge>
-          )}
+    <div className={`bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border p-2 ${className}`}>
+      <div className="flex items-center gap-2">
+        {/* Region Select - Fixed Width */}
+        <div className="w-[240px] shrink-0">
+          <HierarchicalRegionSelect
+            regions={filterOptions.regions}
+            selectedRegionId={filters.region.selectedRegionId}
+            onRegionChange={handleRegionChange}
+            placeholder="All regions"
+            variant="popover"
+            className="w-full"
+          />
         </div>
-      )}
+
+        {/* Year Picker - Fixed Width */}
+        <div className="w-[160px] shrink-0">
+          <YearRangePicker
+            value={filters.yearRange}
+            onChange={handleYearRangeChange}
+            availableYears={filterOptions.availableYears}
+            className="w-full"
+          />
+        </div>
+
+        {/* Reset Button */}
+        {hasActiveFilters && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleResetFilters}
+            className="h-10 shrink-0"
+            aria-label="Reset all filters"
+          >
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Reset
+          </Button>
+        )}
+
+        {/* Active Filters Badge */}
+        {hasActiveFilters && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary/10 border border-primary/20 shrink-0">
+            <Info className="h-4 w-4 text-primary shrink-0" />
+            <span className="text-xs font-medium text-primary">
+              {filters.region.selectedRegionId && filters.region.selectedRegionId !== 1 && (
+                <span>
+                  {filterOptions.regions.find(r =>
+                    r.id === filters.region.selectedRegionId
+                  )?.name}
+                </span>
+              )}
+              {filters.region.selectedRegionId && filters.region.selectedRegionId !== 1 &&
+               filters.yearRange.startYear !== filterOptions.availableYears.max && (
+                <span> • </span>
+              )}
+              {filters.yearRange.startYear !== filterOptions.availableYears.max && (
+                <span>{filters.yearRange.startYear}</span>
+              )}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

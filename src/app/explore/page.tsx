@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layout/main-layout'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
 import { useFilterOptions } from '@/hooks/use-filter-options'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import dynamic from 'next/dynamic'
 import { MapFilterBar } from '@/components/filters/map-filter-bar'
@@ -38,9 +38,7 @@ const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ def
   )
 })
 
-
-
-export default function Home() {
+function ExplorePageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const regionIdParam = searchParams.get('region')
@@ -78,7 +76,7 @@ export default function Home() {
       mode: 'single'
     },
     categories: {},
-    dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Default: show all, no highlight
+    dataAvailability: { showNoData: false, highlightLimitedSurveys: false } // Default: hide regions with no data
   })
 
   // Sync state when URL params change (from stats page navigation)
@@ -88,8 +86,7 @@ export default function Home() {
       setSelectedRegionId(regionId)
       setFilters(prev => ({
         ...prev,
-        region: { selectedRegionId: regionId },
-        dataAvailability: prev.dataAvailability
+        region: { selectedRegionId: regionId }
       }))
     }
     if (yearParam) {
@@ -100,8 +97,7 @@ export default function Home() {
           startYear: year,
           endYear: year,
           mode: 'single'
-        },
-        dataAvailability: prev.dataAvailability
+        }
       }))
     }
   }, [regionIdParam, yearParam])
@@ -179,22 +175,30 @@ export default function Home() {
   const handleResetFilters = () => {
     if (!filterOptions) return
 
-    // Create the reset filters
-    const resetFilters: FilterState = {
-      region: { selectedRegionId: 1 }, // Set to UK (region ID 1)
-      yearRange: {
-        startYear: filterOptions.availableYears.max,
-        endYear: filterOptions.availableYears.max,
-        mode: 'single' as const
-      },
-      categories: {},
-      dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Preserve default data availability settings
-    }
+    // Use functional updater to preserve user's data availability preferences
+    setFilters(prev => {
+      const resetFilters: FilterState = {
+        region: { selectedRegionId: 1 }, // Set to UK (region ID 1)
+        yearRange: {
+          startYear: filterOptions.availableYears.max,
+          endYear: filterOptions.availableYears.max,
+          mode: 'single' as const
+        },
+        categories: {},
+        dataAvailability: prev.dataAvailability // PRESERVE user's data availability settings
+      }
 
-    // Apply the filters - this will trigger handleFiltersChange
-    handleFiltersChange(resetFilters)
+      // Update URL
+      const params = new URLSearchParams()
+      params.set('region', '1')
+      params.set('year', filterOptions.availableYears.max.toString())
+      router.push(`/explore?${params.toString()}`, { scroll: false })
+
+      return resetFilters
+    })
 
     // Also trigger the direct map reset to ensure polygon layers return to countries view
+    setSelectedRegionId(1)
     handleMapReset()
   }
 
@@ -250,41 +254,29 @@ export default function Home() {
     // Check if this region can be drilled down (Countries and Crown Dependencies have children)
     const canDrillDown = clickedRegion.type === 'Country' || clickedRegion.type === 'Crown Dependency'
 
+    // Update filter state using functional updater to preserve all settings including data availability
+    setFilters(prev => {
+      const updatedFilters = {
+        ...prev,
+        region: { selectedRegionId: regionId }
+      }
+
+      // Update URL with new region (using the current state's year)
+      const params = new URLSearchParams()
+      params.set('region', regionId.toString())
+      if (prev.yearRange.startYear) {
+        params.set('year', prev.yearRange.startYear.toString())
+      }
+      router.push(`/explore?${params.toString()}`, { scroll: false })
+
+      return updatedFilters
+    })
+
+    // Update region selection and map layer
+    setSelectedRegionId(regionId)
     if (canDrillDown) {
-      // For countries/crown dependencies: show their stats in sidebar AND drill down
-      setSelectedRegionId(regionId)
+      // For countries/crown dependencies: drill down to show their children
       setParentRegionId(regionId)
-      // Update filter state directly without triggering URL change
-      setFilters({
-        ...filters,
-        region: { selectedRegionId: regionId },
-        dataAvailability: filters.dataAvailability
-      })
-
-      // Update URL with new region
-      const params = new URLSearchParams()
-      params.set('region', regionId.toString())
-      if (filters.yearRange.startYear) {
-        params.set('year', filters.yearRange.startYear.toString())
-      }
-      router.push(`/explore?${params.toString()}`, { scroll: false })
-    } else {
-      // For counties/unitary authorities: show their stats in sidebar
-      setSelectedRegionId(regionId)
-      // Update filter state directly without triggering URL change
-      setFilters({
-        ...filters,
-        region: { selectedRegionId: regionId },
-        dataAvailability: filters.dataAvailability
-      })
-
-      // Update URL with new region
-      const params = new URLSearchParams()
-      params.set('region', regionId.toString())
-      if (filters.yearRange.startYear) {
-        params.set('year', filters.yearRange.startYear.toString())
-      }
-      router.push(`/explore?${params.toString()}`, { scroll: false })
     }
   }
 
@@ -293,10 +285,20 @@ export default function Home() {
   const handleRegionSelect = (regionId: string) => {
     const numericRegionId = parseInt(regionId)
     setSelectedRegionId(numericRegionId)
-    handleFiltersChange({
-      ...filters,
-      region: { selectedRegionId: numericRegionId },
-      dataAvailability: filters.dataAvailability
+    // Use functional updater to preserve all filter settings including data availability
+    setFilters(prev => {
+      const updatedFilters = {
+        ...prev,
+        region: { selectedRegionId: numericRegionId }
+      }
+      // Manually call the filter change handler logic
+      const params = new URLSearchParams()
+      params.set('region', numericRegionId.toString())
+      if (prev.yearRange.startYear) {
+        params.set('year', prev.yearRange.startYear.toString())
+      }
+      router.push(`/explore?${params.toString()}`, { scroll: false })
+      return updatedFilters
     })
   }
 
@@ -547,5 +549,23 @@ export default function Home() {
       {/* Mobile Bottom Navigation */}
       <ModernMobileNav />
     </MainLayout>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <MainLayout>
+        <div className="h-full w-full flex items-center justify-center">
+          <div className="space-y-4 text-center">
+            <div className="text-2xl">🗺️</div>
+            <Skeleton className="h-8 w-48 mx-auto" />
+            <p className="text-sm text-muted-foreground">Loading explore page...</p>
+          </div>
+        </div>
+      </MainLayout>
+    }>
+      <ExplorePageContent />
+    </Suspense>
   )
 }

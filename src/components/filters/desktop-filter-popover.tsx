@@ -53,7 +53,7 @@ export function DesktopFilterPopover({
         mode: 'single'
       },
       categories: { selectedCategories: [] },
-      dataAvailability: { showNoData: true, highlightLimitedSurveys: false } // Default: show all, no highlight
+      dataAvailability: draftFilters.dataAvailability // PRESERVE user's data availability settings
     }
     setDraftFilters(defaultFilters)
     onFiltersChange(defaultFilters)

@@ -119,10 +119,12 @@ export function MobileFilterBar({
   }, [filters, availableYears])
 
   const handleSearchSelect = (regionId: number) => {
-    onFiltersChange({
+    // Create updated filters preserving all existing settings
+    const updatedFilters = {
       ...filters,
       region: { selectedRegionId: regionId }
-    })
+    }
+    onFiltersChange(updatedFilters)
     setSearchTerm("")
     setIsSearchOpen(false)
   }
@@ -141,7 +143,7 @@ export function MobileFilterBar({
         mode: 'single' as const
       },
       categories: {},
-      dataAvailability: { showNoData: true, highlightLimitedSurveys: false }
+      dataAvailability: draftFilters.dataAvailability // PRESERVE user's data availability settings
     }
     setDraftFilters(resetFilters)
     onFiltersChange(resetFilters)

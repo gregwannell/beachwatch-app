@@ -3,6 +3,7 @@
 import { Info, TrendingDown, TrendingUp, Award } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 import { calculateHistoricalStats, getRankingText } from '../utils'
+import { CardWithBackground } from './card-with-background'
 
 interface HistoricalContextInsightProps {
   regionData: RegionData
@@ -28,7 +29,7 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
   const iconColor = isGoodPerformance ? "text-green-600" : "text-orange-600"
 
   return (
-    <div className="p-5 rounded-xl border bg-card min-h-[140px] flex flex-col">
+    <CardWithBackground backgroundImage="/waves-turquoise.svg">
       <div className="flex items-center space-x-2 mb-3">
         <Info className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium">Historical Context</span>
@@ -87,6 +88,6 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
           </p>
         )}
       </div>
-    </div>
+    </CardWithBackground>
   )
 }

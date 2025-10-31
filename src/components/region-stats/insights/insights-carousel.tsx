@@ -46,7 +46,7 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {/* Historical Context Insight */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[95%]">
+          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
             <HistoricalContextInsight
               regionData={regionData}
               selectedYear={selectedYear}
@@ -54,21 +54,21 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
           </CarouselItem>
 
           {/* Top Litter Item */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[95%]">
+          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
             <TopLitterItemInsight
               topLitterItems={litterData.topLitterItems}
             />
           </CarouselItem>
 
           {/* Top Litter Source */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[95%]">
+          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
             <TopSourceInsight
               sourceBreakdown={litterData.sourceBreakdown}
             />
           </CarouselItem>
 
           {/* Plastic/Polystyrene Comparison */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[95%]">
+          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
             <PlasticComparisonInsight
               plasticPolystyreneComparison={litterData.plasticPolystyreneComparison}
             />

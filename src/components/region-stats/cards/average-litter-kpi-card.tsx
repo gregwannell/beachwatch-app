@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Info, ChevronRight } from "lucide-react"
 import { YearOverYearBadge, UkComparisonText } from "../components"
 import { AverageLitterChart } from "../charts"
+import { CardWithBackground } from "../insights/card-with-background"
 import type { RegionData } from '@/types/region-types'
 
 interface AverageLitterKpiCardProps {
@@ -69,8 +70,9 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   )
 
   return (
-    <Card className="@container/card bg-gradient-to-t from-primary/5 to-card shadow-xs pb-3 gap-2">
-      <CardHeader>
+    <CardWithBackground backgroundImage="/waves-turquoise.svg" backgroundOpacity={0.05}>
+      <Card className="@container/card bg-gradient-to-t from-primary/5 to-transparent shadow-none border-0 pb-3 gap-2">
+        <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <CardDescription>Average Litter per 100m</CardDescription>
 
@@ -155,6 +157,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
           <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
         </CollapsibleContent>
       </Collapsible>
-    </Card>
+      </Card>
+    </CardWithBackground>
   )
 }

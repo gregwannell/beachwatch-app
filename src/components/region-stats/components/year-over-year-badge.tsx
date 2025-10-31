@@ -16,10 +16,10 @@ export function YearOverYearBadge({ change }: YearOverYearBadgeProps) {
 
   // Custom styling using MCS brand colors
   const badgeClasses = isNeutral
-    ? "bg-secondary text-secondary-foreground"
+    ? "bg-neutral text-neutral-foreground"
     : isImprovement
-    ? "bg-mcs-green/10 text-mcs-green border-mcs-green/30"
-    : "bg-mcs-red/10 text-mcs-red border-mcs-red/30"
+    ? "bg-mcs-green/15 text-mcs-green"
+    : "bg-mcs-red/10 text-mcs-red"
 
   return (
     <Badge variant="outline" className={`text-xs font-semibold gap-0.5 px-1.5 rounded-full ${badgeClasses}`}>

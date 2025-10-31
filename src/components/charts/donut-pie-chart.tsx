@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Label, Pie, PieChart } from "recharts"
-import { ArrowUp, ArrowDown, Minus } from "lucide-react"
 
 import {
   ChartConfig,
@@ -10,7 +9,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Badge } from "@/components/ui/badge"
+import { YearOverYearBadge } from "@/components/region-stats/components/year-over-year-badge"
 
 interface DonutPieChartData {
   name: string
@@ -117,16 +116,6 @@ export function DonutPieChart({
           </div>
           <ul className="divide-y divide-border text-sm">
             {data.map((item) => {
-              const isImprovement = item.yearOverYearChange !== undefined && item.yearOverYearChange < 0
-              const isNeutral = item.yearOverYearChange !== undefined && Math.abs(item.yearOverYearChange) < 1
-              const Icon = isNeutral ? Minus : isImprovement ? ArrowDown : ArrowUp
-
-              const badgeClasses = isNeutral
-                ? "bg-secondary text-secondary-foreground"
-                : isImprovement
-                ? "bg-green-50 text-green-600 border-green-200/60 dark:bg-green-950/60 dark:text-green-400 dark:border-green-900"
-                : "bg-red-50 text-red-600 border-red-200/60 dark:bg-red-950/60 dark:text-red-400 dark:border-red-900"
-
               return (
                 <li
                   key={item.name}
@@ -140,10 +129,9 @@ export function DonutPieChart({
                     />
                     <span className="truncate">{item.name}</span>
                     {item.yearOverYearChange !== undefined && (
-                      <Badge variant="outline" className={`text-[10px] font-semibold gap-0.5 px-1 py-0 rounded-full ${badgeClasses}`}>
-                        <Icon className="w-2.5 h-2.5 stroke-[2.5]" />
-                        {item.yearOverYearChange > 0 ? '+' : ''}{item.yearOverYearChange.toFixed(1)}%
-                      </Badge>
+                      <div className="scale-75 origin-left">
+                        <YearOverYearBadge change={item.yearOverYearChange} />
+                      </div>
                     )}
                   </div>
                   <div className="flex items-center space-x-2 shrink-0">

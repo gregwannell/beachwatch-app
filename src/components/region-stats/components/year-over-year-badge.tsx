@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge"
-import { Arrow } from "@radix-ui/react-select"
-import { ArrowUp, ArrowDown, Minus } from "lucide-react"
+import { ChevronUp, ChevronDown, Minus } from "lucide-react"
 
 interface YearOverYearBadgeProps {
   change?: number
@@ -13,7 +12,7 @@ export function YearOverYearBadge({ change }: YearOverYearBadgeProps) {
   const isNeutral = Math.abs(change) < 1 // Less than 1% change is neutral
 
   const symbol = change > 0 ? "+" : ""
-  const Icon = isNeutral ? Minus : isImprovement ? ArrowDown : ArrowUp
+  const Icon = isNeutral ? Minus : isImprovement ? ChevronDown : ChevronUp
 
   // Custom styling for light pastel backgrounds
   const badgeClasses = isNeutral

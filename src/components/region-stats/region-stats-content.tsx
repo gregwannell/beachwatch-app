@@ -80,9 +80,6 @@ export function RegionStatsContent({
                 </span>
               )}
             </div>
-            <Badge variant={regionData.hasData ? "default" : "secondary"} className="text-xs w-fit flex-shrink-0">
-              {regionData.hasData ? "Data Available" : "No Data"}
-            </Badge>
           </div>
 
           {/* Regional Breadcrumb */}

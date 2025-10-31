@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Database, MapPin, ExternalLink } from "lucide-react"
 import type { SuggestedRegion } from '@/types/region-types'
 
@@ -14,21 +13,6 @@ export function EmptyState({
   suggestedRegions,
   onRegionSelect
 }: EmptyStateProps) {
-  const getAvailabilityBadge = (availability: SuggestedRegion['dataAvailability']) => {
-    const config = {
-      full: { label: 'Full data', variant: 'default' as const },
-      partial: { label: 'Partial data', variant: 'secondary' as const },
-      limited: { label: 'Limited data', variant: 'outline' as const }
-    }
-
-    const { label, variant } = config[availability]
-    return (
-      <Badge variant={variant} className="text-xs">
-        {label}
-      </Badge>
-    )
-  }
-
   return (
     <div className="space-y-6">
       {/* Main empty state */}
@@ -73,7 +57,7 @@ export function EmptyState({
                 key={region.id}
                 className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent transition-colors"
               >
-                <div className="flex-1 space-y-1">
+                <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium">{region.name}</span>
                     {region.distance && (
@@ -81,9 +65,6 @@ export function EmptyState({
                         ~{region.distance}
                       </span>
                     )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {getAvailabilityBadge(region.dataAvailability)}
                   </div>
                 </div>
 

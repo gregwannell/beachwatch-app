@@ -6,7 +6,7 @@ export const chartColors = {
   primary: "var(--mcs-clear-blue)",
   secondary: "var(--mcs-orange)",
   tertiary: "var(--mcs-teal)",
-  quaternary: "var(--mcs-navy)",
+  quaternary: "var(--mcs-purple)",
   quinary: "var(--mcs-red)",
 } as const
 

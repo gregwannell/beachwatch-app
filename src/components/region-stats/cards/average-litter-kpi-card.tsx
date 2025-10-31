@@ -123,7 +123,12 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           <motion.span>{rounded}</motion.span>
         </CardTitle>
-        <YearOverYearBadge change={yearOverYearChange} />
+        <div className="flex items-center gap-1.5">
+          <YearOverYearBadge change={yearOverYearChange} />
+          {yearOverYearChange !== undefined && (
+            <span className="text-xs text-muted-foreground">vs previous year</span>
+          )}
+        </div>
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         <UkComparisonText ukAverageComparison={ukAverageComparison} />

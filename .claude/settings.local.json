@@ -48,7 +48,9 @@
       "mcp__chrome-devtools__wait_for",
       "mcp__chrome-devtools__take_snapshot",
       "Bash(git mv:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npm search:*)",
+      "Bash(curl:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -4,6 +4,7 @@ import type { CardComponentProps } from 'nextstepjs';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export function TourCard({
@@ -24,21 +25,13 @@ export function TourCard({
   });
 
   return (
-    <>
-      {arrow}
-      <div
-        className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-visible w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700"
-      >
-        {/* Header */}
-        <div className="flex items-start justify-between p-6 pb-4">
-          <div className="flex items-center gap-3">
-            {step.icon && (
-              <span className="text-2xl">{step.icon}</span>
-            )}
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {step.title}
-            </h2>
-          </div>
+    <div className="z-[100000]" style={{ zIndex: 100000 }}>
+      <Card className="w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700">
+        <CardHeader className="flex flex-row items-start justify-between pb-4">
+          <CardTitle className="flex items-center gap-3 text-xl font-semibold">
+            {step.icon && <span className="text-2xl">{step.icon}</span>}
+            {step.title}
+          </CardTitle>
           <Button
             variant="ghost"
             size="icon"
@@ -48,17 +41,16 @@ export function TourCard({
           >
             <X className="h-5 w-5" />
           </Button>
-        </div>
+        </CardHeader>
 
-        {/* Content */}
-        <div className="px-6 pb-6">
-          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+        <CardContent>
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed mb-2">
             {step.content}
           </div>
-        </div>
+          {arrow}
+        </CardContent>
 
-        {/* Footer */}
-        <div
+        <CardFooter
           className={cn(
             "flex items-center justify-between gap-4 px-6 py-4",
             "bg-[#1b1b26] dark:bg-[#1b1b26]"
@@ -104,8 +96,8 @@ export function TourCard({
           >
             NEXT
           </Button>
-        </div>
-      </div>
-    </>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

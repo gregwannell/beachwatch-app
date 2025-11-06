@@ -24,19 +24,10 @@ export function TourCard({
   });
 
   return (
-    <div
-      className="fixed"
-      style={{
-        zIndex: 2147483647, // Maximum z-index value
-        pointerEvents: 'auto',
-      }}
-    >
+    <>
       {arrow}
       <div
         className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-visible w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700"
-        style={{
-          zIndex: 2147483647,
-        }}
       >
         {/* Header */}
         <div className="flex items-start justify-between p-6 pb-4">
@@ -115,6 +106,6 @@ export function TourCard({
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

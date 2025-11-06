@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Separator } from '@/components/ui/separator'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useNextStep } from 'nextstepjs'
 
 interface MobileSettingsSheetProps {
@@ -24,6 +24,7 @@ interface MobileSettingsSheetProps {
 
 export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { start } = useNextStep()
 
@@ -85,7 +86,17 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
               className="w-full justify-start h-auto py-3"
               onClick={() => {
                 onOpenChange(false)
-                setTimeout(() => start(), 300)
+
+                // Navigate to explore page if not already there
+                if (pathname !== '/explore') {
+                  router.push('/explore')
+                  setTimeout(() => {
+                    console.log('Starting tour after navigation (mobile)')
+                    start()
+                  }, 800)
+                } else {
+                  setTimeout(() => start(), 300)
+                }
               }}
             >
               <Compass className="mr-3 h-5 w-5" />

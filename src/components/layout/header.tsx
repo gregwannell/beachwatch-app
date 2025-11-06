@@ -4,6 +4,7 @@ import { Menu, Settings } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { MobileSettingsSheet } from './mobile-settings-sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -12,6 +13,24 @@ import { useNextStep } from 'nextstepjs'
 export function Header() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const { start } = useNextStep()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStartTour = () => {
+    console.log('Starting tour...', { pathname })
+
+    // Navigate to explore page if not already there
+    if (pathname !== '/explore') {
+      router.push('/explore')
+      // Wait for navigation and DOM to be ready before starting tour
+      setTimeout(() => {
+        console.log('Starting tour after navigation')
+        start()
+      }, 500)
+    } else {
+      start()
+    }
+  }
 
   return (
     <>
@@ -63,7 +82,7 @@ export function Header() {
               Home
             </Link>
             <button
-              onClick={start}
+              onClick={handleStartTour}
               className="text-sm font-medium text-white hover:text-mcs-orange transition-colors"
             >
               How to Use

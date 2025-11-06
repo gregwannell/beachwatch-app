@@ -24,16 +24,16 @@ export function TourCard({
   });
 
   return (
-    <div className="relative z-[9999]">
+    <div className="relative z-[99999]">
       {arrow}
-      <div className="bg-card rounded-lg shadow-2xl overflow-hidden w-[90vw] max-w-[520px] border border-border relative z-[10000]">
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl overflow-visible w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700">
         {/* Header */}
         <div className="flex items-start justify-between p-6 pb-4">
           <div className="flex items-center gap-3">
             {step.icon && (
               <span className="text-2xl">{step.icon}</span>
             )}
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               {step.title}
             </h2>
           </div>
@@ -41,7 +41,7 @@ export function TourCard({
             variant="ghost"
             size="icon"
             onClick={skipTour}
-            className="h-8 w-8 rounded-md hover:bg-muted -mt-1 -mr-2"
+            className="h-8 w-8 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 -mt-1 -mr-2"
             aria-label="Close tour"
           >
             <X className="h-5 w-5" />
@@ -50,7 +50,7 @@ export function TourCard({
 
         {/* Content */}
         <div className="px-6 pb-6">
-          <div className="text-muted-foreground leading-relaxed">
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
             {step.content}
           </div>
         </div>
@@ -65,7 +65,7 @@ export function TourCard({
           {/* Step Counter */}
           <div className="flex items-center gap-2 shrink-0">
             <span
-              className="text-lg font-bold"
+              className="text-lg font-bold text-white"
               style={{ color: '#00b9b0' }}
             >
               {currentStep + 1}/{totalSteps}
@@ -93,8 +93,8 @@ export function TourCard({
           <Button
             onClick={nextStep}
             className={cn(
-              "shrink-0 font-bold tracking-wide",
-              "bg-transparent hover:bg-mcs-teal/20",
+              "shrink-0 font-bold tracking-wide text-white",
+              "bg-transparent hover:bg-teal-500/20",
               "border-none shadow-none"
             )}
             style={{ color: '#00b9b0' }}

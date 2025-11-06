@@ -18,7 +18,7 @@ export function MobileHeader() {
           {/* MCS Logo */}
           <div className="flex items-center">
             <Image
-              src={theme === 'dark' ? '/MCS_Logo_Stacked_Ink.png' : '/MCS_Logo_Stacked_White.png'}
+              src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
               alt="Marine Conservation Society"
               width={100}
               height={100}

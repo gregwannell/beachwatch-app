@@ -3,7 +3,7 @@
 import { HeroSection } from './hero-section'
 import { FeaturesSection } from './features-section'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
-import { MobileHeader } from '@/components/layout/mobile-header'
+import { Header } from '@/components/layout/header'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, Suspense } from 'react'
 import { toast } from 'sonner'
@@ -27,7 +27,7 @@ function LogoutToastHandler() {
 export function LandingPage() {
   return (
     <>
-      <MobileHeader />
+      <Header />
       <main className="min-h-screen pb-24 lg:pb-0 pt-14 lg:pt-0">
         <Suspense fallback={null}>
           <LogoutToastHandler />

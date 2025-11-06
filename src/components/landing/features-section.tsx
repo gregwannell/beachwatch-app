@@ -44,14 +44,14 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-24 bg-background">
+    <section id="features" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Powerful Tools for Environmental Research
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Our comprehensive platform provides everything you need to explore,
             analyze, and understand beach litter data across the UK.
           </p>
@@ -62,17 +62,17 @@ export function FeaturesSection() {
           {features.map((feature, index) => {
             const IconComponent = feature.icon
             return (
-              <Card key={index} className="relative group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-border">
+              <Card key={index} className="relative group hover:shadow-lg transition-all duration-300 border-gray-200 hover:border-gray-300 bg-white">
                 <CardHeader>
                   <div className="flex items-center gap-3 mb-3">
-                    <div className={`p-2 rounded-lg bg-background border ${feature.color}`}>
+                    <div className={`p-2 rounded-lg bg-white border ${feature.color}`}>
                       <IconComponent className={`h-6 w-6 ${feature.color}`} />
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardTitle className="text-xl text-gray-900">{feature.title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
+                  <CardDescription className="text-base leading-relaxed text-gray-600">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -83,7 +83,7 @@ export function FeaturesSection() {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary/10 text-primary rounded-full text-sm font-medium">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
             <Waves className="h-4 w-4" />
             <span>Powered by Marine Conservation Society data</span>
           </div>

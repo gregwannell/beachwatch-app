@@ -1,6 +1,6 @@
 "use client"
 
-import { MobileHeader } from './mobile-header'
+import { Header } from './header'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -12,7 +12,7 @@ export function MainLayout({
   return (
     <div className="flex h-screen bg-background">
       {/* Header - Visible on all screen sizes */}
-      <MobileHeader />
+      <Header />
 
       {/* Skip link for keyboard navigation */}
       <a
@@ -23,7 +23,7 @@ export function MainLayout({
       </a>
 
       {/* Main Content Area */}
-      <div className="flex-1 h-screen relative pt-12" role="main" aria-label="Interactive map">
+      <div className="flex-1 h-screen relative pt-12 md:pt-16" role="main" aria-label="Interactive map">
         <div className="h-full" id="main-content">
           {children || (
             <div className="flex h-full items-center justify-center bg-ocean-50 dark:bg-ocean-950">

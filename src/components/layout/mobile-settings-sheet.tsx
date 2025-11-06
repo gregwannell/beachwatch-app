@@ -87,15 +87,21 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
               onClick={() => {
                 onOpenChange(false)
 
+                // Determine tour based on viewport
+                const isMobile = window.innerWidth < 768
+                const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+                console.log('Mobile settings - Starting tour:', tourName)
+
                 // Navigate to explore page if not already there
                 if (pathname !== '/explore') {
                   router.push('/explore')
                   setTimeout(() => {
-                    console.log('Starting tour after navigation (mobile)')
-                    startNextStep()
+                    console.log('Starting tour after navigation (mobile sheet):', tourName)
+                    startNextStep(tourName)
                   }, 800)
                 } else {
-                  setTimeout(() => startNextStep(), 300)
+                  setTimeout(() => startNextStep(tourName), 300)
                 }
               }}
             >

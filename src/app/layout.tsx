@@ -3,8 +3,9 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
-import { NextStepProvider } from "nextstepjs";
-import { TourWrapper } from "@/components/tour/tour-wrapper";
+import { NextStepProvider, NextStep } from "nextstepjs";
+import { allTours } from "@/lib/tour-steps";
+import { TourCard } from "@/components/tour/tour-card";
 
 export const metadata: Metadata = {
   title: "Beachwatch Data Explorer",
@@ -34,8 +35,14 @@ export default function RootLayout({
         >
           <QueryProvider>
             <NextStepProvider>
-              {children}
-              <TourWrapper />
+              <NextStep
+                steps={allTours}
+                cardComponent={TourCard}
+                shadowRgb="0,0,0"
+                shadowOpacity="0.5"
+              >
+                {children}
+              </NextStep>
               <Toaster />
             </NextStepProvider>
           </QueryProvider>

@@ -19,16 +19,22 @@ export function Header() {
   const handleStartTour = () => {
     console.log('Starting tour...', { pathname })
 
+    // Determine tour based on viewport
+    const isMobile = window.innerWidth < 768
+    const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+    console.log('Tour to start:', tourName, { isMobile, width: window.innerWidth })
+
     // Navigate to explore page if not already there
     if (pathname !== '/explore') {
       router.push('/explore')
       // Wait for navigation and DOM to be ready before starting tour
       setTimeout(() => {
-        console.log('Starting tour after navigation')
-        startNextStep()
+        console.log('Starting tour after navigation:', tourName)
+        startNextStep(tourName)
       }, 500)
     } else {
-      startNextStep()
+      startNextStep(tourName)
     }
   }
 

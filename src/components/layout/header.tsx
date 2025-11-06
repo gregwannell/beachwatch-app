@@ -12,7 +12,7 @@ import { useNextStep } from 'nextstepjs'
 
 export function Header() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const { start } = useNextStep()
+  const { startNextStep } = useNextStep()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -25,10 +25,10 @@ export function Header() {
       // Wait for navigation and DOM to be ready before starting tour
       setTimeout(() => {
         console.log('Starting tour after navigation')
-        start()
+        startNextStep()
       }, 500)
     } else {
-      start()
+      startNextStep()
     }
   }
 

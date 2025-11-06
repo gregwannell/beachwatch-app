@@ -26,7 +26,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
   const router = useRouter()
   const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const { start } = useNextStep()
+  const { startNextStep } = useNextStep()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -92,10 +92,10 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
                   router.push('/explore')
                   setTimeout(() => {
                     console.log('Starting tour after navigation (mobile)')
-                    start()
+                    startNextStep()
                   }, 800)
                 } else {
-                  setTimeout(() => start(), 300)
+                  setTimeout(() => startNextStep(), 300)
                 }
               }}
             >

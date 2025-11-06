@@ -134,6 +134,12 @@ git pull origin develop
 # See all branches
 git branch -a
 
+# Create a new branch
+git checkout -b feature/add-beach-search
+
+# Push your feature branch
+  git push -u origin feature/add-beach-search
+
 # Delete local feature branch
 git branch -d feature/my-feature
 

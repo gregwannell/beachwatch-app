@@ -6,84 +6,66 @@ export const allTours: Tour[] = [
     tour: 'desktopTour',
     steps: [
       {
+        icon: <>👋</>,
         selector: '#app-tour-welcome',
         title: 'Welcome to Beachwatch Data Explorer',
-        content: (
-          <>
-            <p>
-              Explore UK beach litter data through interactive maps and detailed statistics.
-              This quick tour will show you how to navigate and use the key features of the dashboard.
-            </p>
-          </>
-        ),
+        content: 
+          <>Explore UK beach litter data through interactive maps and detailed statistics.
+              This quick tour will show you how to navigate and use the key features of the dashboard</>,
         side: 'top',
         showControls: false,
         showSkip: false,
       },
       {
+        icon: <>🔍</>,
         selector: '#desktop-filter-button',
         title: 'Filter Your Data',
-        content: (
-          <>
-            <p>
-              Click here to open the filter panel where you can refine your view by region,
-              year range, and data availability. Apply filters to focus on specific areas or time periods.
-            </p>
-          </>
-        ),
+        content:
+          <>Click here to open the filter panel where you can refine your view by region, 
+          year range, and data availability. Apply filters to focus on specific areas or time periods</>,
         side: 'bottom',
         showControls: false,
         showSkip: false,
       },
       {
+        icon: <>🗺️</>,
         selector: '#uk-map-container',
         title: 'Interactive Map',
-        content: (
-          <>
-            <p>
-              Click on any region on the map to view its litter statistics. The map uses color
+        content:
+          <>Click on any region on the map to view its litter statistics. The map uses color
               coding to show data availability - darker regions have more survey data.
-              You can drill down from countries to counties to see more detailed areas.
-            </p>
-          </>
-        ),
+              You can drill down from countries to counties to see more detailed areas</>,
         side: 'right',
         showControls: false,
         showSkip: false,
       },
       {
+        icon: <>📊</>,
         selector: '#region-stats-tabs',
         title: 'Statistics Tabs',
-        content: (
+        content: 
           <>
-            <p>
               Switch between different views of your data: <strong>Overview</strong> shows key metrics
               and insights, <strong>Litter Stats</strong> breaks down items by type and source,
-              and <strong>Engagement</strong> shows volunteer participation.
-            </p>
-          </>
-        ),
+              and <strong>Engagement</strong> shows volunteer participation</>,
         side: 'left',
         showControls: false,
         showSkip: false,
       },
       {
+        icon: <>ℹ️</>,
         selector: '#average-litter-info-button',
         title: 'Metric Information',
-        content: (
-          <>
-            <p>
-              Click the info icon on any metric to learn how it's calculated.
+        content: 
+        <>Click the info icon on any metric to learn how it's calculated.
               For example, the Average Litter per 100m shows the median value to
-              reduce the impact of outliers and give you a more accurate picture.
-            </p>
-          </>
-        ),
+              reduce the impact of outliers and give you a more accurate picture </>,
         side: 'left',
         showControls: false,
         showSkip: false,
       },
       {
+        icon: <>🏁</>,
         selector: '#app-tour-welcome',
         title: 'Start Exploring!',
         content: (
@@ -104,6 +86,7 @@ export const allTours: Tour[] = [
     tour: 'mobileTour',
     steps: [
       {
+        icon: <>👋</>,
         selector: '#app-tour-welcome',
         title: 'Welcome to Beachwatch',
         content: (
@@ -119,6 +102,7 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
+        icon: <>🔍</>,
         selector: '#floating-filter-button',
         title: 'Open Filters',
         content: (
@@ -134,6 +118,7 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
+        icon: <>🗺️</>,
         selector: '#uk-map-container',
         title: 'Interactive Map',
         content: (
@@ -149,6 +134,7 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
+        icon: <>📊</>,
         selector: '#floating-stats-button',
         title: 'View Statistics',
         content: (
@@ -164,6 +150,7 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
+        icon: <>📊</>,
         selector: '#region-stats-tabs',
         title: 'Navigate Tabs',
         content: (
@@ -180,6 +167,7 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
+        icon: <>ℹ️</>,
         selector: '#average-litter-info-button',
         title: 'Learn More',
         content: (

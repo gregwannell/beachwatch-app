@@ -16,15 +16,27 @@ export function TourCard({
 }: CardComponentProps) {
   const progressValue = ((currentStep + 1) / totalSteps) * 100;
 
+  console.log('TourCard rendering:', {
+    step: step?.title,
+    currentStep,
+    totalSteps,
+    hasArrow: !!arrow,
+  });
+
   return (
-    <div className="relative">
+    <div className="relative z-[9999]">
       {arrow}
-      <div className="bg-card rounded-lg shadow-2xl overflow-hidden w-[90vw] max-w-[520px] border border-border">
+      <div className="bg-card rounded-lg shadow-2xl overflow-hidden w-[90vw] max-w-[520px] border border-border relative z-[10000]">
         {/* Header */}
         <div className="flex items-start justify-between p-6 pb-4">
-          <h2 className="text-xl font-semibold text-foreground pr-8">
-            {step.title}
-          </h2>
+          <div className="flex items-center gap-3">
+            {step.icon && (
+              <span className="text-2xl">{step.icon}</span>
+            )}
+            <h2 className="text-xl font-semibold text-foreground">
+              {step.title}
+            </h2>
+          </div>
           <Button
             variant="ghost"
             size="icon"

@@ -1,6 +1,6 @@
 'use client'
 
-import { LogOut, HelpCircle, Info } from 'lucide-react'
+import { LogOut, HelpCircle, Info, Compass } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Separator } from '@/components/ui/separator'
 import { useRouter } from 'next/navigation'
+import { useNextStep } from 'nextstepjs'
 
 interface MobileSettingsSheetProps {
   open: boolean
@@ -24,6 +25,7 @@ interface MobileSettingsSheetProps {
 export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetProps) {
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { start } = useNextStep()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -78,6 +80,17 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
           {/* Help & Support Section */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-muted-foreground">Support</h3>
+            <Button
+              variant="ghost"
+              className="w-full justify-start h-auto py-3"
+              onClick={() => {
+                onOpenChange(false)
+                setTimeout(() => start(), 300)
+              }}
+            >
+              <Compass className="mr-3 h-5 w-5" />
+              <span>How to Use</span>
+            </Button>
             <Button
               variant="ghost"
               className="w-full justify-start h-auto py-3"

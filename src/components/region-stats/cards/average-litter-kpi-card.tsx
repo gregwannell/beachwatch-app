@@ -81,6 +81,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
               <DrawerTrigger asChild>
                 <Button
+                  id="average-litter-info-button"
                   variant="ghost"
                   size="sm"
                   className="h-auto w-auto p-1 hover:bg-primary/10"
@@ -103,6 +104,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <Button
+                  id="average-litter-info-button"
                   variant="ghost"
                   size="sm"
                   className="h-auto w-auto p-1 hover:bg-primary/10"

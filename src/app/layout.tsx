@@ -3,6 +3,8 @@ import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
+import { NextStepProvider } from "nextstepjs";
+import { TourWrapper } from "@/components/tour/tour-wrapper";
 
 export const metadata: Metadata = {
   title: "Beachwatch Data Explorer",
@@ -31,8 +33,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
-            <Toaster />
+            <NextStepProvider>
+              {children}
+              <TourWrapper />
+              <Toaster />
+            </NextStepProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

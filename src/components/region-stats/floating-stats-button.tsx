@@ -15,6 +15,7 @@ export function FloatingStatsButton({
 }: FloatingStatsButtonProps) {
   return (
     <Button
+      id="floating-stats-button"
       onClick={onClick}
       size="icon"
       className={cn(

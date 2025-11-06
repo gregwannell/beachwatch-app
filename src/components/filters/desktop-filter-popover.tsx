@@ -65,6 +65,7 @@ export function DesktopFilterPopover({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
+          id="desktop-filter-button"
           variant="outline"
           className="h-10 px-4 gap-2 bg-background/95 backdrop-blur-sm border shadow-sm hover:bg-accent"
         >

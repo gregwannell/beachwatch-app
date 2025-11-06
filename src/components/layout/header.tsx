@@ -7,9 +7,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { MobileSettingsSheet } from './mobile-settings-sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { useNextStep } from 'nextstepjs'
 
 export function Header() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const { start } = useNextStep()
 
   return (
     <>
@@ -60,9 +62,12 @@ export function Header() {
             <Link href="/" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Home
             </Link>
-            <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
+            <button
+              onClick={start}
+              className="text-sm font-medium text-white hover:text-mcs-orange transition-colors"
+            >
               How to Use
-            </Link>
+            </button>
             <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Contact
             </Link>

@@ -140,6 +140,46 @@ Use emoji conventional commits:
 - 📝 `docs:` Documentation updates
 - 🔧 `chore:` Maintenance, configs, dependencies
 
+### Branching Strategy
+
+We use **GitHub Flow** with environment branches:
+
+```
+main (production) → Vercel production deployment
+└── develop (staging) → Vercel preview deployment
+    ├── feature/my-feature → Vercel preview
+    └── hotfix/urgent-fix
+```
+
+**Quick Reference:**
+
+```bash
+# Start new feature
+git checkout develop
+git pull origin develop
+git checkout -b feature/my-feature
+
+# Push and create PR to develop
+git push -u origin feature/my-feature
+# Create PR: feature/my-feature → develop
+
+# Deploy to production (after testing on develop preview)
+# Create PR: develop → main
+```
+
+**Branch Purpose:**
+- `main` - Production code only, protected, requires PR approval
+- `develop` - Default branch, staging/preview, active development
+- `feature/*` - New features, branch from `develop`, merge to `develop`
+- `hotfix/*` - Urgent fixes, branch from `main`, merge to both `main` and `develop`
+
+**Deployment Flow:**
+- Feature branches → Preview URLs for testing
+- `develop` → Staging preview (test before production)
+- `main` → Production deployment
+
+See `WORKFLOW.md` for detailed workflow guide and troubleshooting.
+
 ## shadcn/ui Configuration
 
 ```json

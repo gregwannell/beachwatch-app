@@ -456,6 +456,7 @@ function ExplorePageContent() {
                       filters={filters}
                       onFiltersChange={handleFiltersChange}
                       onMapReset={handleMapReset}
+                      onReset={handleResetFilters}
                     />
                   </div>
                 )}

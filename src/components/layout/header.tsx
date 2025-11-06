@@ -41,7 +41,7 @@ export function Header() {
       </header>
 
       {/* Desktop Header */}
-      <header className="hidden md:block fixed top-0 left-0 right-0 z-[1100] backdrop-blur-md bg-white/80 dark:bg-primary/80 border-b border-white/20 dark:border-border">
+      <header className="hidden md:block fixed top-0 left-0 right-0 z-[1100] backdrop-blur-md bg-primary/80 border-b border-primary-foreground/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Left: MCS Logo */}
           <Link href="/" className="flex-shrink-0">
@@ -57,13 +57,13 @@ export function Header() {
 
           {/* Center: Navigation Links */}
           <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+            <Link href="/" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Home
             </Link>
-            <Link href="#" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+            <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               How to Use
             </Link>
-            <Link href="#" className="text-sm font-medium text-mcs-navy dark:text-white hover:text-mcs-orange dark:hover:text-mcs-orange transition-colors">
+            <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Contact
             </Link>
           </nav>
@@ -74,7 +74,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               onClick={() => setIsSettingsOpen(true)}
-              className="text-mcs-navy dark:text-white hover:bg-mcs-navy/10 dark:hover:bg-white/10"
+              className="text-white hover:bg-white/10"
               aria-label="Open settings"
             >
               <Settings className="h-5 w-5" />

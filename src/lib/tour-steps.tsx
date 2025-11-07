@@ -60,7 +60,6 @@ export const allTours: Tour[] = [
       },
       {
         icon: <>🏁</>,
-        selector: '#app-tour-welcome',
         title: 'Start Exploring!',
         content: (
           <>
@@ -72,7 +71,7 @@ export const allTours: Tour[] = [
         ),
         side: 'top',
         showControls: true,
-        showSkip: true,
+        showSkip: false,
       },
     ],
   },
@@ -142,37 +141,19 @@ export const allTours: Tour[] = [
         showSkip: false,
       },
       {
-        icon: <>📊</>,
-        selector: '#region-stats-tabs',
-        title: 'Navigate Tabs',
+        icon: <>🏁</>,
+        title: 'Start Exploring!',
         content: (
           <>
             <p>
-              In the statistics sheet, switch between <strong>Overview</strong>,
-              <strong>Litter Stats</strong>, and <strong>Engagement</strong> tabs
-              to see different aspects of the data.
-            </p>
-          </>
-        ),
-        side: 'top',
-        showControls: false,
-        showSkip: false,
-      },
-      {
-        icon: <>ℹ️</>,
-        selector: '#average-litter-info-button',
-        title: 'Learn More',
-        content: (
-          <>
-            <p>
-              Tap info icons on metrics to learn how they're calculated.
-              This helps you understand what the numbers mean and how to interpret them.
+              You're all set! Explore the data, discover trends, and learn about beach litter
+              across the UK. If you need help again, click "How to Use" in the header.
             </p>
           </>
         ),
         side: 'top',
         showControls: true,
-        showSkip: true,
+        showSkip: false,
       },
     ],
   },

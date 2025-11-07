@@ -269,13 +269,6 @@ export function UKMap({
         </div>
       )}
 
-      {/* Tour Target - invisible element for tour spotlight */}
-      <div
-        id="map-tour-target"
-        className="absolute inset-0 pointer-events-none z-[500]"
-        aria-hidden="true"
-      />
-
       <MapContainer
         ref={mapRef}
         bounds={UK_BOUNDS}

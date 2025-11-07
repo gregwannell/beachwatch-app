@@ -50,7 +50,9 @@
       "Bash(git mv:*)",
       "Bash(git rm:*)",
       "Bash(npm search:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:nextstepjs.com)",
+      "WebSearch"
     ]
   },
   "enableAllProjectMcpServers": true,

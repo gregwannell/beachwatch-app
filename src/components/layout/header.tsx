@@ -32,7 +32,7 @@ export function Header() {
       setTimeout(() => {
         console.log('Starting tour after navigation:', tourName)
         startNextStep(tourName)
-      }, 500)
+      }, 1500) // Increased to 1500ms to ensure all elements are mounted
     } else {
       startNextStep(tourName)
     }

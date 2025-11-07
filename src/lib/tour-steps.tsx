@@ -7,7 +7,7 @@ export const allTours: Tour[] = [
     steps: [
       {
         icon: <>👋</>,
-        // selector: '#app-tour-welcome', // TEMPORARILY REMOVED - testing if card appears centered
+        selector: '#app-tour-welcome',
         title: 'Welcome to Beachwatch Data Explorer',
         content:
           <>Explore UK beach litter data through interactive maps and detailed statistics.
@@ -87,7 +87,7 @@ export const allTours: Tour[] = [
     steps: [
       {
         icon: <>👋</>,
-        // selector: '#app-tour-welcome', // TEMPORARILY REMOVED - testing if card appears centered
+        selector: '#app-tour-welcome',
         title: 'Welcome to Beachwatch',
         content: (
           <>

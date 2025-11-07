@@ -99,9 +99,9 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
                   setTimeout(() => {
                     console.log('Starting tour after navigation (mobile sheet):', tourName)
                     startNextStep(tourName)
-                  }, 800)
+                  }, 1500) // Increased to 1500ms to ensure all elements are mounted
                 } else {
-                  setTimeout(() => startNextStep(tourName), 300)
+                  startNextStep(tourName)
                 }
               }}
             >

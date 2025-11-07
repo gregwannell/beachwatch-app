@@ -23,8 +23,6 @@ import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
-import { useNextStep } from 'nextstepjs'
-import { Button } from '@/components/ui/button'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -46,7 +44,6 @@ function ExplorePageContent() {
   const regionIdParam = searchParams.get('region')
   const yearParam = searchParams.get('year')
   const { theme } = useTheme()
-  const { startNextStep } = useNextStep()
 
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(
     regionIdParam ? parseInt(regionIdParam) : 1
@@ -373,19 +370,6 @@ function ExplorePageContent() {
 
   return (
     <MainLayout>
-      {/* TEST BUTTON - REMOVE AFTER TESTING */}
-      <Button
-        onClick={() => {
-          console.log('TEST BUTTON: Starting tour...');
-          const isMobile = window.innerWidth < 768;
-          const tourName = isMobile ? 'mobileTour' : 'desktopTour';
-          console.log('TEST BUTTON: Tour name:', tourName);
-          startNextStep(tourName);
-        }}
-        className="fixed top-20 left-1/2 -translate-x-1/2 z-[100001] bg-red-500 hover:bg-red-600 text-white font-bold"
-      >
-        🧪 FORCE START TOUR
-      </Button>
       <div id="app-tour-welcome" className="h-full w-full relative pb-20 md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">

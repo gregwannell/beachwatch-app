@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { validation } from '@/lib/tour-validation';
 import { toast } from 'sonner';
-import { tourValidation } from '@/lib/tour-validation';
 
 export function TourCard({
   step,
@@ -18,30 +18,28 @@ export function TourCard({
   skipTour,
   arrow,
 }: CardComponentProps) {
-  const progressValue = ((currentStep + 1) / totalSteps) * 100;
   const { currentTour } = useNextStep();
+  const progressValue = ((currentStep + 1) / totalSteps) * 100;
+
+  // Get the validation function for the current step
+  const validate =
+    currentTour && validation[currentTour] && validation[currentTour][currentStep]
+      ? validation[currentTour][currentStep].validation
+      : () => true;
+
+  // Get the validation message for the current step
+  const validationMessage =
+    currentTour && validation[currentTour] && validation[currentTour][currentStep]
+      ? validation[currentTour][currentStep].validationMessage
+      : '';
 
   console.log('TourCard rendering:', {
     step: step?.title,
     currentStep,
     totalSteps,
     hasArrow: !!arrow,
+    currentTour,
   });
-
-  // Validation logic following NextStepJS pattern
-  const handleNext = async () => {
-    const validation = tourValidation[currentTour || '']?.[currentStep];
-
-    if (validation) {
-      const isValid = await validation.validation();
-      if (!isValid) {
-        toast.error(validation.validationMessage);
-        return;
-      }
-    }
-
-    nextStep();
-  };
 
   return (
     <div className="z-[100000]" style={{ zIndex: 100000 }}>
@@ -104,7 +102,15 @@ export function TourCard({
 
             {/* Next/Finish Button */}
             <Button
-              onClick={handleNext}
+              onClick={async () => {
+                // Validate the current step and if it passes, go to the next step
+                // If it fails, show the validation message
+                if (await validate()) {
+                  nextStep();
+                } else {
+                  toast.error(validationMessage);
+                }
+              }}
               size="sm"
               className="font-medium bg-mcs-teal w-[84px]"
               style={{ backgroundColor: '#00b9b0', color: 'white' }}

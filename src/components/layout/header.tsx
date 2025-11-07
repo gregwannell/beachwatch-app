@@ -25,6 +25,11 @@ export function Header() {
 
     console.log('Tour to start:', tourName, { isMobile, width: window.innerWidth })
 
+    // Clear validation flags when starting tour
+    if (tourName === 'mobileTour') {
+      localStorage.removeItem('stats-sheet-opened');
+    }
+
     // Navigate to explore page if not already there
     if (pathname !== '/explore') {
       router.push('/explore')

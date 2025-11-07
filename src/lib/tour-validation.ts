@@ -1,28 +1,11 @@
-/**
- * Tour step validation configuration
- * Following NextStepJS validation pattern: https://nextstepjs.com/docs/nextjs/validation
- */
-
-interface ValidationStep {
-  validation: () => boolean | Promise<boolean>;
-  validationMessage: string;
-}
-
-interface ValidationConfig {
-  [tourName: string]: {
-    [stepIndex: number]: ValidationStep;
-  };
-}
-
-export const tourValidation: ValidationConfig = {
+export const validation = {
   mobileTour: {
     3: {
-      // Step 3: "View Statistics" - Requires stats sheet to be open
+      // Step 3: "View Statistics" - requires user to tap stats button
       validation: () => {
-        // Check if region stats tabs element exists (only visible when sheet is open)
-        return document.querySelector('#region-stats-tabs') !== null;
+        return localStorage.getItem('stats-sheet-opened') === 'true';
       },
-      validationMessage: 'Please tap the stats button to open the statistics panel.',
+      validationMessage: 'Please tap the statistics button to continue.',
     },
   },
 };

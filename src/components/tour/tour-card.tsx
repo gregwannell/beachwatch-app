@@ -26,25 +26,25 @@ export function TourCard({
 
   return (
     <div className="z-[100000]" style={{ zIndex: 100000 }}>
-      <Card className="w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700">
+      <Card className="w-[90vw] max-w-[350px] border-2 border-gray-300 dark:border-gray-700">
         {/* Header */}
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-xl font-semibold">
-            {step.icon && <span className="text-2xl">{step.icon}</span>}
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3 text-lg font-semibold">
+            {step.icon && <span className="text-xl">{step.icon}</span>}
             {step.title}
           </CardTitle>
         </CardHeader>
 
         {/* Content */}
         <CardContent>
-          <div className="text-gray-700 dark:text-gray-300 leading-relaxed mb-2">
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed mb-2 text-sm">
             {step.content}
           </div>
           {arrow}
         </CardContent>
 
         {/* Progress Bar - Outside footer */}
-        <div className="px-6 pb-4">
+        <div className="px-6">
           <Progress
             value={progressValue}
             className="h-2 bg-neutral/30"
@@ -61,9 +61,9 @@ export function TourCard({
         </div>
 
         {/* Footer - Two rows, centered layout */}
-        <CardFooter className="flex flex-col gap-2 px-6 pb-6">
+        <CardFooter className="flex flex-col gap-2 px-6 pb-1">
           {/* Row 1: Previous, Step Count, Next */}
-          <div className="flex items-center justify-center gap-4 w-full">
+          <div className="flex items-center justify-between gap-4 w-full">
             {/* Previous Button */}
             {currentStep > 0 ? (
               <Button
@@ -87,24 +87,26 @@ export function TourCard({
             <Button
               onClick={nextStep}
               size="sm"
-              className="font-medium"
+              className="font-medium bg-mcs-teal w-[84px]"
               style={{ backgroundColor: '#00b9b0', color: 'white' }}
             >
               {currentStep === totalSteps - 1 ? 'Finish' : 'Next'}
             </Button>
           </div>
 
-          {/* Row 2: Skip Tour */}
-          <div className="flex justify-center w-full">
-            <Button
-              onClick={skipTour}
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Skip Tour
-            </Button>
-          </div>
+          {/* Row 2: Skip Tour - hide on final step */}
+          {currentStep < totalSteps - 1 && (
+            <div className="flex justify-center w-full">
+              <Button
+                onClick={skipTour}
+                variant="ghost"
+                size="sm"
+                className="font-medium w-full"
+              >
+                Skip Tour
+              </Button>
+            </div>
+          )}
         </CardFooter>
       </Card>
     </div>

@@ -29,13 +29,13 @@ export const allTours: Tour[] = [
       },
       {
         icon: <>🗺️</>,
-        selector: '#uk-map-container',
+        selector: '#map-tour-target',
         title: 'Interactive Map',
         content:
           <>Click on any region on the map to view its litter statistics. The map uses color
               coding to show data availability - darker regions have more survey data.
               You can drill down from countries to counties to see more detailed areas</>,
-        side: 'right',
+        side: 'top-left',
         showControls: false,
         showSkip: false,
       },
@@ -48,7 +48,7 @@ export const allTours: Tour[] = [
               Switch between different views of your data: <strong>Overview</strong> shows key metrics
               and insights, <strong>Litter Stats</strong> breaks down items by type and source,
               and <strong>Engagement</strong> shows volunteer participation</>,
-        side: 'left',
+        side: 'top-left',
         showControls: false,
         showSkip: false,
       },
@@ -119,7 +119,7 @@ export const allTours: Tour[] = [
       },
       {
         icon: <>🗺️</>,
-        selector: '#uk-map-container',
+        selector: '#map-tour-target',
         title: 'Interactive Map',
         content: (
           <>

@@ -20,17 +20,28 @@ export function FloatingStatsButton({
     <Button
       id="floating-stats-button"
       onClick={() => {
+        console.log('FloatingStatsButton clicked!');
+        console.log('currentTour:', currentTour);
+        console.log('currentStep:', currentStep);
+        console.log('Condition check:', currentTour === 'mobileTour' && currentStep === 3);
+
         // Set flag for tour validation
         localStorage.setItem('stats-sheet-opened', 'true');
+        console.log('localStorage flag set');
+
         // Open the stats sheet
         onClick();
+        console.log('onClick() called to open sheet');
 
         // Auto-advance tour if on mobile tour step 3 (View Statistics)
         if (currentTour === 'mobileTour' && currentStep === 3) {
-          // Small delay to let sheet open animation start
-          setTimeout(() => {
-            nextStep();
-          }, 300);
+          console.log('Condition matched! Attempting to advance tour...');
+          // Try immediate call first
+          console.log('Calling nextStep() immediately');
+          nextStep();
+          console.log('nextStep() called');
+        } else {
+          console.log('Condition did NOT match - not advancing');
         }
       }}
       size="icon"

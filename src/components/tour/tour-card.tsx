@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import type { CardComponentProps } from 'nextstepjs';
 import { useNextStep } from 'nextstepjs';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,22 @@ export function TourCard({
     hasArrow: !!arrow,
     currentTour,
   });
+
+  // Listen for custom event to advance tour (from FloatingStatsButton)
+  useEffect(() => {
+    const handleAdvanceStep = () => {
+      console.log('TourCard: Received tour:advanceStep event, calling nextStep()');
+      nextStep();
+    };
+
+    window.addEventListener('tour:advanceStep', handleAdvanceStep);
+    console.log('TourCard: Event listener added for tour:advanceStep');
+
+    return () => {
+      window.removeEventListener('tour:advanceStep', handleAdvanceStep);
+      console.log('TourCard: Event listener removed');
+    };
+  }, [nextStep]);
 
   return (
     <div className="z-[100000]" style={{ zIndex: 100000 }}>

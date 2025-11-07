@@ -14,7 +14,7 @@ export function FloatingStatsButton({
   onClick,
   className,
 }: FloatingStatsButtonProps) {
-  const { currentTour, currentStep, nextStep } = useNextStep();
+  const { currentTour, currentStep } = useNextStep();
 
   return (
     <Button
@@ -35,11 +35,9 @@ export function FloatingStatsButton({
 
         // Auto-advance tour if on mobile tour step 3 (View Statistics)
         if (currentTour === 'mobileTour' && currentStep === 3) {
-          console.log('Condition matched! Attempting to advance tour...');
-          // Try immediate call first
-          console.log('Calling nextStep() immediately');
-          nextStep();
-          console.log('nextStep() called');
+          console.log('Condition matched! Dispatching tour:advanceStep event...');
+          window.dispatchEvent(new CustomEvent('tour:advanceStep'));
+          console.log('Event dispatched');
         } else {
           console.log('Condition did NOT match - not advancing');
         }

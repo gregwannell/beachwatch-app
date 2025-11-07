@@ -272,7 +272,7 @@ export function UKMap({
       {/* Tour Target - invisible element for tour spotlight */}
       <div
         id="map-tour-target"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/4 w-64 h-64 pointer-events-none z-[500]"
+        className="absolute inset-0 pointer-events-none z-[500]"
         aria-hidden="true"
       />
 

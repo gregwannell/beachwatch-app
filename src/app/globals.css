@@ -367,4 +367,10 @@
       display: none;
     }
   }
+
+  /* NextStepJS Tour Card Z-Index Override */
+  /* Ensure tour card appears above all UI elements including sheets/modals */
+  [data-name="nextstep-card"] {
+    z-index: 100000 !important;
+  }
 }

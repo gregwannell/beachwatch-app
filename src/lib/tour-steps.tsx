@@ -10,8 +10,7 @@ export const allTours: Tour[] = [
         // selector: '#app-tour-welcome', // No selector - card appears centered
         title: 'Welcome to Beachwatch Data Explorer',
         content:
-          <>Explore UK beach litter data through interactive maps and detailed statistics.
-              This quick tour will show you how to navigate and use the key features of the dashboard</>,
+          <>This quick tour will show you how to navigate and use the key features of the dashboard</>,
         side: 'top',
         showControls: false,
         showSkip: false,
@@ -22,19 +21,16 @@ export const allTours: Tour[] = [
         title: 'Filter Your Data',
         content:
           <>Click here to open the filter panel where you can refine your view by region, 
-          year range, and data availability. Apply filters to focus on specific areas or time periods</>,
+          year range, and data availability.</>,
         side: 'bottom',
         showControls: false,
         showSkip: false,
       },
       {
         icon: <>🗺️</>,
-        selector: '#map-tour-target',
         title: 'Interactive Map',
         content:
-          <>Click on any region on the map to view its litter statistics. The map uses color
-              coding to show data availability - darker regions have more survey data.
-              You can drill down from countries to counties to see more detailed areas</>,
+          <>You can also click on any region on the map to go to that region and view its litter statistics.</>,
         side: 'top-left',
         showControls: false,
         showSkip: false,
@@ -57,9 +53,7 @@ export const allTours: Tour[] = [
         selector: '#average-litter-info-button',
         title: 'Metric Information',
         content: 
-        <>Click the info icon on any metric to learn how it's calculated.
-              For example, the Average Litter per 100m shows the median value to
-              reduce the impact of outliers and give you a more accurate picture </>,
+        <>Click the info icon on any metric to learn how it's calculated. This helps you understand what the numbers mean and how to interpret them.</>,
         side: 'left',
         showControls: false,
         showSkip: false,
@@ -77,8 +71,8 @@ export const allTours: Tour[] = [
           </>
         ),
         side: 'top',
-        showControls: false,
-        showSkip: false,
+        showControls: true,
+        showSkip: true,
       },
     ],
   },
@@ -93,7 +87,7 @@ export const allTours: Tour[] = [
           <>
             <p>
               Explore UK beach litter data on mobile. This tour will show you how to navigate
-              the map, filters, and statistics on your device.
+              the map, filters, and statistics on your mobile device.
             </p>
           </>
         ),
@@ -108,24 +102,22 @@ export const allTours: Tour[] = [
         content: (
           <>
             <p>
-              Tap this button in the top-right corner to open the filter sheet.
+              Tap this button in the top-right corner to open the filter drawer.
               Here you can select regions, adjust year ranges, and filter by data availability.
             </p>
           </>
         ),
-        side: 'bottom',
+        side: 'top-right',
         showControls: false,
         showSkip: false,
       },
       {
         icon: <>🗺️</>,
-        selector: '#map-tour-target',
         title: 'Interactive Map',
         content: (
           <>
             <p>
-              Tap any region on the map to view its statistics. The color intensity shows
-              data availability - darker areas have more surveys. Zoom and pan to explore different areas.
+              You can also tap any region on the map to view its statistics. Clicking a regiion will open the stats panel.
             </p>
           </>
         ),
@@ -140,12 +132,12 @@ export const allTours: Tour[] = [
         content: (
           <>
             <p>
-              Tap this button in the top-left corner to open the statistics sheet for the selected region.
-              The sheet shows detailed metrics, charts, and insights about beach litter.
+              Tap this button in the top-left corner to open the stats panel for the selected region.
+              The panel shows detailed metrics, charts, and insights about beach litter.
             </p>
           </>
         ),
-        side: 'bottom',
+        side: 'top-left',
         showControls: false,
         showSkip: false,
       },
@@ -179,8 +171,8 @@ export const allTours: Tour[] = [
           </>
         ),
         side: 'top',
-        showControls: false,
-        showSkip: false,
+        showControls: true,
+        showSkip: true,
       },
     ],
   },

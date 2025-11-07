@@ -27,6 +27,7 @@ export function TourCard({
   return (
     <div className="z-[100000]" style={{ zIndex: 100000 }}>
       <Card className="w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700">
+        {/* Header */}
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-3 text-xl font-semibold">
             {step.icon && <span className="text-2xl">{step.icon}</span>}
@@ -34,6 +35,7 @@ export function TourCard({
           </CardTitle>
         </CardHeader>
 
+        {/* Content */}
         <CardContent>
           <div className="text-gray-700 dark:text-gray-300 leading-relaxed mb-2">
             {step.content}
@@ -41,81 +43,64 @@ export function TourCard({
           {arrow}
         </CardContent>
 
-        <CardFooter
-          className={cn(
-            "flex items-center justify-between gap-4 px-6 py-4",
-            "bg-[#1b1b26] dark:bg-[#1b1b26]"
-          )}
-        >
-          {/* Step Counter */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span
-              className="text-lg font-bold text-white"
-              style={{ color: '#00b9b0' }}
-            >
-              {currentStep + 1}/{totalSteps}
-            </span>
-          </div>
+        {/* Progress Bar - Outside footer */}
+        <div className="px-6 pb-4">
+          <Progress
+            value={progressValue}
+            className="h-2 bg-neutral/30"
+            style={{
+              // @ts-ignore - CSS custom property
+              '--progress-background': '#00b9b0',
+            }}
+          />
+          <style jsx>{`
+            :global([data-slot="progress-indicator"]) {
+              background-color: #00b9b0 !important;
+            }
+          `}</style>
+        </div>
 
-          {/* Progress Bar */}
-          <div className="flex-1 min-w-0">
-            <Progress
-              value={progressValue}
-              className="h-2 bg-neutral/30"
-              style={{
-                // @ts-ignore - CSS custom property
-                '--progress-background': '#00b9b0',
-              }}
-            />
-            <style jsx>{`
-              :global([data-slot="progress-indicator"]) {
-                background-color: #00b9b0 !important;
-              }
-            `}</style>
-          </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex gap-2 shrink-0">
-            {/* Previous Button - only show if not on first step */}
-            {currentStep > 0 && (
+        {/* Footer - Two rows, centered layout */}
+        <CardFooter className="flex flex-col gap-2 px-6 pb-6">
+          {/* Row 1: Previous, Step Count, Next */}
+          <div className="flex items-center justify-center gap-4 w-full">
+            {/* Previous Button */}
+            {currentStep > 0 ? (
               <Button
                 onClick={prevStep}
                 variant="outline"
                 size="sm"
-                className={cn(
-                  "font-bold tracking-wide",
-                  "border-gray-600 text-white hover:bg-teal-500/20"
-                )}
-                style={{ color: '#00b9b0', borderColor: '#00b9b0' }}
+                className="font-medium"
               >
                 Previous
               </Button>
+            ) : (
+              <div className="w-[84px]" /> // Placeholder to keep Next centered when no Previous
             )}
+
+            {/* Step Counter */}
+            <span className="text-sm text-muted-foreground font-medium min-w-[60px] text-center">
+              {currentStep + 1} of {totalSteps}
+            </span>
 
             {/* Next/Finish Button */}
             <Button
               onClick={nextStep}
               size="sm"
-              className={cn(
-                "font-bold tracking-wide text-white",
-                "bg-transparent hover:bg-teal-500/20",
-                "border-none shadow-none"
-              )}
-              style={{ color: '#00b9b0' }}
-              variant="ghost"
+              className="font-medium"
+              style={{ backgroundColor: '#00b9b0', color: 'white' }}
             >
-              {currentStep === totalSteps - 1 ? 'Finish' : 'NEXT'}
+              {currentStep === totalSteps - 1 ? 'Finish' : 'Next'}
             </Button>
+          </div>
 
-            {/* Skip Tour Button */}
+          {/* Row 2: Skip Tour */}
+          <div className="flex justify-center w-full">
             <Button
               onClick={skipTour}
               variant="ghost"
               size="sm"
-              className={cn(
-                "font-bold tracking-wide",
-                "text-gray-400 hover:text-white hover:bg-gray-700/50"
-              )}
+              className="text-muted-foreground hover:text-foreground"
             >
               Skip Tour
             </Button>

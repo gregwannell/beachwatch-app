@@ -1,86 +1,163 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
+import { Home, Map, Menu, LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-type IconComponentType = React.ElementType<{ className?: string }>;
+// SVG background path for the bottom navigation bar
+const NAV_BAR_PATH = "M0 25C0 11.1929 11.1929 0 25 0 H 150.5 C 160.5 0 172.5 16 187.5 16 S 214.5 0 224.5 0 H 350 C 363.807 0 375 11.1929 375 25 V 47 C 375 60.8071 363.807 72 350 72 H 25 C 11.1929 72 0 60.8071 0 47 V 25 Z";
 
-export interface InteractiveMenuItem {
+// Navigation item configuration
+export interface NavigationItem {
+  id: string;
   label: string;
-  icon: IconComponentType;
+  icon: LucideIcon;
 }
 
-export interface InteractiveMenuProps {
-  items: InteractiveMenuItem[];
+// Component props interfaces
+interface NavItemProps {
+  id: string;
+  label: string;
+  Icon: LucideIcon;
+  activeTab: string;
   accentColor?: string;
-  activeIndex?: number;
-  onItemClick?: (index: number) => void;
+  onClick: (id: string) => void;
 }
 
-const defaultAccentColor = 'var(--component-active-color-default)';
+export interface BottomNavBarProps {
+  /** Initial active tab ID */
+  defaultTab?: string;
+  /** Callback when tab changes */
+  onTabChange?: (tabId: string) => void;
+  /** Custom accent color (Tailwind class prefix, e.g., 'indigo', 'blue') */
+  accentColor?: string;
+  /** Side navigation items (default: Home and Settings) */
+  sideItems?: [NavigationItem, NavigationItem];
+  /** Central button configuration */
+  centralButton?: {
+    id: string;
+    label: string;
+    icon: LucideIcon;
+  };
+}
 
-const InteractiveMenu: React.FC<InteractiveMenuProps> = ({
-  items,
-  accentColor,
-  activeIndex: controlledActiveIndex,
-  onItemClick
+const NavItem: React.FC<NavItemProps> = ({
+  id,
+  label,
+  Icon,
+  activeTab,
+  accentColor = 'indigo',
+  onClick
 }) => {
-  const [internalActiveIndex, setInternalActiveIndex] = useState(0);
+    const isActive = activeTab === id;
 
-  // Use controlled activeIndex if provided, otherwise use internal state
-  const activeIndex = controlledActiveIndex !== undefined ? controlledActiveIndex : internalActiveIndex;
+    return (
+        <button
+            onClick={() => onClick(id)}
+            aria-label={label}
+            aria-current={isActive ? 'page' : undefined}
+            className="flex flex-col items-center justify-center w-24 h-full transition-colors duration-300"
+        >
+            <div
+                className={cn(
+                    "w-8 h-1 rounded-full",
+                    isActive ? `bg-${accentColor}-600` : 'bg-transparent'
+                )}
+            />
+            <Icon
+                className={cn(
+                    "h-6 w-6 my-1",
+                    isActive ? `text-${accentColor}-600` : 'text-gray-400'
+                )}
+                strokeWidth={isActive ? 2.5 : 2}
+            />
+            <span
+                className={cn(
+                    "text-xs font-medium",
+                    isActive ? `text-${accentColor}-600` : 'text-gray-500'
+                )}
+            >
+                {label}
+            </span>
+        </button>
+    );
+};
 
-  // Reset internal state if it exceeds item count
-  useEffect(() => {
-    if (internalActiveIndex >= items.length) {
-      setInternalActiveIndex(0);
-    }
-  }, [items.length, internalActiveIndex]);
+const BottomNavBar: React.FC<BottomNavBarProps> = ({
+  defaultTab = 'home',
+  onTabChange,
+  accentColor = 'indigo',
+  sideItems = [
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'settings', label: 'Settings', icon: Menu }
+  ],
+  centralButton = { id: 'explore', label: 'Explore', icon: Map }
+}) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
-  const handleItemClick = (index: number) => {
-    // Call the provided callback if it exists
-    if (onItemClick) {
-      onItemClick(index);
-    }
-
-    // Only update internal state if not controlled
-    if (controlledActiveIndex === undefined) {
-      setInternalActiveIndex(index);
-    }
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    onTabChange?.(tabId);
   };
 
-  const navStyle = useMemo(() => {
-    const activeColor = accentColor || defaultAccentColor;
-    return { '--component-active-color': activeColor } as React.CSSProperties;
-  }, [accentColor]);
-
   return (
-    <nav
-      className="menu"
-      role="navigation"
-      style={navStyle}
-    >
-      {items.map((item, index) => {
-        const isActive = index === activeIndex;
-        const IconComponent = item.icon;
-
-        return (
-          <button
-            key={item.label}
-            className={`menu__item ${isActive ? 'active' : ''}`}
-            onClick={() => handleItemClick(index)}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            <div className="menu__icon">
-              <IconComponent className="icon" />
-            </div>
-            <strong
-              className={`menu__text ${isActive ? 'active' : ''}`}
+    <div className="absolute bottom-0 left-0 right-0 h-24 px-4" role="navigation" aria-label="Main navigation">
+        <div className="relative w-full h-full">
+            {/* SVG Background */}
+            <svg
+                className="absolute bottom-0 left-0 w-full h-full drop-shadow-2xl"
+                viewBox="0 0 375 72"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                preserveAspectRatio="none"
             >
-              {item.label}
-            </strong>
-          </button>
-        );
-      })}
-    </nav>
+                <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d={NAV_BAR_PATH}
+                    fill="white"
+                />
+            </svg>
+
+            {/* Central Prominent Button */}
+            <button
+              onClick={() => handleTabChange(centralButton.id)}
+              aria-label={centralButton.label}
+              aria-current={activeTab === centralButton.id ? 'page' : undefined}
+              className={cn(
+                "absolute left-1/2 -translate-x-1/2 top-1 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 z-10",
+                `bg-${accentColor}-600 focus:ring-${accentColor}-500`
+              )}
+            >
+              <centralButton.icon className="h-7 w-7" />
+            </button>
+
+            {/* Navigation Items Container */}
+            <div className="absolute top-0 left-0 w-full h-full flex justify-around items-center pt-1">
+                <NavItem
+                    id={sideItems[0].id}
+                    label={sideItems[0].label}
+                    Icon={sideItems[0].icon}
+                    activeTab={activeTab}
+                    accentColor={accentColor}
+                    onClick={handleTabChange}
+                />
+
+                {/* Placeholder for central button space */}
+                <div className="w-24" aria-hidden="true" />
+
+                <NavItem
+                    id={sideItems[1].id}
+                    label={sideItems[1].label}
+                    Icon={sideItems[1].icon}
+                    activeTab={activeTab}
+                    accentColor={accentColor}
+                    onClick={handleTabChange}
+                />
+            </div>
+        </div>
+    </div>
   );
 };
 
-export { InteractiveMenu }
+export { BottomNavBar };
+export default BottomNavBar;

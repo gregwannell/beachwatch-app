@@ -1,7 +1,6 @@
 'use client';
 
 import type { CardComponentProps } from 'nextstepjs';
-import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +11,7 @@ export function TourCard({
   currentStep,
   totalSteps,
   nextStep,
+  prevStep,
   skipTour,
   arrow,
 }: CardComponentProps) {
@@ -27,20 +27,11 @@ export function TourCard({
   return (
     <div className="z-[100000]" style={{ zIndex: 100000 }}>
       <Card className="w-[90vw] max-w-[520px] border-2 border-gray-300 dark:border-gray-700">
-        <CardHeader className="flex flex-row items-start justify-between pb-4">
+        <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-3 text-xl font-semibold">
             {step.icon && <span className="text-2xl">{step.icon}</span>}
             {step.title}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={skipTour}
-            className="h-8 w-8 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 -mt-1 -mr-2"
-            aria-label="Close tour"
-          >
-            <X className="h-5 w-5" />
-          </Button>
         </CardHeader>
 
         <CardContent>
@@ -83,19 +74,52 @@ export function TourCard({
             `}</style>
           </div>
 
-          {/* Next Button */}
-          <Button
-            onClick={nextStep}
-            className={cn(
-              "shrink-0 font-bold tracking-wide text-white",
-              "bg-transparent hover:bg-teal-500/20",
-              "border-none shadow-none"
+          {/* Navigation Buttons */}
+          <div className="flex gap-2 shrink-0">
+            {/* Previous Button - only show if not on first step */}
+            {currentStep > 0 && (
+              <Button
+                onClick={prevStep}
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "font-bold tracking-wide",
+                  "border-gray-600 text-white hover:bg-teal-500/20"
+                )}
+                style={{ color: '#00b9b0', borderColor: '#00b9b0' }}
+              >
+                Previous
+              </Button>
             )}
-            style={{ color: '#00b9b0' }}
-            variant="ghost"
-          >
-            NEXT
-          </Button>
+
+            {/* Next/Finish Button */}
+            <Button
+              onClick={nextStep}
+              size="sm"
+              className={cn(
+                "font-bold tracking-wide text-white",
+                "bg-transparent hover:bg-teal-500/20",
+                "border-none shadow-none"
+              )}
+              style={{ color: '#00b9b0' }}
+              variant="ghost"
+            >
+              {currentStep === totalSteps - 1 ? 'Finish' : 'NEXT'}
+            </Button>
+
+            {/* Skip Tour Button */}
+            <Button
+              onClick={skipTour}
+              variant="ghost"
+              size="sm"
+              className={cn(
+                "font-bold tracking-wide",
+                "text-gray-400 hover:text-white hover:bg-gray-700/50"
+              )}
+            >
+              Skip Tour
+            </Button>
+          </div>
         </CardFooter>
       </Card>
     </div>

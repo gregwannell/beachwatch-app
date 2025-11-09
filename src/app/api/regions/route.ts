@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     // Validate geometry data if included
     let validatedData = data?.map(region => {
-      if (includeGeometry && 'geometry' in region && region.geometry) {
+      if (includeGeometry && region.geometry) {
         const isValid = validateRegionGeometry(region.geometry)
         if (!isValid) {
           console.warn(`Invalid geometry for region ${region.id}: ${region.name}`)

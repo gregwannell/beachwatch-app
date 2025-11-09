@@ -18,7 +18,6 @@ interface NavItemProps {
   label: string;
   Icon: LucideIcon;
   activeTab: string;
-  accentColor?: string;
   onClick: (id: string) => void;
 }
 
@@ -27,8 +26,6 @@ export interface BottomNavBarProps {
   defaultTab?: string;
   /** Callback when tab changes */
   onTabChange?: (tabId: string) => void;
-  /** Custom accent color (Tailwind class prefix, e.g., 'indigo', 'blue') */
-  accentColor?: string;
   /** Side navigation items (default: Home and Settings) */
   sideItems?: [NavigationItem, NavigationItem];
   /** Central button configuration */
@@ -44,7 +41,6 @@ const NavItem: React.FC<NavItemProps> = ({
   label,
   Icon,
   activeTab,
-  accentColor = 'indigo',
   onClick
 }) => {
     const isActive = activeTab === id;
@@ -54,26 +50,26 @@ const NavItem: React.FC<NavItemProps> = ({
             onClick={() => onClick(id)}
             aria-label={label}
             aria-current={isActive ? 'page' : undefined}
-            className="flex flex-col items-center justify-center w-24 h-full transition-colors duration-300"
+            className="flex flex-col items-center justify-center w-24 h-full transition-colors duration-300 focus:outline-none"
         >
             <div
-                className={cn(
-                    "w-8 h-1 rounded-full",
-                    isActive ? `bg-${accentColor}-600` : 'bg-transparent'
-                )}
+                className="w-8 h-1 rounded-full transition-colors duration-300"
+                style={{
+                    backgroundColor: isActive ? 'var(--mcs-teal)' : 'transparent'
+                }}
             />
             <Icon
-                className={cn(
-                    "h-6 w-6 my-1",
-                    isActive ? `text-${accentColor}-600` : 'text-gray-400'
-                )}
+                className="h-6 w-6 my-1 transition-colors duration-300"
+                style={{
+                    color: isActive ? 'var(--mcs-teal)' : '#9ca3af'
+                }}
                 strokeWidth={isActive ? 2.5 : 2}
             />
             <span
-                className={cn(
-                    "text-xs font-medium",
-                    isActive ? `text-${accentColor}-600` : 'text-gray-500'
-                )}
+                className="text-xs font-medium transition-colors duration-300"
+                style={{
+                    color: isActive ? 'var(--mcs-teal)' : '#6b7280'
+                }}
             >
                 {label}
             </span>
@@ -84,7 +80,6 @@ const NavItem: React.FC<NavItemProps> = ({
 const BottomNavBar: React.FC<BottomNavBarProps> = ({
   defaultTab = 'home',
   onTabChange,
-  accentColor = 'indigo',
   sideItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'settings', label: 'Settings', icon: Menu }
@@ -94,13 +89,16 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const handleTabChange = (tabId: string) => {
-    setActiveTab(tabId);
+    // Don't update active state for modal items like settings
+    if (tabId !== 'settings') {
+      setActiveTab(tabId);
+    }
     onTabChange?.(tabId);
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-24 px-4" role="navigation" aria-label="Main navigation">
-        <div className="relative w-full h-full">
+    <nav className="fixed bottom-0 left-0 right-0 h-24 px-4 sm:px-0 z-[1050]" role="navigation" aria-label="Main navigation">
+        <div className="relative w-full sm:max-w-md mx-auto h-full">
             {/* SVG Background */}
             <svg
                 className="absolute bottom-0 left-0 w-full h-full drop-shadow-2xl"
@@ -108,7 +106,6 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
-                preserveAspectRatio="none"
             >
                 <path
                     fillRule="evenodd"
@@ -123,10 +120,11 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
               onClick={() => handleTabChange(centralButton.id)}
               aria-label={centralButton.label}
               aria-current={activeTab === centralButton.id ? 'page' : undefined}
-              className={cn(
-                "absolute left-1/2 -translate-x-1/2 top-1 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 z-10",
-                `bg-${accentColor}-600 focus:ring-${accentColor}-500`
-              )}
+              className="absolute left-1/2 -translate-x-1/2 top-1 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 z-10"
+              style={{
+                backgroundColor: 'var(--mcs-teal)',
+                ['--tw-ring-color' as any]: 'var(--mcs-teal)'
+              }}
             >
               <centralButton.icon className="h-7 w-7" />
             </button>
@@ -138,7 +136,6 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
                     label={sideItems[0].label}
                     Icon={sideItems[0].icon}
                     activeTab={activeTab}
-                    accentColor={accentColor}
                     onClick={handleTabChange}
                 />
 
@@ -150,12 +147,11 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
                     label={sideItems[1].label}
                     Icon={sideItems[1].icon}
                     activeTab={activeTab}
-                    accentColor={accentColor}
                     onClick={handleTabChange}
                 />
             </div>
         </div>
-    </div>
+    </nav>
   );
 };
 

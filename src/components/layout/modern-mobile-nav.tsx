@@ -4,6 +4,7 @@ import { Home, Map, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 import { BottomNavBar, type NavigationItem } from '@/components/ui/modern-mobile-menu'
+import { MobileSettingsSheet } from '@/components/layout/mobile-settings-sheet'
 
 export function ModernMobileNav() {
   const pathname = usePathname()
@@ -48,14 +49,19 @@ export function ModernMobileNav() {
   }), [])
 
   return (
-    <div className="md:hidden pb-safe">
-      <BottomNavBar
-        defaultTab={defaultTab}
-        onTabChange={handleTabChange}
-        accentColor="indigo"
-        sideItems={sideItems}
-        centralButton={centralButton}
+    <>
+      <div className="md:hidden pb-safe">
+        <BottomNavBar
+          defaultTab={defaultTab}
+          onTabChange={handleTabChange}
+          sideItems={sideItems}
+          centralButton={centralButton}
+        />
+      </div>
+      <MobileSettingsSheet
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
       />
-    </div>
+    </>
   )
 }

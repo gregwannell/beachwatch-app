@@ -59,12 +59,12 @@ export function Header() {
             />
           </Link>
 
-          {/* Hamburger Menu Button */}
+          {/* Hamburger Menu Button - Hidden on mobile, shown on desktop */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsSettingsOpen(true)}
-            className="text-primary-foreground dark:text-foreground hover:bg-primary-foreground/10 dark:hover:bg-accent"
+            className="hidden md:flex text-primary-foreground dark:text-foreground hover:bg-primary-foreground/10 dark:hover:bg-accent"
             aria-label="Open settings menu"
           >
             <Menu className="h-6 w-6" />

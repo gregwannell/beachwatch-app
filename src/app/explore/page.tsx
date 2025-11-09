@@ -370,7 +370,7 @@ function ExplorePageContent() {
 
   return (
     <MainLayout>
-      <div id="app-tour-welcome" className="h-full w-full relative pb-20 md:pb-0">
+      <div id="app-tour-welcome" className="h-full w-full relative md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -410,7 +410,7 @@ function ExplorePageContent() {
                 />
 
                 {/* MCS Logo overlay */}
-                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
+                <div className="absolute bottom-28 md:bottom-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"
@@ -485,7 +485,7 @@ function ExplorePageContent() {
                 />
 
                 {/* MCS Logo overlay */}
-                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
+                <div className="absolute bottom-28 md:bottom-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"

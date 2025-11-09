@@ -284,11 +284,11 @@ export function UKMap({
         zoomControl={false}
         className="w-full h-full rounded-lg"
         keyboard={true}
-        attributionControl={true}
+        attributionControl={false}
         whenReady={(e) => {
-          // Add zoom control to bottom-right
+          // Add zoom control to top-left
           L.control.zoom({
-            position: 'bottomright'
+            position: 'topleft'
           }).addTo(e.target)
         }}
       >

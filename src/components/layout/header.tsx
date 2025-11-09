@@ -1,6 +1,6 @@
 'use client'
 
-import { Menu, Settings } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -45,35 +45,8 @@ export function Header() {
 
   return (
     <>
-      {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-[1001] h-12 bg-primary dark:bg-card border-b border-primary-foreground/10 dark:border-border shadow-sm">
-        <div className="h-full px-4 flex items-center justify-between">
-          {/* MCS Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/mcs-bw-logo.png"
-              alt="Marine Conservation Society"
-              width={100}
-              height={100}
-              className="h-8 w-auto"
-            />
-          </Link>
-
-          {/* Hamburger Menu Button - Hidden on mobile, shown on desktop */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsSettingsOpen(true)}
-            className="hidden md:flex text-primary-foreground dark:text-foreground hover:bg-primary-foreground/10 dark:hover:bg-accent"
-            aria-label="Open settings menu"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-        </div>
-      </header>
-
       {/* Desktop Header */}
-      <header className="hidden md:block fixed top-0 left-0 right-0 z-[1100] backdrop-blur-md bg-primary/80 border-b border-primary-foreground/10">
+      <header className="hidden md:block fixed top-0 left-0 right-0 z-[1100] backdrop-blur-md bg-mcs-clear-blue/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Left: MCS Logo */}
           <Link href="/" className="flex-shrink-0">

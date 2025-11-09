@@ -37,8 +37,8 @@ export function HeroSection() {
 
         {/* Main headline */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-mcs-navy mb-6 drop-shadow-md">
-          <span className="block">Explore UK</span>
-          <span className="block">Beach Litter Data</span>
+          <span className="block">Beachwatch</span>
+          <span className="block">Data Explorer</span>
         </h1>
 
         {/* CTA Button */}
@@ -49,7 +49,7 @@ export function HeroSection() {
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white backdrop-blur-sm shadow-lg rounded-full">
+          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white dark:border-white hover:text-mcs-navy text-mcs-navy dark:text-mcs-navy hover:bg-white/80 bg-white dark:bg-white dark:hover:bg-white/80 backdrop-blur-sm shadow-lg rounded-full">
             <Link href="#features">
               Learn More
             </Link>

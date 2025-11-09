@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { LatLngBounds, LatLng } from 'leaflet'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
@@ -126,8 +126,8 @@ export function UKMap({
   const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
 
-  // Helper function to zoom to a region by ID
-  const zoomToRegion = (regionId: number) => {
+  // Helper function to zoom to a region by ID (wrapped in useCallback to fix exhaustive-deps warning)
+  const zoomToRegion = useCallback((regionId: number) => {
     if (!mapRef.current) return
 
     // Special case: -1 means zoom to fit all current regions
@@ -176,7 +176,7 @@ export function UKMap({
       padding: padding,
       maxZoom: maxZoom
     })
-  }
+  }, [regions])
 
   // Handle reset to UK view
   useEffect(() => {
@@ -192,7 +192,7 @@ export function UKMap({
     if (zoomToRegionId && mapRef.current) {
       zoomToRegion(zoomToRegionId)
     }
-  }, [zoomToRegionId, regions])
+  }, [zoomToRegionId, zoomToRegion])
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {

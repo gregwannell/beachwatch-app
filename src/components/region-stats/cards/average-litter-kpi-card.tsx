@@ -28,7 +28,13 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   const count = useMotionValue(0)
   const rounded = useTransform(count, (latest) => latest.toFixed(1))
 
-  // Detect screen size
+  // Extract data before hooks (to avoid conditional rendering issues)
+  const litterData = regionData.litterData
+  const averageLitterPer100m = litterData?.averageLitterPer100m ?? 0
+  const yearOverYearChange = litterData?.yearOverYearChange
+  const ukAverageComparison = litterData?.ukAverageComparison
+
+  // Detect screen size (called before any early returns - Rules of Hooks)
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768) // md breakpoint
@@ -42,11 +48,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  if (!regionData.litterData) return null
-
-  const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
-
-  // Animate count-up when value changes
+  // Animate count-up when value changes (called before any early returns - Rules of Hooks)
   useEffect(() => {
     const controls = animate(count, averageLitterPer100m, {
       duration: 1.5,
@@ -54,6 +56,9 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
     })
     return () => controls.stop()
   }, [averageLitterPer100m, count])
+
+  // Early return after all hooks have been called
+  if (!litterData) return null
 
   // Shared content for both Drawer and Dialog
   const calculationContent = (

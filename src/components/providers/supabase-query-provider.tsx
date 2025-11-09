@@ -156,12 +156,13 @@ export function SupabaseQueryProvider({
 
     setupSubscriptions()
 
-    // Cleanup subscriptions
+    // Cleanup subscriptions (copy ref to local variable to avoid stale closure warning)
     return () => {
-      subscriptionsRef.current.forEach((channel) => {
+      const subscriptions = subscriptionsRef.current
+      subscriptions.forEach((channel) => {
         supabase.removeChannel(channel)
       })
-      subscriptionsRef.current.clear()
+      subscriptions.clear()
       setSubscriptionCount(0)
       setIsConnected(false)
     }

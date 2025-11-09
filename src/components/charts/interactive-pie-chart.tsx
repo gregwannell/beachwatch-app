@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart, Sector } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 
 import {
@@ -46,7 +46,7 @@ export function InteractivePieChart({
   title,
   description,
   className,
-  height = 300
+  height: _height = 300
 }: InteractivePieChartProps) {
   const id = React.useId()
   const [activeItem, setActiveItem] = React.useState(data[0]?.name || "")
@@ -96,7 +96,7 @@ export function InteractivePieChart({
     )
   }
 
-  const activeData = data[activeIndex] || data[0]
+  const _activeData = data[activeIndex] || data[0]
 
   const totalValue = React.useMemo(() => {
     return data.reduce((acc, curr) => acc + curr.value, 0)

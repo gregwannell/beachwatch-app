@@ -1,17 +1,19 @@
+import Link from 'next/link'
+
 export default function NotFound() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
         <p className="text-muted-foreground mb-6">
-          The page you're looking for doesn't exist.
+          The page you&apos;re looking for doesn&apos;t exist.
         </p>
-        <a
+        <Link
           href="/"
           className="text-primary hover:underline"
         >
           Go back home
-        </a>
+        </Link>
       </div>
     </div>
   )

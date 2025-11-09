@@ -80,6 +80,11 @@ export function InteractivePieChart({
 
   const items = React.useMemo(() => data.map((item) => item.name), [data])
 
+  // Calculate total value before any early returns (Rules of Hooks)
+  const totalValue = React.useMemo(() => {
+    return data.reduce((acc, curr) => acc + curr.value, 0)
+  }, [data])
+
   if (!data || data.length === 0) {
     return (
       <Card className={className}>
@@ -97,10 +102,6 @@ export function InteractivePieChart({
   }
 
   const _activeData = data[activeIndex] || data[0]
-
-  const totalValue = React.useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.value, 0)
-  }, [data])
 
   return (
     <Card data-chart={id} className={`flex flex-col ${className}`}>

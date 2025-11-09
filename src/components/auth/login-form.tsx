@@ -32,7 +32,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         router.push('/explore')
         router.refresh()
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('An unexpected error occurred')
     } finally {
       setIsLoading(false)

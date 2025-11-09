@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry } from '@/lib/geometry-utils'
-import type { Tables } from '@/lib/database.types'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'

@@ -96,11 +96,12 @@ export function RegionSelect({
 
             {/* Grouped regions */}
             {Object.entries(groupedRegions.groups).map(([groupName, groupRegions]) => {
-              if (groupRegions.length === 0) return null
-              
+              const regions = groupRegions as FilterRegion[]
+              if (regions.length === 0) return null
+
               return (
                 <CommandGroup key={groupName} heading={groupName}>
-                  {groupRegions.map((region) => (
+                  {regions.map((region) => (
                     <CommandItem
                       key={region.id}
                       value={`${region.name} ${region.type}`}

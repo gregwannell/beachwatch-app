@@ -57,7 +57,7 @@ export function LitterTrendChart({
   if (loading) {
     return (
       <div className={className}>
-        <ChartSkeleton height={height} />
+        <ChartSkeleton height={height} type="bar" />
       </div>
     )
   }
@@ -66,7 +66,7 @@ export function LitterTrendChart({
   if (error) {
     return (
       <div className={className}>
-        <ChartError message={error} onRetry={onRetry} />
+        <ChartError error={error} onRetry={onRetry} type="bar" />
       </div>
     )
   }

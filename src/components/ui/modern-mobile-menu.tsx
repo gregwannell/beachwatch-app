@@ -123,8 +123,8 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
               className="absolute left-1/2 -translate-x-1/2 top-1 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 z-10"
               style={{
                 backgroundColor: 'var(--mcs-teal)',
-                ['--tw-ring-color' as any]: 'var(--mcs-teal)'
-              }}
+                ['--tw-ring-color']: 'var(--mcs-teal)'
+              } as React.CSSProperties}
             >
               <centralButton.icon className="h-7 w-7" />
             </button>

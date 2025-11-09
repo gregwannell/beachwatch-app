@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
 
     // Group and sum by source
     const sourceGroups: { [sourceId: number]: {
-      source: any,
+      source: { id: number; source: string } | null,
       total: number,
       avgPer100m: number[],
       presence: number[]

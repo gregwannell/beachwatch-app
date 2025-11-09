@@ -7,6 +7,12 @@ import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError } from "./chart-error"
 import type { ChartProps } from "./types"
 
+interface DotProps {
+  cx?: number
+  cy?: number
+  payload?: TrendDataPoint
+}
+
 export interface TrendDataPoint {
   year: number
   averageLitterPer100m: number
@@ -127,7 +133,7 @@ export function LitterTrendChart({
             type="natural"
             fill="url(#fillLitter)"
             stroke="var(--color-averageLitterPer100m)"
-            dot={(props: any) => {
+            dot={(props: DotProps) => {
               const { cx, cy, payload } = props
               // Only show dot for the selected year
               if (selectedYear && payload.year === selectedYear) {

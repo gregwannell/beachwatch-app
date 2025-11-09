@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry, createBoundaryData } from '@/lib/geometry-utils'
-import type { Tables } from '@/lib/database.types'
+import type { Tables, BoundaryData } from '@/lib/database.types'
 
 interface RouteParams {
   params: Promise<{ id: string }>
+}
+
+interface RegionApiResponse {
+  region: Tables<'regions'> | Partial<Tables<'regions'>>
+  boundaryData?: BoundaryData
+  children?: Tables<'regions'>[]
+  childrenError?: string
+  parent?: Tables<'regions'> | null
+  parentError?: string
+  aggregates?: Tables<'annual_region_aggregates'>[]
+  aggregatesError?: string
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -60,7 +71,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    const response: any = {
+    const response: RegionApiResponse = {
       region: includeGeometry ? region : {
         ...region,
         geometry: undefined  // Remove geometry if not requested

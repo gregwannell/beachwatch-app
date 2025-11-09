@@ -391,8 +391,9 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 export function usePrefetchRegionInfo() {
   // This could be implemented to prefetch region data on hover
   return {
-    prefetch: (regionId: number) => {
+    prefetch: (_regionId: number) => {
       // Implementation would prefetch the data without triggering loading state
+      // TODO: Implement prefetch logic
     }
   }
 }

@@ -2,9 +2,10 @@ import { QueryClient } from '@tanstack/react-query'
 import type { RegionGeometry } from './database.types'
 import { validateRegionGeometry } from './geometry-utils'
 
-// Custom serializer for JSONB geometry data
-const customSerializer = {
-  serialize: (data: any): string => {
+// Custom serializer for JSONB geometry data (reserved for future use)
+// Currently using default JSON serialization, but kept for potential custom geometry handling
+const _customSerializer = {
+  serialize: (data: unknown): string => {
     return JSON.stringify(data, (key, value) => {
       // Handle geometry objects specially to ensure consistent serialization
       if (key === 'geometry' && value && typeof value === 'object' && value.type) {
@@ -16,7 +17,7 @@ const customSerializer = {
       return value
     })
   },
-  deserialize: (data: string): any => {
+  deserialize: (data: string): unknown => {
     return JSON.parse(data, (key, value) => {
       // Validate geometry data on deserialization
       if (key === 'geometry' && value && typeof value === 'object') {
@@ -38,27 +39,34 @@ export const queryClient = new QueryClient({
       // Enhanced Supabase-optimized cache settings
       staleTime: 5 * 60 * 1000, // 5 minutes for most data
       gcTime: 30 * 60 * 1000, // 30 minutes garbage collection (extended for geo data)
-      retry: (failureCount, error: any) => {
+      retry: (failureCount, error: unknown) => {
         // Custom retry logic for Supabase errors
-        if (error?.message?.includes('PGRST')) {
+        const hasMessage = (e: unknown): e is { message: string } =>
+          typeof e === 'object' && e !== null && 'message' in e
+        const hasStatus = (e: unknown): e is { status: number } =>
+          typeof e === 'object' && e !== null && 'status' in e
+
+        if (hasMessage(error) && error.message.includes('PGRST')) {
           // PostgreSQL REST errors - retry less aggressively
           return failureCount < 2
         }
-        if (error?.status === 429) {
+        if (hasStatus(error) && error.status === 429) {
           // Rate limiting - retry with backoff
           return failureCount < 3
         }
-        if (error?.status >= 500) {
+        if (hasStatus(error) && error.status >= 500) {
           // Server errors - retry
           return failureCount < 3
         }
         // Client errors - don't retry
         return false
       },
-      retryDelay: (attemptIndex, error: any) => {
+      retryDelay: (attemptIndex, error: unknown) => {
         // Exponential backoff with jitter for Supabase
         const baseDelay = 1000 * 2 ** attemptIndex
-        const maxDelay = error?.status === 429 ? 60000 : 30000 // Longer delay for rate limits
+        const hasStatus = (e: unknown): e is { status: number } =>
+          typeof e === 'object' && e !== null && 'status' in e
+        const maxDelay = (hasStatus(error) && error.status === 429) ? 60000 : 30000 // Longer delay for rate limits
         const jitter = Math.random() * 0.1 * baseDelay // Add 10% jitter
         return Math.min(baseDelay + jitter, maxDelay)
       },
@@ -73,9 +81,11 @@ export const queryClient = new QueryClient({
       }
     },
     mutations: {
-      retry: (failureCount, error: any) => {
+      retry: (failureCount, error: unknown) => {
         // Only retry mutations for server errors, not client errors
-        if (error?.status >= 500) {
+        const hasStatus = (e: unknown): e is { status: number } =>
+          typeof e === 'object' && e !== null && 'status' in e
+        if (hasStatus(error) && error.status >= 500) {
           return failureCount < 1
         }
         return false
@@ -98,7 +108,7 @@ export class SupabaseQueryClient {
   }
   
   // Optimized caching for large geometry datasets
-  setGeometryCache(queryKey: any[], data: any, options?: {
+  setGeometryCache(queryKey: unknown[], data: unknown, options?: {
     staleTime?: number
     priority?: 'low' | 'normal' | 'high'
   }) {
@@ -121,7 +131,7 @@ export class SupabaseQueryClient {
   
   // Prefetch strategy for region hierarchies
   async prefetchRegionHierarchy(rootId?: number, depth: number = 3) {
-    const prefetchPromises: Promise<any>[] = []
+    const prefetchPromises: Promise<unknown>[] = []
     
     // Prefetch root regions first
     prefetchPromises.push(

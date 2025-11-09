@@ -188,14 +188,14 @@ function ExplorePageContent() {
         dataAvailability: prev.dataAvailability // PRESERVE user's data availability settings
       }
 
-      // Update URL
-      const params = new URLSearchParams()
-      params.set('region', '1')
-      params.set('year', filterOptions.availableYears.max.toString())
-      router.push(`/explore?${params.toString()}`, { scroll: false })
-
       return resetFilters
     })
+
+    // Update URL (moved outside state setter to avoid setState during render)
+    const params = new URLSearchParams()
+    params.set('region', '1')
+    params.set('year', filterOptions.availableYears.max.toString())
+    router.push(`/explore?${params.toString()}`, { scroll: false })
 
     // Also trigger the direct map reset to ensure polygon layers return to countries view
     setSelectedRegionId(1)

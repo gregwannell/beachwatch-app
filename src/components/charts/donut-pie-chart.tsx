@@ -109,7 +109,7 @@ export function DonutPieChart({
         </ChartContainer>
 
         {/* Data Table */}
-        <div className>
+        <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{title?.replace('Breakdown', '') || 'Item'}</span>
             <span>Avg/100m / Share</span>

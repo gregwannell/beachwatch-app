@@ -5,10 +5,28 @@ import { useNextStep } from 'nextstepjs';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import { validation } from '@/lib/tour-validation';
 import { toast } from 'sonner';
 
+/**
+ * Custom Tour Card Component
+ *
+ * Provides a branded, accessible UI for nextstepjs guided tours.
+ * Features include:
+ *
+ * - **Brand Styling**: MCS teal accent color (#00b9b0) with shadcn/ui components
+ * - **Progress Indicator**: Visual bar showing tour completion percentage
+ * - **Navigation Controls**: Previous, Next/Finish, and Skip Tour buttons
+ * - **Validation Support**: Validates user interactions before allowing step progression
+ * - **Responsive Layout**: Adapts to mobile and desktop viewports
+ * - **Dark Mode**: Full support for theme switching
+ *
+ * The component integrates with the validation system from tour-validation.ts,
+ * checking for required user interactions before allowing tour progression.
+ * Failed validations trigger toast notifications with helpful guidance.
+ *
+ * @param props - CardComponentProps from nextstepjs containing step data and navigation functions
+ */
 export function TourCard({
   step,
   currentStep,
@@ -33,16 +51,8 @@ export function TourCard({
       ? validation[currentTour][currentStep].validationMessage
       : '';
 
-  console.log('TourCard rendering:', {
-    step: step?.title,
-    currentStep,
-    totalSteps,
-    hasArrow: !!arrow,
-    currentTour,
-  });
-
   return (
-    <div className="z-[100000]" style={{ zIndex: 100000 }}>
+    <div className="z-[100000]">
       <Card className="w-[90vw] max-w-[350px] border-2 border-gray-300 dark:border-gray-700">
         {/* Header */}
         <CardHeader>
@@ -66,7 +76,7 @@ export function TourCard({
             value={progressValue}
             className="h-2 bg-neutral/30"
             style={{
-              // @ts-ignore - CSS custom property
+              // @ts-expect-error - CSS custom property
               '--progress-background': '#00b9b0',
             }}
           />

@@ -135,7 +135,7 @@ function ExplorePageContent() {
             // For countries: drill down to show counties first, then zoom when regions are loaded
             setPendingZoom(selectedRegionId)  // Store zoom request for later
             setParentRegionId(selectedRegionId)  // Load counties layer immediately
-          } else if (selectedRegion.type === 'Sovereign State') {
+          } else if (selectedRegion.type === 'UK') {
             // For UK: show countries level and reset map view
             setParentRegionId(null)
             setZoomToRegionId(null)

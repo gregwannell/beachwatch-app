@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
-import type { Tables } from '@/lib/database.types'
-import { 
-  validateRegionId, 
-  validateYearParams, 
+import {
+  validateRegionId,
+  validateYearParams,
   validateLimit,
-  createErrorResponse, 
+  createErrorResponse,
   createSuccessResponse,
-  handleDatabaseError 
+  handleDatabaseError
 } from '@/lib/analytics-validation'
 
 // Response types
@@ -161,12 +160,14 @@ export async function GET(request: NextRequest) {
       .from('materials')
       .select('id, material')
       .in('id', materialIds)
-    
+
     if (materialsLookupError) {
       console.error('Materials lookup error:', materialsLookupError)
     }
-    
-    const materialsMap = new Map(materials_lookup?.map(m => [m.id, m.material]) || [])
+
+    const materialsMap = new Map<number, string>(
+      materials_lookup?.map(m => [m.id as number, m.material as string]) || []
+    )
 
     // Fetch previous year materials data for year-over-year comparison
     const previousYearMaterials: { [materialId: number]: number } = {}

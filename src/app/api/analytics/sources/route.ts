@@ -194,7 +194,7 @@ export async function GET(request: NextRequest) {
       const sourceId = agg.source_id
       if (!sourceGroups[sourceId]) {
         sourceGroups[sourceId] = {
-          source: agg.sources,
+          source: (Array.isArray(agg.sources) ? agg.sources[0] : agg.sources) ?? null,
           total: 0,
           avgPer100m: [],
           presence: []

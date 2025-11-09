@@ -33,10 +33,8 @@ interface DonutPieChartProps {
 export function DonutPieChart({
   data,
   title,
-  description: _description,
   className,
   height = 300,
-  centerLabel: _centerLabel = "Avg/100m",
   animationDuration = 800,
   animationEasing = "ease-out"
 }: DonutPieChartProps) {

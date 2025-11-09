@@ -30,7 +30,6 @@ export interface LitterTrendChartProps extends Omit<ChartProps, 'data'> {
 
 export function LitterTrendChart({
   data,
-  yearOverYearChange: _yearOverYearChange,
   selectedYear,
   className,
   height = 180,

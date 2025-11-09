@@ -131,9 +131,7 @@ export class CachePreloadingStrategies {
   }
   
   // Preload data for map interactions
-  static async preloadMapData(_bounds?: {
-    north: number, south: number, east: number, west: number
-  }) {
+  static async preloadMapData() {
     // For now, preload all regions with geometry (in a real app, you'd filter by bounds)
     return queryClient.prefetchQuery({
       queryKey: regionKeys.list('map-bounds'),

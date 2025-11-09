@@ -1,6 +1,6 @@
 'use client'
 
-import { LogOut, HelpCircle, Info } from 'lucide-react'
+import { LogOut, HelpCircle, Info, Compass } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,7 +14,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Separator } from '@/components/ui/separator'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { useNextStep } from 'nextstepjs'
 
 interface MobileSettingsSheetProps {
   open: boolean
@@ -23,7 +24,9 @@ interface MobileSettingsSheetProps {
 
 export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { startNextStep } = useNextStep()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -78,6 +81,38 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
           {/* Help & Support Section */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-muted-foreground">Support</h3>
+            <Button
+              variant="ghost"
+              className="w-full justify-start h-auto py-3"
+              onClick={() => {
+                onOpenChange(false)
+
+                // Determine tour based on viewport
+                const isMobile = window.innerWidth < 768
+                const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+                console.log('Mobile settings - Starting tour:', tourName)
+
+                // Clear validation flags when starting tour
+                if (tourName === 'mobileTour') {
+                  localStorage.removeItem('stats-sheet-opened');
+                }
+
+                // Navigate to explore page if not already there
+                if (pathname !== '/explore') {
+                  router.push('/explore')
+                  setTimeout(() => {
+                    console.log('Starting tour after navigation (mobile sheet):', tourName)
+                    startNextStep(tourName)
+                  }, 1500) // Increased to 1500ms to ensure all elements are mounted
+                } else {
+                  startNextStep(tourName)
+                }
+              }}
+            >
+              <Compass className="mr-3 h-5 w-5" />
+              <span>How to Use</span>
+            </Button>
             <Button
               variant="ghost"
               className="w-full justify-start h-auto py-3"

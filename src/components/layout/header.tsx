@@ -4,12 +4,44 @@ import { Menu, Settings } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { MobileSettingsSheet } from './mobile-settings-sheet'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { useNextStep } from 'nextstepjs'
 
 export function Header() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const { startNextStep } = useNextStep()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleStartTour = () => {
+    console.log('Starting tour...', { pathname })
+
+    // Determine tour based on viewport
+    const isMobile = window.innerWidth < 768
+    const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+    console.log('Tour to start:', tourName, { isMobile, width: window.innerWidth })
+
+    // Clear validation flags when starting tour
+    if (tourName === 'mobileTour') {
+      localStorage.removeItem('stats-sheet-opened');
+    }
+
+    // Navigate to explore page if not already there
+    if (pathname !== '/explore') {
+      router.push('/explore')
+      // Wait for navigation and DOM to be ready before starting tour
+      setTimeout(() => {
+        console.log('Starting tour after navigation:', tourName)
+        startNextStep(tourName)
+      }, 1500) // Increased to 1500ms to ensure all elements are mounted
+    } else {
+      startNextStep(tourName)
+    }
+  }
 
   return (
     <>
@@ -60,9 +92,12 @@ export function Header() {
             <Link href="/" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Home
             </Link>
-            <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
+            <button
+              onClick={handleStartTour}
+              className="text-sm font-medium text-white hover:text-mcs-orange transition-colors"
+            >
               How to Use
-            </Link>
+            </button>
             <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
               Contact
             </Link>

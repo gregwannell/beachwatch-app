@@ -370,7 +370,7 @@ function ExplorePageContent() {
 
   return (
     <MainLayout>
-      <div className="h-full w-full relative pb-20 md:pb-0">
+      <div id="app-tour-welcome" className="h-full w-full relative pb-20 md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -385,7 +385,7 @@ function ExplorePageContent() {
           <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
             {/* Mobile: Full-height map only */}
             <div className="h-full flex flex-col md:hidden">
-              <div className="relative flex-1 overflow-hidden">
+              <div id="uk-map-container" className="relative flex-1 overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
@@ -448,7 +448,7 @@ function ExplorePageContent() {
             {/* Tablet & Desktop: Split view with responsive widths */}
             <div className="hidden md:flex md:flex-row h-full">
               {/* Map Section */}
-              <div className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
+              <div id="uk-map-container" className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
                 {/* Map Filter Bar - Desktop only */}
                 {filterOptions && (
                   <div className="absolute top-4 right-6 z-[950]">

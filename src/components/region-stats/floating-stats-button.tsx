@@ -15,7 +15,12 @@ export function FloatingStatsButton({
 }: FloatingStatsButtonProps) {
   return (
     <Button
-      onClick={onClick}
+      id="floating-stats-button"
+      onClick={() => {
+        // Set flag for tour validation
+        localStorage.setItem('stats-sheet-opened', 'true');
+        onClick();
+      }}
       size="icon"
       className={cn(
         'fixed top-[4.5rem] left-4 z-[1000] h-12 w-12 rounded-full shadow-lg',

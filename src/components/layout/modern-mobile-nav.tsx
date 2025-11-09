@@ -1,49 +1,67 @@
 "use client"
 
-import { Home, Earth } from 'lucide-react'
+import { Home, Map, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useMemo, useCallback } from 'react'
-import { InteractiveMenu, type InteractiveMenuItem } from '@/components/ui/modern-mobile-menu'
+import { useCallback, useMemo, useState } from 'react'
+import { BottomNavBar, type NavigationItem } from '@/components/ui/modern-mobile-menu'
+import { MobileSettingsSheet } from '@/components/layout/mobile-settings-sheet'
 
 export function ModernMobileNav() {
   const pathname = usePathname()
   const router = useRouter()
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
-  const isHome = pathname === '/'
-  const isExplore = pathname === '/explore'
+  // Determine default active tab based on current pathname
+  const defaultTab = useMemo(() => {
+    if (pathname === '/') return 'home'
+    if (pathname === '/explore') return 'explore'
+    return 'home'
+  }, [pathname])
 
-  // Create menu items for the app
-  const menuItems: InteractiveMenuItem[] = useMemo(() => [
-    { label: 'Home', icon: Home },
-    { label: 'Explore', icon: Earth },
-  ], [])
-
-  // Determine active index based on pathname
-  const activeIndex = isHome ? 0 : isExplore ? 1 : -1
-
-  // Handle navigation when menu items are clicked
-  const handleItemClick = useCallback((index: number) => {
-    switch (index) {
-      case 0:
+  // Handle navigation when tabs change
+  const handleTabChange = useCallback((tabId: string) => {
+    switch (tabId) {
+      case 'home':
         router.push('/')
         break
-      case 1:
+      case 'explore':
         router.push('/explore')
+        break
+      case 'settings':
+        // Toggle settings panel or navigate to settings page
+        setIsSettingsOpen(prev => !prev)
+        // Uncomment to navigate to settings page:
+        // router.push('/settings')
         break
     }
   }, [router])
 
-  // Use primary color as accent
-  const accentColor = 'var(--primary)'
+  // Define navigation items
+  const sideItems: [NavigationItem, NavigationItem] = useMemo(() => [
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'settings', label: 'Settings', icon: Menu }
+  ], [])
+
+  const centralButton = useMemo(() => ({
+    id: 'explore',
+    label: 'Explore',
+    icon: Map
+  }), [])
 
   return (
-    <div className="md:hidden pb-safe">
-      <InteractiveMenu
-        items={menuItems}
-        accentColor={accentColor}
-        activeIndex={activeIndex}
-        onItemClick={handleItemClick}
+    <>
+      <div className="md:hidden pb-safe">
+        <BottomNavBar
+          defaultTab={defaultTab}
+          onTabChange={handleTabChange}
+          sideItems={sideItems}
+          centralButton={centralButton}
+        />
+      </div>
+      <MobileSettingsSheet
+        open={isSettingsOpen}
+        onOpenChange={setIsSettingsOpen}
       />
-    </div>
+    </>
   )
 }

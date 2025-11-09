@@ -137,6 +137,38 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
 
           <Separator />
 
+          {/* Data Sources / Attribution Section */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-muted-foreground">Data Sources</h3>
+            <div className="text-xs text-muted-foreground space-y-2 py-2">
+              <p>Map data:</p>
+              <ul className="space-y-1 pl-4">
+                <li>
+                  © <a
+                    href="https://www.openstreetmap.org/copyright"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    OpenStreetMap
+                  </a> contributors
+                </li>
+                <li>
+                  © <a
+                    href="https://carto.com/attributions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    CARTO
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <Separator />
+
           {/* Account Section */}
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-muted-foreground">Account</h3>

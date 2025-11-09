@@ -77,7 +77,7 @@ export const allTours: Tour[] = [
         pointerRadius: 10
       },
       {
-        icon: <>🏁</>,
+        icon: <>🎉</>,
         title: 'Start Exploring!',
         content: (
           <>
@@ -148,12 +148,12 @@ export const allTours: Tour[] = [
             </p>
           </>
         ),
-        side: 'top-left',
+        side: 'top-right',
         pointerPadding: 10,
         pointerRadius: 100
       },
       {
-        icon: <>🏁</>,
+        icon: <>🎉</>,
         title: 'Start Exploring!',
         content: (
           <>

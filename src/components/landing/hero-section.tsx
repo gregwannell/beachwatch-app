@@ -26,11 +26,11 @@ export function HeroSection() {
         {/* Logo and branding */}
         <div className="flex justify-center mb-8">
           <Image
-            src="/mcs-logo.png"
+            src="/bubbles-dark.gif"
             alt="Marine Conservation Society"
             width={400}
             height={96}
-            className="h-12 w-auto drop-shadow-lg"
+            className="h-25 w-auto drop-shadow-lg"
             priority
           />
         </div>
@@ -49,7 +49,7 @@ export function HeroSection() {
             </Link>
           </Button>
 
-          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white/20 backdrop-blur-sm shadow-lg rounded-full">
+          <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white hover:text-mcs-navy text-mcs-navy hover:bg-white/80 bg-white backdrop-blur-sm shadow-lg rounded-full">
             <Link href="#features">
               Learn More
             </Link>

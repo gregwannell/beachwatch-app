@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Separator } from '@/components/ui/separator'
 import { useRouter, usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import { useNextStep } from 'nextstepjs'
 
 interface MobileSettingsSheetProps {
@@ -27,6 +28,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
   const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { startNextStep } = useNextStep()
+  const { theme } = useTheme()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -53,7 +55,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
         <SheetHeader className="p-6 pb-4">
           <div className="flex justify-center mb-4">
             <Image
-              src="/MCS_Logo_Stacked_Ink.png"
+              src={theme === 'dark' ? '/bubbles-light.gif' : '/bubbles-dark.gif'}
               alt="Marine Conservation Society"
               width={120}
               height={120}

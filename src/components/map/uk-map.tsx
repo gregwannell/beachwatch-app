@@ -286,9 +286,9 @@ export function UKMap({
         keyboard={true}
         attributionControl={false}
         whenReady={(e) => {
-          // Add zoom control to top-left
+          // Add zoom control to bottom-right
           L.control.zoom({
-            position: 'topleft'
+            position: 'bottomright'
           }).addTo(e.target)
         }}
       >

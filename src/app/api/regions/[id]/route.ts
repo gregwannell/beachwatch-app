@@ -14,7 +14,7 @@ interface RegionApiResponse {
   childrenError?: string
   parent?: Partial<Tables<'regions'>> | null
   parentError?: string
-  aggregates?: Tables<'annual_region_aggregates'>[]
+  aggregates?: Partial<Tables<'annual_region_aggregates'>>[]
   aggregatesError?: string
 }
 

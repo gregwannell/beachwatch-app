@@ -7,7 +7,6 @@ import type {
 import {
   validateRegionGeometry,
   calculateGeometryBounds,
-  createBoundaryData,
   optimizeForZoom,
   simplifyPolygonCoordinates,
   extractCoordinatesFromGeometry

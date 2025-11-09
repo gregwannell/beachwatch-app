@@ -1,8 +1,7 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RegionQueries, type RegionWithRelations, type HierarchyQueryOptions, type RegionQueryOptions } from '@/lib/region-queries'
-import type { Tables } from '@/lib/database.types'
 
 // Query key factories for consistent cache management
 export const regionKeys = {

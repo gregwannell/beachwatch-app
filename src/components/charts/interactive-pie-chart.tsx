@@ -45,8 +45,7 @@ export function InteractivePieChart({
   data,
   title,
   description,
-  className,
-  height: _height = 300
+  className
 }: InteractivePieChartProps) {
   const id = React.useId()
   const [activeItem, setActiveItem] = React.useState(data[0]?.name || "")
@@ -100,8 +99,6 @@ export function InteractivePieChart({
       </Card>
     )
   }
-
-  const _activeData = data[activeIndex] || data[0]
 
   return (
     <Card data-chart={id} className={`flex flex-col ${className}`}>

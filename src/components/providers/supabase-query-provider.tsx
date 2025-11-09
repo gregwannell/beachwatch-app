@@ -51,6 +51,9 @@ export function SupabaseQueryProvider({
   useEffect(() => {
     if (!enableRealtimeSync) return
 
+    // Copy ref to local variable at effect start for cleanup function
+    const subscriptions = subscriptionsRef.current
+
     const setupSubscriptions = async () => {
       try {
         // Subscribe to regions table changes
@@ -156,9 +159,8 @@ export function SupabaseQueryProvider({
 
     setupSubscriptions()
 
-    // Cleanup subscriptions (copy ref to local variable to avoid stale closure warning)
+    // Cleanup subscriptions using local variable from effect start
     return () => {
-      const subscriptions = subscriptionsRef.current
       subscriptions.forEach((channel) => {
         supabase.removeChannel(channel)
       })

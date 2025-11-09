@@ -10,9 +10,9 @@ interface RouteParams {
 interface RegionApiResponse {
   region: Tables<'regions'> | Partial<Tables<'regions'>>
   boundaryData?: BoundaryData
-  children?: Tables<'regions'>[]
+  children?: Partial<Tables<'regions'>>[]
   childrenError?: string
-  parent?: Tables<'regions'> | null
+  parent?: Partial<Tables<'regions'>> | null
   parentError?: string
   aggregates?: Tables<'annual_region_aggregates'>[]
   aggregatesError?: string

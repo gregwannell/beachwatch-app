@@ -1,37 +1,4 @@
 import { QueryClient } from '@tanstack/react-query'
-import type { RegionGeometry } from './database.types'
-import { validateRegionGeometry } from './geometry-utils'
-
-// Custom serializer for JSONB geometry data (reserved for future use)
-// Currently using default JSON serialization, but kept for potential custom geometry handling
-const _customSerializer = {
-  serialize: (data: unknown): string => {
-    return JSON.stringify(data, (key, value) => {
-      // Handle geometry objects specially to ensure consistent serialization
-      if (key === 'geometry' && value && typeof value === 'object' && value.type) {
-        return {
-          type: value.type,
-          coordinates: value.coordinates
-        }
-      }
-      return value
-    })
-  },
-  deserialize: (data: string): unknown => {
-    return JSON.parse(data, (key, value) => {
-      // Validate geometry data on deserialization
-      if (key === 'geometry' && value && typeof value === 'object') {
-        if (validateRegionGeometry(value)) {
-          return value as RegionGeometry
-        }
-        // Return null for invalid geometry instead of throwing
-        console.warn('Invalid geometry data found in cache, removing:', value)
-        return null
-      }
-      return value
-    })
-  }
-}
 
 export const queryClient = new QueryClient({
   defaultOptions: {

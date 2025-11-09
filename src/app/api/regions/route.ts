@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry } from '@/lib/geometry-utils'
+import type { Tables } from '@/lib/database.types'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -59,8 +60,11 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Type assertion for dynamic select query
+    const regions = (data || []) as Partial<Tables<'regions'>>[]
+
     // Validate geometry data if included
-    let validatedData = data?.map(region => {
+    let validatedData = regions.map(region => {
       if (includeGeometry && region.geometry) {
         const isValid = validateRegionGeometry(region.geometry)
         if (!isValid) {
@@ -69,7 +73,7 @@ export async function GET(request: NextRequest) {
         }
       }
       return region
-    }) || []
+    })
 
     // Add survey counts if requested
     if (includeSurveyCounts && validatedData.length > 0) {

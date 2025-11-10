@@ -13,7 +13,7 @@ export function CardWithBackground({
   backgroundOpacity = 0.05
 }: CardWithBackgroundProps) {
   return (
-    <div className="relative p-5 rounded-xl border bg-card min-h-[200px] flex flex-col overflow-hidden">
+    <div className="relative p-5 rounded-xl border bg-card min-h-[200px] flex flex-col shadow-sm">
       {backgroundImage && (
         <Image
           src={backgroundImage}

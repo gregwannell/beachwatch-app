@@ -23,6 +23,7 @@ import { type MapTheme } from '@/lib/map-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
+import { useNextStep } from 'nextstepjs'
 
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
@@ -44,6 +45,7 @@ function ExplorePageContent() {
   const regionIdParam = searchParams.get('region')
   const yearParam = searchParams.get('year')
   const { theme } = useTheme()
+  const { startNextStep } = useNextStep()
 
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(
     regionIdParam ? parseInt(regionIdParam) : 1
@@ -350,6 +352,34 @@ function ExplorePageContent() {
       }
     }
   }, [regions, isLoading, pendingZoom, filterOptions, parentRegionId])
+
+  // Auto-start tour on first visit
+  useEffect(() => {
+    // Check if tour has been completed (persists across sessions)
+    const hasCompletedTour = localStorage.getItem('beachwatch-tour-completed')
+    // Check if tour was shown this session (resets when browser closes)
+    const shownThisSession = sessionStorage.getItem('beachwatch-tour-shown')
+
+    if (!hasCompletedTour && !shownThisSession) {
+      // Detect viewport to choose correct tour
+      const isMobile = window.innerWidth < 768
+      const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+      // Clear validation flags before starting
+      if (tourName === 'mobileTour') {
+        localStorage.removeItem('stats-sheet-opened')
+      }
+
+      // Delay to allow page to fully load: map initialization, data fetching, and component rendering
+      const timer = setTimeout(() => {
+        startNextStep(tourName)
+        // Mark as shown this session
+        sessionStorage.setItem('beachwatch-tour-shown', 'true')
+      }, 3000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [startNextStep])
 
   // Sync the selected region between filters and map
   const effectiveSelectedRegionId = filters.region.selectedRegionId || selectedRegionId

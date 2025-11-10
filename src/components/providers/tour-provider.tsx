@@ -31,6 +31,9 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         shadowRgb={shadowRgb}
         shadowOpacity={shadowOpacity}
         onComplete={(tourName) => {
+          // Mark tour as completed (prevents auto-start in future)
+          localStorage.setItem('beachwatch-tour-completed', 'true');
+
           // Clean up validation flags when tour completes
           if (tourName === 'mobileTour') {
             localStorage.removeItem('stats-sheet-opened');

@@ -24,6 +24,8 @@ interface ApiRegionData {
     total_length_m: number
     total_bags: number
     total_weight_kg: number
+    total_surveys: number
+    total_volunteers: number
   }>
 }
 

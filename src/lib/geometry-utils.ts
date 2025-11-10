@@ -89,14 +89,14 @@ export function calculatePolygonBounds(coordinates: PolygonCoordinates): Boundar
 
 export function calculateGeometryBounds(geometry: RegionGeometry): BoundaryData['bounds'] {
   if (isGeoJSONPolygon(geometry)) {
-    return calculatePolygonBounds(geometry.coordinates)
+    return calculatePolygonBounds(geometry.coordinates as PolygonCoordinates)
   }
-  
+
   if (isGeoJSONMultiPolygon(geometry)) {
     let north = -90, south = 90, east = -180, west = 180
-    
+
     geometry.coordinates.forEach(polygon => {
-      const bounds = calculatePolygonBounds(polygon)
+      const bounds = calculatePolygonBounds(polygon as PolygonCoordinates)
       if (bounds) {
         north = Math.max(north, bounds.north)
         south = Math.min(south, bounds.south)
@@ -196,15 +196,15 @@ export function optimizeForZoom(geometry: RegionGeometry, zoomLevel: number): Re
   if (isGeoJSONPolygon(geometry)) {
     return {
       type: 'Polygon',
-      coordinates: simplifyPolygonCoordinates(geometry.coordinates, tolerance)
+      coordinates: simplifyPolygonCoordinates(geometry.coordinates as PolygonCoordinates, tolerance)
     }
   }
-  
+
   if (isGeoJSONMultiPolygon(geometry)) {
     return {
       type: 'MultiPolygon',
-      coordinates: geometry.coordinates.map(polygon => 
-        simplifyPolygonCoordinates(polygon, tolerance)
+      coordinates: geometry.coordinates.map(polygon =>
+        simplifyPolygonCoordinates(polygon as PolygonCoordinates, tolerance)
       )
     }
   }
@@ -223,13 +223,13 @@ export function createBoundaryData(geometry: RegionGeometry | null): BoundaryDat
 // Extract coordinates from geometry for map rendering
 export function extractCoordinatesFromGeometry(geometry: RegionGeometry): CoordinateRing[] {
   if (isGeoJSONPolygon(geometry)) {
-    return geometry.coordinates
+    return geometry.coordinates as CoordinateRing[]
   }
-  
+
   if (isGeoJSONMultiPolygon(geometry)) {
-    return geometry.coordinates.flat()
+    return (geometry.coordinates as PolygonCoordinates[]).flat()
   }
-  
+
   return []
 }
 

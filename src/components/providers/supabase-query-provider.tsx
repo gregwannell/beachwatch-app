@@ -13,8 +13,8 @@ interface SupabaseQueryContextValue {
   subscriptionCount: number
   cacheStats: ReturnType<typeof supabaseQueryClient.getCacheStats>
   optimizeCache: () => void
-  startBackgroundSync: (intervalMs?: number) => number
-  stopBackgroundSync: (intervalId: number) => void
+  startBackgroundSync: (intervalMs?: number) => ReturnType<typeof setTimeout>
+  stopBackgroundSync: (intervalId: ReturnType<typeof setTimeout>) => void
 }
 
 const SupabaseQueryContext = createContext<SupabaseQueryContextValue | null>(null)
@@ -41,8 +41,8 @@ export function SupabaseQueryProvider({
   enableMemoryOptimization = true
 }: SupabaseQueryProviderProps) {
   const subscriptionsRef = useRef<Map<string, RealtimeChannel>>(new Map())
-  const backgroundSyncRef = useRef<number | null>(null)
-  const memoryOptimizationRef = useRef<number | null>(null)
+  const backgroundSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const memoryOptimizationRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [isConnected, setIsConnected] = React.useState(false)
   const [subscriptionCount, setSubscriptionCount] = React.useState(0)
   const [cacheStats, setCacheStats] = React.useState(supabaseQueryClient.getCacheStats())
@@ -68,16 +68,16 @@ export function SupabaseQueryProvider({
             },
             async (payload) => {
               if (process.env.NODE_ENV === 'development') {
-                console.log('Regions change detected:', payload.eventType, payload.new?.id)
+                console.log('Regions change detected:', payload.eventType, (payload.new as { id?: number })?.id)
               }
 
               // Invalidate related queries based on change type
               switch (payload.eventType) {
                 case 'INSERT':
                 case 'UPDATE':
-                  if (payload.new?.id) {
+                  if ((payload.new as { id?: number })?.id) {
                     await supabaseQueryClient.invalidateRegionQueries(
-                      payload.new.id as number,
+                      (payload.new as { id: number }).id,
                       {
                         includeHierarchy: true,
                         includeChildren: true,
@@ -86,12 +86,12 @@ export function SupabaseQueryProvider({
                     )
                   }
                   break
-                  
+
                 case 'DELETE':
-                  if (payload.old?.id) {
+                  if ((payload.old as { id?: number })?.id) {
                     // Remove deleted region from cache
                     queryClient.removeQueries({
-                      queryKey: regionKeys.detail(payload.old.id as number)
+                      queryKey: regionKeys.detail((payload.old as { id: number }).id)
                     })
                     
                     // Invalidate hierarchy
@@ -137,8 +137,8 @@ export function SupabaseQueryProvider({
                 queryKey: regionKeys.statistics()
               })
               
-              if (payload.new?.name_id || payload.old?.name_id) {
-                const regionId = (payload.new?.name_id || payload.old?.name_id) as number
+              if ((payload.new as { name_id?: number })?.name_id || (payload.old as { name_id?: number })?.name_id) {
+                const regionId = ((payload.new as { name_id?: number })?.name_id || (payload.old as { name_id?: number })?.name_id) as number
                 queryClient.invalidateQueries({
                   queryKey: regionKeys.detail(regionId)
                 })
@@ -188,7 +188,7 @@ export function SupabaseQueryProvider({
   useEffect(() => {
     if (enableMemoryOptimization) {
       // Run memory optimization every 5 minutes
-      memoryOptimizationRef.current = window.setInterval(() => {
+      memoryOptimizationRef.current = setInterval(() => {
         supabaseQueryClient.optimizeMemoryUsage()
         setCacheStats(supabaseQueryClient.getCacheStats())
       }, 5 * 60 * 1000)
@@ -223,7 +223,7 @@ export function SupabaseQueryProvider({
     startBackgroundSync: (intervalMs?: number) => {
       return supabaseQueryClient.startBackgroundSync(intervalMs)
     },
-    stopBackgroundSync: (intervalId: number) => {
+    stopBackgroundSync: (intervalId: ReturnType<typeof setTimeout>) => {
       clearInterval(intervalId)
     }
   }
@@ -233,9 +233,8 @@ export function SupabaseQueryProvider({
       <QueryClientProvider client={queryClient}>
         {children}
         {process.env.NODE_ENV === 'development' && (
-          <ReactQueryDevtools 
-            initialIsOpen={false} 
-            position="bottom-right"
+          <ReactQueryDevtools
+            initialIsOpen={false}
             buttonPosition="bottom-right"
           />
         )}

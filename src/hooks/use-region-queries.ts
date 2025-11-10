@@ -10,7 +10,7 @@ export const regionKeys = {
   list: (filters: string) => [...regionKeys.lists(), { filters }] as const,
   details: () => [...regionKeys.all, 'detail'] as const,
   detail: (id: number) => [...regionKeys.details(), id] as const,
-  hierarchy: (options?: HierarchyQueryOptions) => [...regionKeys.all, 'hierarchy', options] as const,
+  hierarchy: (params?: { rootId?: number } & HierarchyQueryOptions) => [...regionKeys.all, 'hierarchy', params] as const,
   search: (term: string, options?: RegionQueryOptions) => [...regionKeys.all, 'search', { term, options }] as const,
   byParent: (parentId: number | null, options?: RegionQueryOptions) => 
     [...regionKeys.all, 'byParent', { parentId, options }] as const,

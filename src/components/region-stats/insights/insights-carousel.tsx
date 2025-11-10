@@ -33,7 +33,7 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
   const { litterData } = regionData
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <h3 className="text-sm font-medium text-muted-foreground">Key Insights</h3>
 
       <Carousel
@@ -44,7 +44,7 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="-ml-2 md:-ml-4 py-2">
           {/* Historical Context Insight */}
           <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
             <HistoricalContextInsight

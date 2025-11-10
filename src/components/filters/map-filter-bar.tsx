@@ -65,7 +65,7 @@ export function MapFilterBar({
           disabled={!hasActiveFilters}
           className={`h-10 px-4 gap-2 bg-background/95 backdrop-blur-sm shadow-sm ${
             hasActiveFilters
-              ? 'border-mcs-red bg-mcs-red text-white hover:bg-mcs-red/80 hover:border-mcs-red/80 hover:text-white dark:border-mcs-red dark:bg-mcs-red dark:text-white dark:hover:bg-mcs-red/80 dark:hover:border-mcs-red/80'
+              ? 'border-mcs-red bg-mcs-red text-white hover:bg-mcs-red/80 hover:border-mcs-red/80 dark:bg-mcs-red dark:hover:bg-mcs-red/80'
               : ''
           }`}
           aria-label="Reset to UK view"

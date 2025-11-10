@@ -146,15 +146,17 @@ export async function GET(request: NextRequest) {
       .from('litter_items')
       .select('id, item_name, short_name')
       .in('id', litterItemIds)
-    
+
     if (litterItemsLookupError) {
       console.error('Litter items lookup error:', litterItemsLookupError)
     }
-    
-    const litterItemsMap = new Map(litterItems_lookup?.map(item => [
-      item.id, 
-      { name: item.item_name, shortName: item.short_name }
-    ]) || [])
+
+    const litterItemsMap = new Map<number, { name: string; shortName: string | null }>(
+      litterItems_lookup?.map(item => [
+        item.id as number,
+        { name: item.item_name as string, shortName: item.short_name as string | null }
+      ]) || []
+    )
     
     // Group and sum by litter item
     const litterItemGroups: { [itemId: number]: { 

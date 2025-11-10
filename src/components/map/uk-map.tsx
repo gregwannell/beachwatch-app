@@ -1,15 +1,16 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { LatLngBounds, LatLng } from 'leaflet'
+import type { Feature } from 'geojson'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
 import { MAP_THEMES, type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-providers'
 
 // Fix for Leaflet default markers in Next.js
-import L, { LeafletMouseEvent } from 'leaflet'
+import L from 'leaflet'
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl: unknown })._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -53,10 +54,12 @@ function calculateGeometryBounds(geometry: { type: string; coordinates: number[]
   try {
     if (geometry.type === 'Polygon') {
       // Polygon: coordinates[0] is the outer ring
-      addCoordinatesToBounds(geometry.coordinates[0])
+      const polygonCoords = geometry.coordinates as number[][][]
+      addCoordinatesToBounds(polygonCoords[0])
     } else if (geometry.type === 'MultiPolygon') {
       // MultiPolygon: coordinates is array of polygons
-      geometry.coordinates.forEach((polygon: number[][][]) => {
+      const multiPolygonCoords = geometry.coordinates as number[][][][]
+      multiPolygonCoords.forEach((polygon: number[][][]) => {
         addCoordinatesToBounds(polygon[0]) // outer ring of each polygon
       })
     }
@@ -126,8 +129,8 @@ export function UKMap({
   const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
 
-  // Helper function to zoom to a region by ID
-  const zoomToRegion = (regionId: number) => {
+  // Helper function to zoom to a region by ID (wrapped in useCallback to fix exhaustive-deps warning)
+  const zoomToRegion = useCallback((regionId: number) => {
     if (!mapRef.current) return
 
     // Special case: -1 means zoom to fit all current regions
@@ -170,13 +173,13 @@ export function UKMap({
 
     // Different zoom levels based on region type
     const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
-    const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
+    const padding: [number, number] = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
 
     mapRef.current.fitBounds(bounds, {
       padding: padding,
       maxZoom: maxZoom
     })
-  }
+  }, [regions])
 
   // Handle reset to UK view
   useEffect(() => {
@@ -192,7 +195,7 @@ export function UKMap({
     if (zoomToRegionId && mapRef.current) {
       zoomToRegion(zoomToRegionId)
     }
-  }, [zoomToRegionId, regions])
+  }, [zoomToRegionId, zoomToRegion])
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {
@@ -225,32 +228,29 @@ export function UKMap({
 
     layer.on({
       click: () => {
-        // Zoom to polygon bounds
+        // Zoom to polygon bounds (works for both mouse and touch)
         zoomToRegion(regionId)
 
         onRegionClick?.(regionId)
       },
-      touchstart: () => {
-        // Zoom to polygon bounds
-        zoomToRegion(regionId)
-
-        // Handle touch for mobile
-        onRegionClick?.(regionId)
-      },
-      mouseover: (e: LeafletMouseEvent) => {
+      mouseover: () => {
         // Set hover state to trigger re-render with hover styles
         setHoveredRegionId(regionId)
         // Set cursor style based on whether region can be drilled down
-        const mapContainer = (e.target as L.Path)._map.getContainer()
-        mapContainer.style.cursor = canDrillDown ? 'pointer' : 'default'
+        if (mapRef.current) {
+          const mapContainer = mapRef.current.getContainer()
+          mapContainer.style.cursor = canDrillDown ? 'pointer' : 'default'
+        }
         onRegionHover?.(regionId)
       },
-      mouseout: (e: LeafletMouseEvent) => {
+      mouseout: () => {
         // Clear hover state to trigger re-render with normal styles
         setHoveredRegionId(null)
         // Reset cursor
-        const mapContainer = (e.target as L.Path)._map.getContainer()
-        mapContainer.style.cursor = ''
+        if (mapRef.current) {
+          const mapContainer = mapRef.current.getContainer()
+          mapContainer.style.cursor = ''
+        }
         onRegionHover?.(null)
       }
     })
@@ -285,11 +285,13 @@ export function UKMap({
         className="w-full h-full rounded-lg"
         keyboard={true}
         attributionControl={false}
-        whenReady={(e) => {
+        whenReady={() => {
           // Add zoom control to bottom-right
-          L.control.zoom({
-            position: 'bottomright'
-          }).addTo(e.target)
+          if (mapRef.current) {
+            L.control.zoom({
+              position: 'bottomright'
+            }).addTo(mapRef.current)
+          }
         }}
       >
         <TileLayer
@@ -300,20 +302,22 @@ export function UKMap({
         
         {regions.map((region) => {
           if (!region.geometry) return null
-          
+
+          const feature: Feature = {
+            type: 'Feature',
+            properties: {
+              id: region.id,
+              name: region.name,
+              has_data: region.has_data,
+              type: region.type
+            },
+            geometry: region.geometry
+          }
+
           return (
             <GeoJSON
               key={region.id}
-              data={{
-                type: 'Feature',
-                properties: { 
-                  id: region.id, 
-                  name: region.name,
-                  has_data: region.has_data,
-                  type: region.type
-                },
-                geometry: region.geometry
-              }}
+              data={feature}
               style={() => getRegionStyle(region)}
               onEachFeature={onEachRegion}
             />

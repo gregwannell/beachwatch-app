@@ -7,6 +7,12 @@ import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError } from "./chart-error"
 import type { ChartProps } from "./types"
 
+interface DotProps {
+  cx?: number
+  cy?: number
+  payload?: TrendDataPoint
+}
+
 export interface TrendDataPoint {
   year: number
   averageLitterPer100m: number
@@ -24,7 +30,6 @@ export interface LitterTrendChartProps extends Omit<ChartProps, 'data'> {
 
 export function LitterTrendChart({
   data,
-  yearOverYearChange: _yearOverYearChange,
   selectedYear,
   className,
   height = 180,
@@ -52,7 +57,7 @@ export function LitterTrendChart({
   if (loading) {
     return (
       <div className={className}>
-        <ChartSkeleton height={height} />
+        <ChartSkeleton height={height} type="bar" />
       </div>
     )
   }
@@ -61,7 +66,7 @@ export function LitterTrendChart({
   if (error) {
     return (
       <div className={className}>
-        <ChartError message={error} onRetry={onRetry} />
+        <ChartError error={error} onRetry={onRetry} type="bar" />
       </div>
     )
   }
@@ -127,7 +132,7 @@ export function LitterTrendChart({
             type="natural"
             fill="url(#fillLitter)"
             stroke="var(--color-averageLitterPer100m)"
-            dot={(props: any) => {
+            dot={(props: DotProps) => {
               const { cx, cy, payload } = props
               // Only show dot for the selected year
               if (selectedYear && payload.year === selectedYear) {

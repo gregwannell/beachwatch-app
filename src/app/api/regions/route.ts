@@ -60,9 +60,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Type assertion for dynamic select query
+    const regions = (data || []) as Partial<Tables<'regions'>>[]
+
     // Validate geometry data if included
-    let validatedData = data?.map(region => {
-      if (includeGeometry && 'geometry' in region && region.geometry) {
+    let validatedData = regions.map(region => {
+      if (includeGeometry && region.geometry) {
         const isValid = validateRegionGeometry(region.geometry)
         if (!isValid) {
           console.warn(`Invalid geometry for region ${region.id}: ${region.name}`)
@@ -70,7 +73,7 @@ export async function GET(request: NextRequest) {
         }
       }
       return region
-    }) || []
+    })
 
     // Add survey counts if requested
     if (includeSurveyCounts && validatedData.length > 0) {

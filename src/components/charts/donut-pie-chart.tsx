@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart } from "recharts"
+import { Pie, PieChart } from "recharts"
 
 import {
   ChartConfig,
@@ -33,10 +33,8 @@ interface DonutPieChartProps {
 export function DonutPieChart({
   data,
   title,
-  description,
   className,
   height = 300,
-  centerLabel = "Avg/100m",
   animationDuration = 800,
   animationEasing = "ease-out"
 }: DonutPieChartProps) {

@@ -24,6 +24,8 @@ interface ApiRegionData {
     total_length_m: number
     total_bags: number
     total_weight_kg: number
+    total_surveys: number
+    total_volunteers: number
   }>
 }
 
@@ -391,9 +393,9 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 export function usePrefetchRegionInfo() {
   // This could be implemented to prefetch region data on hover
   return {
-    prefetch: (_regionId: number) => {
+    prefetch: () => {
       // Implementation would prefetch the data without triggering loading state
-      // TODO: Implement prefetch logic
+      // TODO: Implement prefetch logic with regionId parameter
     }
   }
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart, Sector } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 
 import {
@@ -45,8 +45,7 @@ export function InteractivePieChart({
   data,
   title,
   description,
-  className,
-  height = 300
+  className
 }: InteractivePieChartProps) {
   const id = React.useId()
   const [activeItem, setActiveItem] = React.useState(data[0]?.name || "")
@@ -80,6 +79,11 @@ export function InteractivePieChart({
 
   const items = React.useMemo(() => data.map((item) => item.name), [data])
 
+  // Calculate total value before any early returns (Rules of Hooks)
+  const totalValue = React.useMemo(() => {
+    return data.reduce((acc, curr) => acc + curr.value, 0)
+  }, [data])
+
   if (!data || data.length === 0) {
     return (
       <Card className={className}>
@@ -95,12 +99,6 @@ export function InteractivePieChart({
       </Card>
     )
   }
-
-  const activeData = data[activeIndex] || data[0]
-
-  const totalValue = React.useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.value, 0)
-  }, [data])
 
   return (
     <Card data-chart={id} className={`flex flex-col ${className}`}>

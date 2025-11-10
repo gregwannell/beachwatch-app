@@ -19,7 +19,7 @@ import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
-import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
+import { type MapTheme } from '@/lib/map-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
@@ -135,7 +135,7 @@ function ExplorePageContent() {
             // For countries: drill down to show counties first, then zoom when regions are loaded
             setPendingZoom(selectedRegionId)  // Store zoom request for later
             setParentRegionId(selectedRegionId)  // Load counties layer immediately
-          } else if (selectedRegion.type === 'Sovereign State') {
+          } else if (selectedRegion.type === 'UK') {
             // For UK: show countries level and reset map view
             setParentRegionId(null)
             setZoomToRegionId(null)

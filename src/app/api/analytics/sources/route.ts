@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
-import type { Tables } from '@/lib/database.types'
 import { 
   validateRegionId, 
   validateYearParams, 
@@ -185,7 +184,7 @@ export async function GET(request: NextRequest) {
 
     // Group and sum by source
     const sourceGroups: { [sourceId: number]: {
-      source: any,
+      source: { id: number; source: string } | null,
       total: number,
       avgPer100m: number[],
       presence: number[]
@@ -195,7 +194,7 @@ export async function GET(request: NextRequest) {
       const sourceId = agg.source_id
       if (!sourceGroups[sourceId]) {
         sourceGroups[sourceId] = {
-          source: agg.sources,
+          source: (Array.isArray(agg.sources) ? agg.sources[0] : agg.sources) ?? null,
           total: 0,
           avgPer100m: [],
           presence: []

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Home, Map, Menu, LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 // SVG background path for the bottom navigation bar
 const NAV_BAR_PATH = "M0 25C0 11.1929 11.1929 0 25 0 H 150.5 C 160.5 0 172.5 16 187.5 16 S 214.5 0 224.5 0 H 350 C 363.807 0 375 11.1929 375 25 V 47 C 375 60.8071 363.807 72 350 72 H 25 C 11.1929 72 0 60.8071 0 47 V 25 Z";
@@ -123,8 +122,8 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
               className="absolute left-1/2 -translate-x-1/2 top-1 w-14 h-14 text-white rounded-full flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 z-10"
               style={{
                 backgroundColor: 'var(--mcs-teal)',
-                ['--tw-ring-color' as any]: 'var(--mcs-teal)'
-              }}
+                ['--tw-ring-color']: 'var(--mcs-teal)'
+              } as React.CSSProperties}
             >
               <centralButton.icon className="h-7 w-7" />
             </button>

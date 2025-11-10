@@ -370,12 +370,12 @@ function ExplorePageContent() {
         localStorage.removeItem('stats-sheet-opened')
       }
 
-      // Small delay to ensure DOM elements are ready after navigation
+      // Delay to allow page to fully load: map initialization, data fetching, and component rendering
       const timer = setTimeout(() => {
         startNextStep(tourName)
         // Mark as shown this session
         sessionStorage.setItem('beachwatch-tour-shown', 'true')
-      }, 400)
+      }, 3000)
 
       return () => clearTimeout(timer)
     }

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts"
 import {
+  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -154,8 +155,8 @@ export function HorizontalBarChart({
               dataKey="name"
               content={({ x, y, value }) => (
                 <text
-                  x={x! + 2}              // shift right slightly from the bar start
-                  y={y! - 6}              // place above the bar
+                  x={Number(x) + 2}              // shift right slightly from the bar start
+                  y={Number(y) - 6}              // place above the bar
                   fill="var(--foreground)"
                   fontSize={12}
                   fontWeight={500}

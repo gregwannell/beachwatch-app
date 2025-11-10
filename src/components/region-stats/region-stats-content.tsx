@@ -136,7 +136,7 @@ export function RegionStatsContent({
 
       {/* Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
           <TabsTrigger value="overview" className="text-sm">
             Overview
           </TabsTrigger>

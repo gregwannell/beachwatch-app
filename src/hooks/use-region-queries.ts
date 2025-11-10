@@ -1,8 +1,7 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RegionQueries, type RegionWithRelations, type HierarchyQueryOptions, type RegionQueryOptions } from '@/lib/region-queries'
-import type { Tables } from '@/lib/database.types'
 
 // Query key factories for consistent cache management
 export const regionKeys = {
@@ -11,7 +10,7 @@ export const regionKeys = {
   list: (filters: string) => [...regionKeys.lists(), { filters }] as const,
   details: () => [...regionKeys.all, 'detail'] as const,
   detail: (id: number) => [...regionKeys.details(), id] as const,
-  hierarchy: (options?: HierarchyQueryOptions) => [...regionKeys.all, 'hierarchy', options] as const,
+  hierarchy: (params?: { rootId?: number } & HierarchyQueryOptions) => [...regionKeys.all, 'hierarchy', params] as const,
   search: (term: string, options?: RegionQueryOptions) => [...regionKeys.all, 'search', { term, options }] as const,
   byParent: (parentId: number | null, options?: RegionQueryOptions) => 
     [...regionKeys.all, 'byParent', { parentId, options }] as const,

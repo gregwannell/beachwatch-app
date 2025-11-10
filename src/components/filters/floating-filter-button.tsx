@@ -17,6 +17,7 @@ export function FloatingFilterButton({
 }: FloatingFilterButtonProps) {
   return (
     <Button
+      id="floating-filter-button"
       onClick={onClick}
       size="icon"
       className={cn(

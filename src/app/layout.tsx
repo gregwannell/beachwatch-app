@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { TourProvider } from "@/components/providers/tour-provider";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -16,13 +17,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          async
-          crossOrigin="anonymous"
-          src="https://tweakcn.com/live-preview.min.js"
-        />
-      </head>
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"
@@ -31,8 +25,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            {children}
-            <Toaster />
+            <TourProvider>
+              {children}
+              <Toaster />
+            </TourProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

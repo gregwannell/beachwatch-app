@@ -19,7 +19,7 @@ import { RegionStatsContent } from '@/components/region-stats'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
-import { type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
+import { type MapTheme } from '@/lib/map-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
@@ -135,7 +135,7 @@ function ExplorePageContent() {
             // For countries: drill down to show counties first, then zoom when regions are loaded
             setPendingZoom(selectedRegionId)  // Store zoom request for later
             setParentRegionId(selectedRegionId)  // Load counties layer immediately
-          } else if (selectedRegion.type === 'Sovereign State') {
+          } else if (selectedRegion.type === 'UK') {
             // For UK: show countries level and reset map view
             setParentRegionId(null)
             setZoomToRegionId(null)
@@ -188,14 +188,14 @@ function ExplorePageContent() {
         dataAvailability: prev.dataAvailability // PRESERVE user's data availability settings
       }
 
-      // Update URL
-      const params = new URLSearchParams()
-      params.set('region', '1')
-      params.set('year', filterOptions.availableYears.max.toString())
-      router.push(`/explore?${params.toString()}`, { scroll: false })
-
       return resetFilters
     })
+
+    // Update URL (moved outside state setter to avoid setState during render)
+    const params = new URLSearchParams()
+    params.set('region', '1')
+    params.set('year', filterOptions.availableYears.max.toString())
+    router.push(`/explore?${params.toString()}`, { scroll: false })
 
     // Also trigger the direct map reset to ensure polygon layers return to countries view
     setSelectedRegionId(1)
@@ -370,7 +370,7 @@ function ExplorePageContent() {
 
   return (
     <MainLayout>
-      <div className="h-full w-full relative pb-20 md:pb-0">
+      <div id="app-tour-welcome" className="h-full w-full relative md:pb-0">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center space-y-4">
@@ -385,7 +385,7 @@ function ExplorePageContent() {
           <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
             {/* Mobile: Full-height map only */}
             <div className="h-full flex flex-col md:hidden">
-              <div className="relative flex-1 overflow-hidden">
+              <div id="uk-map-container" className="relative flex-1 overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
                   <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
@@ -410,7 +410,7 @@ function ExplorePageContent() {
                 />
 
                 {/* MCS Logo overlay */}
-                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
+                <div className="absolute bottom-28 md:bottom-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"
@@ -448,7 +448,7 @@ function ExplorePageContent() {
             {/* Tablet & Desktop: Split view with responsive widths */}
             <div className="hidden md:flex md:flex-row h-full">
               {/* Map Section */}
-              <div className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
+              <div id="uk-map-container" className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
                 {/* Map Filter Bar - Desktop only */}
                 {filterOptions && (
                   <div className="absolute top-4 right-6 z-[950]">
@@ -485,7 +485,7 @@ function ExplorePageContent() {
                 />
 
                 {/* MCS Logo overlay */}
-                <div className="absolute bottom-4 left-4 z-[900] pointer-events-none">
+                <div className="absolute bottom-28 md:bottom-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"

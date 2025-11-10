@@ -1,5 +1,5 @@
 import type { LatLngBounds } from 'leaflet'
-import type { RegionGeometry, Tables } from '@/lib/database.types'
+import type { RegionGeometry } from '@/lib/database.types'
 
 // Simple region data for map display
 export interface MapRegion {

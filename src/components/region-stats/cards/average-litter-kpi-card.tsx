@@ -75,11 +75,10 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   )
 
   return (
-    <CardWithBackground backgroundImage="/waves-turquoise.svg" backgroundOpacity={0.05}>
-      <Card className="@container/card bg-gradient-to-t from-primary/5 to-transparent shadow-none border-0 pb-3 gap-2">
+      <Card className="@container/card bg-card border-0 pb-3 gap-2">
         <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardDescription>Average Litter per 100m</CardDescription>
+          <CardDescription>Average Litter/100m</CardDescription>
 
           {/* Conditionally render Drawer (mobile) or Dialog (desktop) */}
           {isMobile ? (
@@ -165,6 +164,5 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
         </CollapsibleContent>
       </Collapsible>
       </Card>
-    </CardWithBackground>
   )
 }

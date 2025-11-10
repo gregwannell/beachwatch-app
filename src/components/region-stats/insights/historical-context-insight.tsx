@@ -30,7 +30,7 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
 
   return (
     <CardWithBackground backgroundImage="/waves-turquoise.svg">
-      <div className="flex items-center space-x-2 mb-3">
+      <div className="flex items-center space-x-2 mb-5">
         <Info className="w-4 h-4 text-primary" />
         <span className="text-sm font-medium">Historical Context</span>
       </div>

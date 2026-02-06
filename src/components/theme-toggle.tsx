@@ -1,38 +1,80 @@
 'use client'
 
-import * as React from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { Switch } from '@/components/ui/switch'
+import { cn } from '@/lib/utils'
 
-import { Button } from '@/components/ui/button'
+export function ThemeToggle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  const { resolvedTheme, setTheme } = useTheme()
+  const [checked, setChecked] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
+  useEffect(() => setMounted(true), [])
+  useEffect(() => setChecked(resolvedTheme === 'dark'), [resolvedTheme])
 
-  // Avoid hydration mismatch
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const handleCheckedChange = useCallback(
+    (isChecked: boolean) => {
+      setChecked(isChecked)
+      setTheme(isChecked ? 'dark' : 'light')
+    },
+    [setTheme],
+  )
 
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" disabled>
-        <Sun className="h-5 w-5" />
-      </Button>
-    )
-  }
+  if (!mounted) return null
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      aria-label="Toggle theme"
+    <div
+      className={cn(
+        'relative flex items-center justify-center',
+        'h-7 w-16',
+        className
+      )}
+      {...props}
     >
-      <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+      <Switch
+        checked={checked}
+        onCheckedChange={handleCheckedChange}
+        aria-label="Toggle dark mode"
+        className={cn(
+          'peer absolute inset-0 h-full w-full rounded-full bg-input/50 transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          '[&>span]:h-5 [&>span]:w-5 [&>span]:rounded-full [&>span]:bg-background [&>span]:shadow [&>span]:z-10',
+          'data-[state=unchecked]:[&>span]:translate-x-1',
+          'data-[state=checked]:[&>span]:translate-x-[34px]'
+        )}
+      />
+
+      <span
+        className={cn(
+          'pointer-events-none absolute left-2 inset-y-0 z-0',
+          'flex items-center justify-center'
+        )}
+      >
+        <SunIcon
+          size={12}
+          className={cn(
+            'transition-all duration-200 ease-out',
+            checked ? 'text-muted-foreground/70' : 'text-foreground scale-110'
+          )}
+        />
+      </span>
+
+      <span
+        className={cn(
+          'pointer-events-none absolute right-2 inset-y-0 z-0',
+          'flex items-center justify-center'
+        )}
+      >
+        <MoonIcon
+          size={12}
+          className={cn(
+            'transition-all duration-200 ease-out',
+            checked ? 'text-foreground scale-110' : 'text-muted-foreground/70'
+          )}
+        />
+      </span>
+    </div>
   )
 }

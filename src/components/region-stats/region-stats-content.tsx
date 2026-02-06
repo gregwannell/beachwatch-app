@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ExternalLink, AlertTriangle } from "lucide-react"
+import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Users } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
 // Import extracted components
@@ -111,13 +111,13 @@ export function RegionStatsContent({
 
         <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
           <TabsTrigger value="overview" className="text-sm">
-            Overview
+            <LayoutDashboard /> Overview
           </TabsTrigger>
           <TabsTrigger value="litter" className="text-sm">
-            Litter Stats
+            <Trash2 /> Litter Stats
           </TabsTrigger>
           <TabsTrigger value="engagement" className="text-sm">
-            Engagement
+            <Users /> Engagement
           </TabsTrigger>
         </TabsList>
       </div>

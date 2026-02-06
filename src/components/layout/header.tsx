@@ -76,8 +76,9 @@ export function Header() {
             </Link>
           </nav>
 
-          {/* Right: Settings Button and Theme Toggle */}
+          {/* Right: Theme Toggle and Settings Button */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
@@ -87,7 +88,6 @@ export function Header() {
             >
               <Settings className="h-5 w-5" />
             </Button>
-            <ThemeToggle />
           </div>
         </div>
       </header>

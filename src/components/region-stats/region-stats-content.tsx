@@ -67,75 +67,48 @@ export function RegionStatsContent({
   const breadcrumbHierarchy = getBreadcrumbHierarchy(regionData)
 
   return (
-    <div className="space-y-4 px-6 py-2">
-      {/* Header with region name and status badge */}
-      {!hideHeader && (
-        <div className="space-y-1">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-baseline gap-2">
-              <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-              {selectedYear && (
-                <span className="text-sm text-muted-foreground font-normal">
-                  {selectedYear}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Regional Breadcrumb */}
-          {breadcrumbHierarchy.length > 0 && (
-            <Breadcrumb>
-              <BreadcrumbList>
-                {breadcrumbHierarchy.map((item, index) => (
-                  <div key={index} className="flex items-center ">
-                    {index > 0 && <BreadcrumbSeparator />}
-                    <BreadcrumbItem>
-                      {index === breadcrumbHierarchy.length - 1 ? (
-                        <BreadcrumbPage className="font-medium text-xs">
-                          {item.name}
-                        </BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink className="text-muted-foreground text-xs">
-                          {item.name}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                  </div>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-          )}
-        </div>
-      )}
-
-      {/* Low survey count warning */}
-      {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
-            <AlertTriangle className="h-5 w-5 text-orange-600" />
-            <AlertDescription>
-              <div className="space-y-2">
-                <p className="font-medium">Limited Survey Data</p>
-                <p className="text-sm text-muted-foreground">
-                  This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Contribute Data
-                </Button>
+    <Tabs defaultValue="overview" className="flex flex-col h-full">
+      {/* Pinned header + tabs — never scrolls */}
+      <div className="flex-shrink-0 px-6 pt-2 pb-3 bg-background border-b space-y-3">
+        {!hideHeader && (
+          <div className="space-y-1">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex items-baseline gap-2">
+                <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+                {selectedYear && (
+                  <span className="text-sm text-muted-foreground font-normal">
+                    {selectedYear}
+                  </span>
+                )}
               </div>
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
+            </div>
 
-      {/* Tabbed Interface */}
-      <Tabs defaultValue="overview" className="w-full">
+            {/* Regional Breadcrumb */}
+            {breadcrumbHierarchy.length > 0 && (
+              <Breadcrumb>
+                <BreadcrumbList>
+                  {breadcrumbHierarchy.map((item, index) => (
+                    <div key={index} className="flex items-center ">
+                      {index > 0 && <BreadcrumbSeparator />}
+                      <BreadcrumbItem>
+                        {index === breadcrumbHierarchy.length - 1 ? (
+                          <BreadcrumbPage className="font-medium text-xs">
+                            {item.name}
+                          </BreadcrumbPage>
+                        ) : (
+                          <BreadcrumbLink className="text-muted-foreground text-xs">
+                            {item.name}
+                          </BreadcrumbLink>
+                        )}
+                      </BreadcrumbItem>
+                    </div>
+                  ))}
+                </BreadcrumbList>
+              </Breadcrumb>
+            )}
+          </div>
+        )}
+
         <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
           <TabsTrigger value="overview" className="text-sm">
             Overview
@@ -147,19 +120,48 @@ export function RegionStatsContent({
             Engagement
           </TabsTrigger>
         </TabsList>
+      </div>
 
-        <TabsContent value="overview" className="space-y-4 mt-3">
+      {/* Scrollable tab content */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        {/* Low survey count warning */}
+        {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
+          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <AlertDescription>
+                <div className="space-y-2">
+                  <p className="font-medium">Limited Survey Data</p>
+                  <p className="text-sm text-muted-foreground">
+                    This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Contribute Data
+                  </Button>
+                </div>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+
+        <TabsContent value="overview" className="space-y-4 mt-0">
           <OverviewTab regionData={regionData} selectedYear={selectedYear} />
         </TabsContent>
 
-        <TabsContent value="litter" className="space-y-4 mt-3">
+        <TabsContent value="litter" className="space-y-4 mt-0">
           <LitterStatsTab regionData={regionData} />
         </TabsContent>
 
-        <TabsContent value="engagement" className="space-y-4 mt-3">
+        <TabsContent value="engagement" className="space-y-4 mt-0">
           <EngagementTab regionData={regionData} />
         </TabsContent>
-      </Tabs>
-    </div>
+      </div>
+    </Tabs>
   )
 }

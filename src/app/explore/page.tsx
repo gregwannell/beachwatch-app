@@ -17,7 +17,6 @@ import { FloatingStatsButton } from '@/components/region-stats/floating-stats-bu
 import { MobileRegionStatsSheet } from '@/components/region-stats/mobile-region-stats-sheet'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
-import { getBreadcrumbHierarchy } from '@/components/region-stats/utils/breadcrumb-helpers'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
@@ -522,41 +521,13 @@ function ExplorePageContent() {
               <Separator orientation="vertical" />
 
               {/* Stats Panel */}
-              <div className="w-full md:w-[50%] md:max-w-[600px] lg:w-[40%] lg:max-w-[550px] xl:w-[35%] xl:max-w-[600px] 2xl:w-[30%] 2xl:max-w-[700px] flex flex-col bg-background">
-                {/* Pinned header — never scrolls */}
-                {regionData && regionData.hasData && (
-                  <div className="flex-shrink-0 px-6 py-3 border-b bg-background">
-                    <div className="flex items-baseline gap-2">
-                      <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-                      {filters.yearRange.startYear && (
-                        <span className="text-sm text-muted-foreground font-normal">
-                          {filters.yearRange.startYear}
-                        </span>
-                      )}
-                    </div>
-                    {getBreadcrumbHierarchy(regionData).length > 0 && (
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                        {getBreadcrumbHierarchy(regionData).map((item, index) => (
-                          <span key={index}>
-                            {index > 0 && <span className="mx-1">›</span>}
-                            {item.name}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Scrollable content */}
-                <div className="flex-1 overflow-y-auto">
-                  <RegionStatsContent
-                    regionData={regionData || undefined}
-                    isLoading={isRegionLoading}
-                    onRegionSelect={handleRegionSelect}
-                    selectedYear={filters.yearRange.startYear}
-                    hideHeader={!!(regionData && regionData.hasData)}
-                  />
-                </div>
+              <div className="w-full md:w-[50%] md:max-w-[600px] lg:w-[40%] lg:max-w-[550px] xl:w-[35%] xl:max-w-[600px] 2xl:w-[30%] 2xl:max-w-[700px] bg-background">
+                <RegionStatsContent
+                  regionData={regionData || undefined}
+                  isLoading={isRegionLoading}
+                  onRegionSelect={handleRegionSelect}
+                  selectedYear={filters.yearRange.startYear}
+                />
               </div>
             </div>
           </Card>

@@ -72,8 +72,8 @@ export function MobileRegionStatsSheet({
           </div>
         </SheetHeader>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Content — component handles its own pinned tabs + scrolling */}
+        <div className="flex-1 min-h-0">
           <RegionStatsContent
             regionData={regionData}
             isLoading={isLoading}

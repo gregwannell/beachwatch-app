@@ -77,7 +77,7 @@ export const allTours: Tour[] = [
         pointerRadius: 10
       },
       {
-        icon: <>🔍</>,
+        icon: <>☀️🌑</>,
         selector: '#theme-toggle',
         title: 'Toggle between light and dark mode',
         content:

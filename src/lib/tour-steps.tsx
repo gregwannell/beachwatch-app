@@ -77,6 +77,16 @@ export const allTours: Tour[] = [
         pointerRadius: 10
       },
       {
+        icon: <>🔍</>,
+        selector: '#theme-toggle',
+        title: 'Toggle between light and dark mode',
+        content:
+          <>Click here to toggle between light and dark mode. You can also toggle between themes in the settings menu. </>,
+        side: 'top-right',
+        pointerPadding: 10,
+        pointerRadius: 10
+      },
+      {
         icon: <>🎉</>,
         title: 'Start Exploring!',
         content: (

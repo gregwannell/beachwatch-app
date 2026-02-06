@@ -78,7 +78,7 @@ export function Header() {
 
           {/* Right: Theme Toggle and Settings Button */}
           <div className="flex items-center gap-2">
-            <ThemeToggle />
+            <ThemeToggle id="theme-toggle" />
             <Button
               variant="ghost"
               size="icon"

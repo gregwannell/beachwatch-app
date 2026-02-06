@@ -1,9 +1,8 @@
 "use client"
 
-import { Info, TrendingDown, TrendingUp, Award } from "lucide-react"
+import { Info, TrendingDown, TrendingUp, Award, History } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 import { calculateHistoricalStats, getRankingText } from '../utils'
-import { CardWithBackground } from './card-with-background'
 
 interface HistoricalContextInsightProps {
   regionData: RegionData
@@ -26,68 +25,83 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
   // Determine the icon and color based on performance
   const isGoodPerformance = !stats.isAboveAverage || stats.ranking <= 3
   const IconComponent = stats.isBestEver ? Award : stats.isAboveAverage ? TrendingUp : TrendingDown
-  const iconColor = isGoodPerformance ? "text-green-600" : "text-orange-600"
+  const iconBg = isGoodPerformance
+    ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600"
+    : "bg-amber-100 dark:bg-amber-900/40 text-amber-600"
 
   return (
-    <CardWithBackground backgroundImage="/waves-turquoise.svg">
-      <div className="flex items-center space-x-2 mb-5">
-        <Info className="w-4 h-4 text-primary" />
-        <span className="text-sm font-medium">Historical Context</span>
+    <div className="bg-card p-6 rounded-2xl shadow-sm border relative overflow-hidden min-h-[200px] flex flex-col group">
+      {/* Background watermark icon */}
+      <div className="absolute top-0 right-0 p-4">
+        <History className="w-20 h-20 text-muted-foreground/5" />
       </div>
 
-      <div className="space-y-2 flex-1">
-        {/* Historical average comparison */}
-        <div className="flex items-start space-x-2">
-          <IconComponent className={`w-4 h-4 mt-0.5 flex-shrink-0 ${iconColor}`} />
-          <p className="text-sm text-muted-foreground">
-            <strong>
-              {stats.percentDifference === 0
-                ? "Matches"
-                : `${stats.percentDifference}% ${stats.isAboveAverage ? "above" : "below"}`}
-            </strong> the 10-year average ({stats.historicalAverage.toFixed(1)} per 100m)
-          </p>
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex items-center gap-2 text-primary font-bold mb-4">
+          <Info className="w-4 h-4" />
+          <span className="text-xs uppercase tracking-widest">Historical Context</span>
         </div>
 
-        {/* Ranking information */}
-        <div className="flex items-start space-x-2">
-          <Award className={`w-4 h-4 mt-0.5 flex-shrink-0 ${stats.isBestEver ? iconColor : "text-muted-foreground"}`} />
-          <p className="text-sm text-muted-foreground">
-            <strong>{getRankingText(stats)}</strong>
-            {!stats.isBestEver && !stats.isWorstEver && (() => {
-              const midpoint = Math.ceil(stats.totalYears / 2)
-              const isInBetterHalf = stats.ranking <= midpoint
+        <div className="space-y-4 flex-1">
+          {/* Historical average comparison */}
+          <div className="flex items-start gap-3">
+            <div className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${iconBg}`}>
+              <IconComponent className="w-3.5 h-3.5" />
+            </div>
+            <p className="text-base leading-relaxed">
+              <strong>
+                {stats.percentDifference === 0
+                  ? "Matches"
+                  : `${stats.percentDifference}% ${stats.isAboveAverage ? "above" : "below"}`}
+              </strong>
+              <span className="text-muted-foreground"> the 10-year average </span>
+              <span className="text-muted-foreground/60">({stats.historicalAverage.toFixed(1)} per 100m)</span>
+            </p>
+          </div>
 
-              if (isInBetterHalf) {
-                // Showing as "best", so reference the all-time best
-                return (
-                  <span className="text-xs ml-1">
-                    (best: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year})
-                  </span>
-                )
-              } else {
-                // Showing as "worst", so reference the all-time worst
-                return (
-                  <span className="text-xs ml-1">
-                    (worst: {stats.worstYear.value.toFixed(1)} in {stats.worstYear.year})
-                  </span>
-                )
-              }
-            })()}
-            {stats.isWorstEver && stats.totalYears > 1 && (
-              <span className="text-xs ml-1">
-                (previous low: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year})
-              </span>
-            )}
-          </p>
+          {/* Ranking information */}
+          <div className="flex items-start gap-3">
+            <div className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${stats.isBestEver ? iconBg : "bg-amber-100 dark:bg-amber-900/40 text-amber-600"}`}>
+              <Award className="w-3.5 h-3.5" />
+            </div>
+            <div>
+              <p className="text-base leading-relaxed">
+                <strong>{getRankingText(stats)}</strong>
+              </p>
+              {!stats.isBestEver && !stats.isWorstEver && (() => {
+                const midpoint = Math.ceil(stats.totalYears / 2)
+                const isInBetterHalf = stats.ranking <= midpoint
+
+                if (isInBetterHalf) {
+                  return (
+                    <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest">
+                      Best Record: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year}
+                    </span>
+                  )
+                } else {
+                  return (
+                    <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest">
+                      Worst Record: {stats.worstYear.value.toFixed(1)} in {stats.worstYear.year}
+                    </span>
+                  )
+                }
+              })()}
+              {stats.isWorstEver && stats.totalYears > 1 && (
+                <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest block">
+                  Previous low: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Celebration message for best year */}
+          {stats.isBestEver && stats.totalYears > 1 && (
+            <p className="text-xs text-green-600 dark:text-green-400 font-medium pl-9">
+              Lowest litter levels in the last 10 years
+            </p>
+          )}
         </div>
-
-        {/* Celebration message for best year */}
-        {stats.isBestEver && stats.totalYears > 1 && (
-          <p className="text-xs text-green-600 dark:text-green-400 font-medium pl-6">
-            🎉 Lowest litter levels in the last 10 years
-          </p>
-        )}
       </div>
-    </CardWithBackground>
+    </div>
   )
 }

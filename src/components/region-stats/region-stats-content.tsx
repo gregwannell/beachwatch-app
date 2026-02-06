@@ -5,14 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Users } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
 // Import extracted components
 import { EmptyState, LoadingSkeleton } from './components'
 import { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
-import { getBreadcrumbHierarchy } from './utils'
+import { GradientHeroHeader } from './hero'
 
 interface RegionStatsContentProps {
   regionData?: RegionData
@@ -63,67 +62,35 @@ export function RegionStatsContent({
     )
   }
 
-  // Generate breadcrumb hierarchy
-  const breadcrumbHierarchy = getBreadcrumbHierarchy(regionData)
-
   return (
     <Tabs defaultValue="overview" className="flex flex-col h-full">
-      {/* Pinned header + tabs — never scrolls */}
-      <div className="flex-shrink-0 px-6 pt-2 pb-3 bg-background border-b space-y-3">
-        {!hideHeader && (
-          <div className="space-y-1">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex items-baseline gap-2">
-                <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-                {selectedYear && (
-                  <span className="text-sm text-muted-foreground font-normal">
-                    {selectedYear}
-                  </span>
-                )}
-              </div>
-            </div>
+      {/* Gradient Hero Header + Floating Tab Strip — never scrolls */}
+      <div className="flex-shrink-0">
+        {/* Gradient Hero with Average Litter/100m */}
+        <GradientHeroHeader
+          regionData={regionData}
+          selectedYear={selectedYear}
+          hideHeader={hideHeader}
+        />
 
-            {/* Regional Breadcrumb */}
-            {breadcrumbHierarchy.length > 0 && (
-              <Breadcrumb>
-                <BreadcrumbList>
-                  {breadcrumbHierarchy.map((item, index) => (
-                    <div key={index} className="flex items-center ">
-                      {index > 0 && <BreadcrumbSeparator />}
-                      <BreadcrumbItem>
-                        {index === breadcrumbHierarchy.length - 1 ? (
-                          <BreadcrumbPage className="font-medium text-xs">
-                            {item.name}
-                          </BreadcrumbPage>
-                        ) : (
-                          <BreadcrumbLink className="text-muted-foreground text-xs">
-                            {item.name}
-                          </BreadcrumbLink>
-                        )}
-                      </BreadcrumbItem>
-                    </div>
-                  ))}
-                </BreadcrumbList>
-              </Breadcrumb>
-            )}
-          </div>
-        )}
-
-        <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" className="text-sm">
-            <LayoutDashboard /> Overview
-          </TabsTrigger>
-          <TabsTrigger value="litter" className="text-sm">
-            <Trash2 /> Litter Stats
-          </TabsTrigger>
-          <TabsTrigger value="engagement" className="text-sm">
-            <Users /> Engagement
-          </TabsTrigger>
-        </TabsList>
+        {/* Tab Strip */}
+        <div className="px-4 py-2 bg-background">
+          <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview" className="text-sm">
+              <LayoutDashboard /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="litter" className="text-sm">
+              <Trash2 /> Litter Stats
+            </TabsTrigger>
+            <TabsTrigger value="engagement" className="text-sm">
+              <Users /> Engagement
+            </TabsTrigger>
+          </TabsList>
+        </div>
       </div>
 
       {/* Scrollable tab content */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {/* Low survey count warning */}
         {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
           <div className="animate-in fade-in slide-in-from-top-2 duration-300">

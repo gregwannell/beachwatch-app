@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator"
 import { Info, ChevronRight } from "lucide-react"
 import { YearOverYearBadge, UkComparisonText } from "../components"
 import { AverageLitterChart } from "../charts"
-import { CardWithBackground } from "../insights/card-with-background"
 import type { RegionData } from '@/types/region-types'
 
 interface AverageLitterKpiCardProps {

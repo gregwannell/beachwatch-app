@@ -6,6 +6,7 @@ import { useRegionInfo } from '@/hooks/use-region-info'
 import { useFilterOptions } from '@/hooks/use-filter-options'
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { MapLoadingOverlay } from '@/components/map/map-loading-overlay'
 import dynamic from 'next/dynamic'
 import { MapFilterBar } from '@/components/filters/map-filter-bar'
 import { MobileFilterBar } from '@/components/filters/mobile-filter-bar'
@@ -16,6 +17,7 @@ import { FloatingStatsButton } from '@/components/region-stats/floating-stats-bu
 import { MobileRegionStatsSheet } from '@/components/region-stats/mobile-region-stats-sheet'
 import { FilterState } from '@/types/filter-types'
 import { RegionStatsContent } from '@/components/region-stats'
+import { getBreadcrumbHierarchy } from '@/components/region-stats/utils/breadcrumb-helpers'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { RegionTooltip } from '@/components/map/region-tooltip'
@@ -29,12 +31,8 @@ import { useNextStep } from 'nextstepjs'
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
   ssr: false,
   loading: () => (
-    <div className="h-full flex items-center justify-center">
-      <div className="space-y-4 text-center">
-        <div className="text-2xl">🗺️</div>
-        <Skeleton className="h-8 w-48 mx-auto" />
-        <p className="text-sm text-muted-foreground">Loading interactive map...</p>
-      </div>
+    <div className="h-full relative">
+      <MapLoadingOverlay />
     </div>
   )
 })
@@ -418,13 +416,7 @@ function ExplorePageContent() {
               <div id="uk-map-container" className="relative flex-1 overflow-hidden">
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
-                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
-                    <div className="space-y-4 text-center">
-                      <div className="text-2xl">🗺️</div>
-                      <Skeleton className="h-8 w-48 mx-auto" />
-                      <p className="text-sm text-muted-foreground">Loading interactive map...</p>
-                    </div>
-                  </div>
+                  <MapLoadingOverlay isComplete={hasLoadedInitialRegions} />
                 ) : null}
 
                 <UKMap
@@ -493,13 +485,7 @@ function ExplorePageContent() {
 
                 {/* Show loading overlay only during very first map load */}
                 {isLoading && !hasLoadedInitialRegions ? (
-                  <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-[9999]">
-                    <div className="space-y-4 text-center">
-                      <div className="text-2xl">🗺️</div>
-                      <Skeleton className="h-8 w-48 mx-auto" />
-                      <p className="text-sm text-muted-foreground">Loading interactive map...</p>
-                    </div>
-                  </div>
+                  <MapLoadingOverlay isComplete={hasLoadedInitialRegions} />
                 ) : null}
 
                 <UKMap
@@ -536,13 +522,41 @@ function ExplorePageContent() {
               <Separator orientation="vertical" />
 
               {/* Stats Panel */}
-              <div className="w-full md:w-[50%] md:max-w-[600px] lg:w-[40%] lg:max-w-[550px] xl:w-[35%] xl:max-w-[600px] 2xl:w-[30%] 2xl:max-w-[700px] overflow-auto bg-background">
-                <RegionStatsContent
-                  regionData={regionData || undefined}
-                  isLoading={isRegionLoading}
-                  onRegionSelect={handleRegionSelect}
-                  selectedYear={filters.yearRange.startYear}
-                />
+              <div className="w-full md:w-[50%] md:max-w-[600px] lg:w-[40%] lg:max-w-[550px] xl:w-[35%] xl:max-w-[600px] 2xl:w-[30%] 2xl:max-w-[700px] flex flex-col bg-background">
+                {/* Pinned header — never scrolls */}
+                {regionData && regionData.hasData && (
+                  <div className="flex-shrink-0 px-6 py-3 border-b bg-background">
+                    <div className="flex items-baseline gap-2">
+                      <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
+                      {filters.yearRange.startYear && (
+                        <span className="text-sm text-muted-foreground font-normal">
+                          {filters.yearRange.startYear}
+                        </span>
+                      )}
+                    </div>
+                    {getBreadcrumbHierarchy(regionData).length > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                        {getBreadcrumbHierarchy(regionData).map((item, index) => (
+                          <span key={index}>
+                            {index > 0 && <span className="mx-1">›</span>}
+                            {item.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Scrollable content */}
+                <div className="flex-1 overflow-y-auto">
+                  <RegionStatsContent
+                    regionData={regionData || undefined}
+                    isLoading={isRegionLoading}
+                    onRegionSelect={handleRegionSelect}
+                    selectedYear={filters.yearRange.startYear}
+                    hideHeader={!!(regionData && regionData.hasData)}
+                  />
+                </div>
               </div>
             </div>
           </Card>

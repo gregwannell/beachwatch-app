@@ -20,7 +20,7 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
                 {engagementData.surveyCount.toLocaleString()}
                 <span className="text-xs font-medium ml-1">surveys</span>
               </p>
-              <YearOverYearBadge change={engagementData.yearOverYearChanges?.surveys} />
+              <YearOverYearBadge change={engagementData.yearOverYearChanges?.surveys} increaseIsGood />
             </div>
           </div>
           <p className="text-xs leading-relaxed">
@@ -30,10 +30,10 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
             href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/find-a-beach-clean/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors rounded-md px-3 py-1.5 w-fit"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold bg-mcs-red text-white hover:bg-mcs-red/80 transition-colors rounded-md px-3 py-1.5 w-fit"
           >
             Join a Clean
-            <ExternalLink className="w-3 h-3" />
+            <ExternalLink className="w-4 h-6" />
           </a>
         </div>
 

@@ -1,39 +1,36 @@
 import { Badge } from "@/components/ui/badge"
 import { ChevronUp, ChevronDown, Minus } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface YearOverYearBadgeProps {
   change?: number
-  variant?: "default" | "glass"
+  /** Whether an increase in value is a positive outcome.
+   *  Default: false (increase = bad, e.g., more litter).
+   *  Set to true for engagement metrics (more surveys = good). */
+  increaseIsGood?: boolean
+  /** Use vivid (solid) variant for coloured/gradient backgrounds */
+  vivid?: boolean
+  className?: string
 }
 
-export function YearOverYearBadge({ change, variant = "default" }: YearOverYearBadgeProps) {
+export function YearOverYearBadge({ change, increaseIsGood = false, vivid = false, className }: YearOverYearBadgeProps) {
   if (change === undefined) return null
 
-  const isImprovement = change < 0 // Decrease in litter is improvement
-  const isNeutral = Math.abs(change) < 1 // Less than 1% change is neutral
+  const isNeutral = Math.abs(change) < 1
+  const isIncrease = change > 0
 
   const symbol = change > 0 ? "+" : ""
-  const Icon = isNeutral ? Minus : isImprovement ? ChevronDown : ChevronUp
+  const Icon = isNeutral ? Minus : isIncrease ? ChevronUp : ChevronDown
 
-  // Glass variant for use on gradient backgrounds
-  if (variant === "glass") {
-    return (
-      <Badge variant="outline" className="text-xs font-semibold gap-0.5 px-2 py-1 rounded-full bg-white/15 backdrop-blur-sm border-white/20 text-white">
-        <Icon className="w-3 h-3 stroke-[2.5]" />
-        {symbol}{change.toFixed(1)}%
-      </Badge>
-    )
-  }
+  // Determine semantic outcome based on context
+  const base = isNeutral
+    ? "neutral"
+    : (isIncrease === increaseIsGood) ? "positive" : "negative"
 
-  // Custom styling using MCS brand colors
-  const badgeClasses = isNeutral
-    ? "bg-neutral text-neutral-foreground"
-    : isImprovement
-    ? "bg-mcs-green/15 text-mcs-green"
-    : "bg-mcs-red/10 text-mcs-red"
+  const badgeVariant = vivid ? `${base}-vivid` as const : base
 
   return (
-    <Badge variant="outline" className={`text-xs font-semibold gap-0.5 px-1.5 rounded-full ${badgeClasses}`}>
+    <Badge variant={badgeVariant} className={cn("text-xs font-semibold gap-0.5 px-1.5 rounded-full", className)}>
       <Icon className="w-3 h-3 stroke-[2.5]" />
       {symbol}{change.toFixed(1)}%
     </Badge>

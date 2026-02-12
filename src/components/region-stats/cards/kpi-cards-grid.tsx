@@ -57,9 +57,9 @@ function KpiCard({ config, litterData }: { config: typeof cardConfigs[number]; l
 
   return (
     <div className="bg-card p-4 rounded-2xl shadow-sm hover:shadow-lg transition-shadow border group min-h-[76px]">
-      <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-xl ${config.iconBg} shrink-0`}>
-          <IconComponent className={`w-4 h-4 ${config.iconColor}`} />
+      <div className="flex items-center gap-3">
+        <div className={`p-2.5 rounded-xl ${config.iconBg} shrink-0`}>
+          <IconComponent className={`w-5 h-5 ${config.iconColor}`} />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-muted-foreground font-medium text-xs">{config.label}</h3>

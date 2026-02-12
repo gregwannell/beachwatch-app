@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Info, ChevronRight } from "lucide-react"
 import { YearOverYearBadge } from "../components"
 import { AverageLitterChart } from "../charts"
+import { getBreadcrumbHierarchy } from "../utils/breadcrumb-helpers"
 import type { RegionData } from '@/types/region-types'
 
 interface GradientHeroHeaderProps {
@@ -45,6 +46,8 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
     })
     return () => controls.stop()
   }, [averageLitterPer100m, count])
+
+  const breadcrumbs = getBreadcrumbHierarchy(regionData)
 
   if (!litterData) return null
 
@@ -103,6 +106,18 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
                 <span className="text-mcs-teal mx-2">•</span>
                 {selectedYear || new Date().getFullYear()}
               </h3>
+              {breadcrumbs.length > 1 && (
+                <div className="flex items-center justify-center gap-1 mt-2 text-[11px] text-white/60">
+                  {breadcrumbs.map((crumb, i) => (
+                    <span key={crumb.level + crumb.name} className="flex items-center gap-1">
+                      {i > 0 && <ChevronRight className="h-3 w-3" />}
+                      <span className={i === breadcrumbs.length - 1 ? "text-white/90 font-medium" : ""}>
+                        {crumb.name}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="w-16 h-0.5 bg-white/40 mx-auto mt-3 rounded-full" />
             </div>
           )}
@@ -149,7 +164,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
           <div className="flex items-center justify-center gap-2 mt-2">
             <YearOverYearBadge change={yearOverYearChange} variant="glass" />
             {yearOverYearChange !== undefined && (
-              <span className="text-[10px] text-white/60 font-semibold uppercase tracking-widest">
+              <span className="text-[10px] text-white/60 font-semibold tracking-widest">
                 vs prev year
               </span>
             )}

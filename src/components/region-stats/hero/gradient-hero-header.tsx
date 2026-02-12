@@ -162,7 +162,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
 
           {/* YoY badge + vs prev year */}
           <div className="flex items-center justify-center gap-2 mt-2">
-            <YearOverYearBadge change={yearOverYearChange} variant="glass" />
+            <YearOverYearBadge change={yearOverYearChange} vivid />
             {yearOverYearChange !== undefined && (
               <span className="text-[10px] text-white/60 font-semibold tracking-widest">
                 vs prev year
@@ -170,17 +170,17 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
             )}
           </div>
 
-          <p className="mt-4 text-white/70 max-w-sm mx-auto text-sm leading-relaxed">
+          {/* <p className="mt-4 text-white/70 max-w-sm mx-auto text-sm leading-relaxed">
             {descriptionText}
-          </p>
+          </p>*/}
 
           {/* Trend button - sits on the curve */}
           <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
             <CollapsibleTrigger asChild>
               <Button
-                variant="outline"
+                variant="plain"
                 size="sm"
-                className="mt-6 rounded-full px-4 h-8 shadow-md bg-background/90 hover:bg-background border-white/20 text-muted-foreground z-20 relative"
+                className="mt-6 rounded-full px-4 h-8 shadow-md z-20 relative"
               >
                 <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
                 <ChevronRight

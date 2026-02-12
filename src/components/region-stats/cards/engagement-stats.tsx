@@ -52,7 +52,7 @@ export function EngagementStats({ engagementData }: EngagementStatsProps) {
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-foreground">{metric.label}</span>
                     {metric.change !== undefined && (
-                      <YearOverYearBadge change={metric.change} />
+                      <YearOverYearBadge change={metric.change} increaseIsGood />
                     )}
                   </div>
                   <span className="text-xl font-bold text-foreground">

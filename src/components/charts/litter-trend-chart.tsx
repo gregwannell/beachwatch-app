@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ChartSkeleton } from "./chart-skeleton"
 import { ChartError } from "./chart-error"
@@ -84,6 +84,12 @@ export function LitterTrendChart({
 
   return (
     <div className={className}>
+      <div className="mb-2">
+        <h3 className="text-sm font-medium leading-none">Average litter/100m</h3>
+        <p className="text-xs text-muted-foreground mt-1">
+          Average number of litter items per 100 metres of beach surveyed each year
+        </p>
+      </div>
       <ChartContainer
         config={chartConfig}
         className="w-full"
@@ -91,7 +97,7 @@ export function LitterTrendChart({
       >
         <AreaChart
           data={chartData}
-          margin={{ top: 30, right: 10, left: 10, bottom: 15 }}
+          margin={{ top: 30, right: 10, left: 10, bottom: 25 }}
         >
           <defs>
             <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
@@ -111,7 +117,13 @@ export function LitterTrendChart({
           </defs>
           <XAxis
             dataKey="year"
-            hide={true}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            fontSize={11}
+            angle={-45}
+            textAnchor="end"
+            tickFormatter={(value) => `${value}`}
           />
           <YAxis
             hide={true}

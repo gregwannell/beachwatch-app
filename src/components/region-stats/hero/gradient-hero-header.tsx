@@ -95,7 +95,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
         <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-mcs-teal/20 blur-2xl" />
 
         {/* Content */}
-        <div className="relative z-10 px-6 pt-4 pb-14 text-white text-center">
+        <div className="relative z-10 px-6 pt-10 pb-20 text-white text-center">
           {!hideHeader && (
             <div className="mb-4">
               <h3 className="text-lg md:text-xl font-extrabold tracking-widest uppercase opacity-90 drop-shadow-sm">
@@ -107,89 +107,88 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
             </div>
           )}
 
-          <p className="text-white/80 font-medium text-sm mb-1 mt-4">Average Litter/100m</p>
+          <div className="flex items-center justify-center gap-1 mb-1 mt-4">
+            <p className="text-white/80 font-medium text-sm">Average Litter/100m</p>
+            {/* Info button */}
+            {isMobile ? (
+              <Drawer open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                <DrawerTrigger asChild>
+                  {infoButton}
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader>
+                    <DrawerTitle>Average Litter Calculation</DrawerTitle>
+                    <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
+                  </DrawerHeader>
+                  <div className="px-4 pb-6">
+                    {calculationContent}
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            ) : (
+              <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                <DialogTrigger asChild>
+                  {infoButton}
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Average Litter Calculation</DialogTitle>
+                    <DialogDescription>Understanding how we calculate this metric</DialogDescription>
+                  </DialogHeader>
+                  {calculationContent}
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
 
-          <div className="flex items-center justify-center gap-3">
-            <motion.span className="text-5xl md:text-6xl font-extrabold tracking-tighter tabular-nums">
-              {rounded}
-            </motion.span>
+          <motion.span className="text-5xl md:text-6xl font-extrabold tracking-tighter tabular-nums">
+            {rounded}
+          </motion.span>
 
-            {/* Info button + YoY badge group */}
-            <div className="flex flex-col items-start gap-1">
-              <div className="flex items-center gap-1">
-                <YearOverYearBadge change={yearOverYearChange} variant="glass" />
-
-                {/* Info button - conditionally render Drawer (mobile) or Dialog (desktop) */}
-                {isMobile ? (
-                  <Drawer open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-                    <DrawerTrigger asChild>
-                      {infoButton}
-                    </DrawerTrigger>
-                    <DrawerContent>
-                      <DrawerHeader>
-                        <DrawerTitle>Average Litter Calculation</DrawerTitle>
-                        <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
-                      </DrawerHeader>
-                      <div className="px-4 pb-6">
-                        {calculationContent}
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
-                ) : (
-                  <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-                    <DialogTrigger asChild>
-                      {infoButton}
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Average Litter Calculation</DialogTitle>
-                        <DialogDescription>Understanding how we calculate this metric</DialogDescription>
-                      </DialogHeader>
-                      {calculationContent}
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-              {yearOverYearChange !== undefined && (
-                <span className="text-[10px] text-white/60 font-semibold uppercase tracking-widest">
-                  vs prev year
-                </span>
-              )}
-            </div>
+          {/* YoY badge + vs prev year */}
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <YearOverYearBadge change={yearOverYearChange} variant="glass" />
+            {yearOverYearChange !== undefined && (
+              <span className="text-[10px] text-white/60 font-semibold uppercase tracking-widest">
+                vs prev year
+              </span>
+            )}
           </div>
 
           <p className="mt-4 text-white/70 max-w-sm mx-auto text-sm leading-relaxed">
             {descriptionText}
           </p>
+
+          {/* Trend button - sits on the curve */}
+          <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-6 rounded-full px-4 h-8 shadow-md bg-background/90 hover:bg-background border-white/20 text-muted-foreground z-20 relative"
+              >
+                <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
+                <ChevronRight
+                  className={`h-3 w-3 ml-1 transition-transform duration-200 ${isTrendOpen ? 'rotate-90' : ''}`}
+                />
+              </Button>
+            </CollapsibleTrigger>
+          </Collapsible>
         </div>
 
         {/* Curved bottom edge */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-6 bg-background"
+          className="absolute bottom-0 left-0 right-0 h-12 bg-background"
           style={{ clipPath: "ellipse(60% 100% at 50% 100%)" }}
         />
       </div>
 
       {/* Collapsible Trend Chart - below gradient */}
-      <div className="bg-background">
-        <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-full flex items-center justify-center gap-1 py-1 h-auto hover:bg-muted/50 text-muted-foreground"
-            >
-              <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
-              <ChevronRight
-                className={`h-3 w-3 transition-transform duration-200 ${isTrendOpen ? 'rotate-90' : ''}`}
-              />
-            </Button>
-          </CollapsibleTrigger>
-
-          <CollapsibleContent className="px-4 pb-2">
-            <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
-          </CollapsibleContent>
-        </Collapsible>
-      </div>
+      <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
+        <CollapsibleContent className="bg-background px-4 pb-2">
+          <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   )
 }

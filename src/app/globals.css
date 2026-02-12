@@ -128,7 +128,7 @@
   --mcs-orange: #fda027;
   --mcs-purple: #b172cd;
   --mcs-navy: #2B3647;
-  --mcs-light-blue: #E8F4F8;
+  --mcs-light-blue: #dbf1f4;
   --mcs-clear-blue: #3d9be2;
   --mcs-ink: #1B1B26;
   --mcs-green: #28c76d;
@@ -224,6 +224,17 @@
   /* Focus enhancements */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Topography pattern background (light/dark aware) */
+  .bg-topography {
+    background-image: url('/topography-light.svg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .dark .bg-topography {
+    background-image: url('/topography-dark.svg');
   }
 
   /* iOS safe area support */

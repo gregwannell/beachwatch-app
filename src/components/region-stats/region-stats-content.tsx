@@ -3,7 +3,16 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Users } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
@@ -28,6 +37,18 @@ export function RegionStatsContent({
   selectedYear,
   hideHeader = false,
 }: RegionStatsContentProps) {
+  const isLimitedSurvey = Boolean(
+    regionData?.hasData &&
+    regionData?.engagementData &&
+    regionData.engagementData.surveyCount < 5
+  )
+
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    setDialogOpen(isLimitedSurvey)
+  }, [regionData?.id, isLimitedSurvey])
+
   if (isLoading) {
     return <LoadingSkeleton />
   }
@@ -91,30 +112,58 @@ export function RegionStatsContent({
 
       {/* Scrollable tab content */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        {/* Low survey count warning */}
-        {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
-          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-            <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
-              <AlertDescription>
-                <div className="space-y-2">
-                  <p className="font-medium">Limited Survey Data</p>
-                  <p className="text-sm text-muted-foreground">
-                    This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
-                  </p>
+        {/* Low survey count warning — alert dialog + persistent indicator */}
+        {isLimitedSurvey && (
+          <>
+            <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <AlertDialogContent
+                className="border-amber-900 bg-amber-100 text-amber-900"
+              >
+                <AlertDialogHeader>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                    <AlertDialogTitle>Limited Survey Data</AlertDialogTitle>
+                  </div>
+                  <AlertDialogDescription className="text-amber-900">
+                    This region has fewer than 5 surveys. Statistics should be
+                    interpreted with caution as they may not be representative.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
                   <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-2"
-                    onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
+                    variant="plain"
+                    onClick={() =>
+                      window.open(
+                        "https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/",
+                        "_blank"
+                      )
+                    }
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
                     Contribute Data
+                    <ExternalLink className="w-4 h-4 mr-2" />
                   </Button>
-                </div>
-              </AlertDescription>
-            </Alert>
-          </div>
+                  <AlertDialogAction>
+                    I understand
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <button
+              type="button"
+              onClick={() => setDialogOpen(true)}
+              className={cn(
+                "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm",
+                "border border-amber-200 bg-amber-50 text-amber-900",
+                "dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50",
+                "hover:bg-amber-100 dark:hover:bg-amber-900/50",
+                "transition-colors cursor-pointer"
+              )}
+            >
+              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <span className="font-medium">Limited survey data</span>
+            </button>
+          </>
         )}
 
         <TabsContent value="overview" className="space-y-4 mt-0">

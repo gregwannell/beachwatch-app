@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Home, Map, Menu, LucideIcon } from 'lucide-react';
 
-// SVG background path for the bottom navigation bar
-const NAV_BAR_PATH = "M0 25C0 11.1929 11.1929 0 25 0 H 150.5 C 160.5 0 172.5 16 187.5 16 S 214.5 0 224.5 0 H 350 C 363.807 0 375 11.1929 375 25 V 47 C 375 60.8071 363.807 72 350 72 H 25 C 11.1929 72 0 60.8071 0 47 V 25 Z";
-
 // Navigation item configuration
 export interface NavigationItem {
   id: string;
@@ -96,23 +93,13 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-24 px-4 sm:px-0 z-[1050]" role="navigation" aria-label="Main navigation">
-        <div className="relative w-full sm:max-w-md mx-auto h-full">
-            {/* SVG Background */}
-            <svg
-                className="absolute bottom-0 left-0 w-full h-full drop-shadow-2xl"
-                viewBox="0 0 375 72"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-            >
-                <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d={NAV_BAR_PATH}
-                    fill="white"
-                />
-            </svg>
+    <nav className="fixed bottom-0 left-0 right-0 h-24 z-[1050]" role="navigation" aria-label="Main navigation">
+        <div className="relative w-full h-full">
+            {/* Background Bar */}
+            <div
+              className="absolute bottom-0 left-0 w-full h-[72px] bg-white dark:bg-background shadow-[0_-2px_10px_rgba(0,0,0,0.1)]"
+              aria-hidden="true"
+            />
 
             {/* Central Prominent Button */}
             <button

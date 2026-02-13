@@ -10,6 +10,15 @@ export const chartColors = {
   quinary: "var(--mcs-red)",
 } as const
 
+// Purple gradient for Top 5 Litter Items (dark → light by rank)
+export const barGradientColors = [
+  "#7b3f9e",
+  "#9558b3",
+  "#b172cd",
+  "#c48fd8",
+  "#d4a8e3",
+] as const
+
 // Pattern definitions for additional accessibility
 export const chartPatterns = {
   dots: "url(#dots)",

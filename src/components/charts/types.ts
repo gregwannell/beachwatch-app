@@ -37,6 +37,7 @@ export interface BarChartProps extends ChartProps {
   data: BarChartData[]
   maxItems?: number
   barThickness?: number // Controls the thickness/height of individual bars
+  colors?: readonly string[] | string[] // Custom color palette (overrides default chartColors)
 }
 
 export interface TrendChartProps extends Omit<ChartProps, 'data'> {

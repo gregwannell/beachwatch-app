@@ -28,18 +28,19 @@ export function HorizontalBarChart({
   barThickness = 24, // New prop to control bar thickness
   animationDuration = 1000,
   animationEasing = "ease-out",
+  colors,
 }: BarChartProps) {
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
     const sorted = sortTopItems(data, maxItems)
-    const colors = Object.values(chartColors)
-    
+    const colorPalette = colors ?? Object.values(chartColors)
+
     // Add unique colors to each item (matching pie chart pattern)
     return sorted.map((item, index) => ({
       ...item,
-      fill: colors[index % colors.length]
+      fill: colorPalette[index % colorPalette.length]
     }))
-  }, [data, maxItems])
+  }, [data, maxItems, colors])
 
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {

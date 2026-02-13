@@ -1,6 +1,7 @@
 "use client"
 
 import { ExternalLink } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { YearOverYearBadge } from "../components"
 import type { RegionData } from '@/types/region-types'
 
@@ -15,7 +16,7 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
         {/* Left content */}
         <div className="basis-3/5 p-4 flex flex-col justify-between gap-3">
           <div>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-baseline gap-2 mt-1">
               <p className="text-5xl font-bold tabular-nums">
                 {engagementData.surveyCount.toLocaleString()}
                 <span className="text-xs font-medium ml-1">surveys</span>
@@ -26,15 +27,16 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
           <p className="text-xs leading-relaxed">
             Our volunteers are making a measurable difference to the UK coastline. You can help too by signing up to a beach clean near you.
           </p>
-          <a
-            href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/find-a-beach-clean/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold bg-mcs-red text-white hover:bg-mcs-red/80 transition-colors rounded-md px-3 py-1.5 w-fit"
-          >
-            Join a Clean
-            <ExternalLink className="w-4 h-6" />
-          </a>
+          <Button size="sm" className="h-auto py-1.5 text-xs font-semibold w-fit" asChild>
+            <a
+              href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/find-a-beach-clean/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Join a Clean
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </Button>
         </div>
 
         {/* Right image */}

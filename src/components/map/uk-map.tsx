@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { LatLngBounds, LatLng } from 'leaflet'
+import { Plus, Minus, House } from 'lucide-react'
 import type { Feature } from 'geojson'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
 import { MAP_THEMES, type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
@@ -285,14 +286,6 @@ export function UKMap({
         className="w-full h-full rounded-lg"
         keyboard={true}
         attributionControl={false}
-        whenReady={() => {
-          // Add zoom control to bottom-right
-          if (mapRef.current) {
-            L.control.zoom({
-              position: 'bottomright'
-            }).addTo(mapRef.current)
-          }
-        }}
       >
         <TileLayer
           key={mapTheme}
@@ -324,6 +317,34 @@ export function UKMap({
           )
         })}
       </MapContainer>
+
+      {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
+      <div className="absolute bottom-28 right-3 z-[10] flex flex-col gap-1 md:bottom-4 md:right-4">
+        <button
+          onClick={() => mapRef.current?.zoomIn()}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Zoom in"
+          title="Zoom in"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => mapRef.current?.zoomOut()}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 border-t-0 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Zoom out"
+          title="Zoom out"
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => mapRef.current?.fitBounds(UK_BOUNDS, { padding: [10, 10] })}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-b-sm mt-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Reset to UK view"
+          title="Reset to UK view"
+        >
+          <House className="h-3.5 w-3.5" />
+        </button>
+      </div>
     </div>
   )
 }

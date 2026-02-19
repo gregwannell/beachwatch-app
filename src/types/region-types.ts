@@ -51,6 +51,10 @@ export interface RegionData {
       percentDifference: number
       multiplier: number
     }
+    plasticFragmentsItem?: {
+      avgPer100m: number
+      presence: number
+    }
     plasticPolystyreneComparison?: {
       regionalAvgPer100m: number
       regionalShare: number

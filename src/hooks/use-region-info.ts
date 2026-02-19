@@ -204,7 +204,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
 
       // Fetch detailed breakdown data in parallel
       const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse, ukMaterialsResponse] = await Promise.all([
+      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse, ukMaterialsResponse, plasticFragmentsResponse] = await Promise.all([
         fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
         fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
@@ -217,7 +217,9 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         // Fetch UK material breakdown for plastic/polystyrene comparison
         region.name !== 'United Kingdom'
           ? fetch(`/api/analytics/materials?regionId=1&limit=5${yearQueryParam}`).catch(() => null)
-          : null
+          : null,
+        // Fetch plastic fragments 0-2.5cm specifically (high-priority item)
+        fetch(`/api/analytics/litter-items?regionId=${regionId}&itemName=${encodeURIComponent('Plastic fragments: 0-2.5cm')}&limit=1${yearQueryParam}`).catch(() => null),
       ])
 
       let topItems: RegionData['litterData']['topItems'] = []
@@ -268,6 +270,16 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
       if (litterItemsResponse?.ok) {
         const litterItemsData: { data: { litterItems: LitterItemBreakdown[] } } = await litterItemsResponse.json()
         topLitterItems = litterItemsData.data.litterItems
+      }
+
+      // Process plastic fragments 0-2.5cm data
+      let plasticFragmentsItem: { avgPer100m: number; presence: number } | undefined = undefined
+      if (plasticFragmentsResponse?.ok) {
+        const pfData: { data: { litterItems: LitterItemBreakdown[] } } = await plasticFragmentsResponse.json()
+        const item = pfData.data.litterItems[0]
+        if (item) {
+          plasticFragmentsItem = { avgPer100m: item.avgPer100m, presence: item.presence }
+        }
       }
 
       // Process trends data
@@ -365,6 +377,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           materialBreakdown,
           sourceBreakdown,
           topLitterItems,
+          plasticFragmentsItem,
           averageLitterPer100m,
           yearOverYearChange,
           ukAverageComparison,

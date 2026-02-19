@@ -1,5 +1,6 @@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TopLitterItemsChart, LitterBreakdownChart } from "@/components/charts"
+import { PlasticFragmentsCard } from "@/components/region-stats/cards"
 import { Info, PieChart } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
@@ -26,6 +27,15 @@ export function LitterStatsTab({ regionData }: LitterStatsTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* Plastic Fragments 0-2.5cm highlight */}
+      {regionData.litterData.plasticFragmentsItem && (
+        <PlasticFragmentsCard
+          avgPer100m={regionData.litterData.plasticFragmentsItem.avgPer100m}
+          presence={regionData.litterData.plasticFragmentsItem.presence}
+          className="w-full"
+        />
+      )}
+
       {/* Top Litter Items */}
       {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
         <TopLitterItemsChart

@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
     const startYear = searchParams.get('startYear')
     const endYear = searchParams.get('endYear')
     const limit = searchParams.get('limit')
+    const itemName = searchParams.get('itemName')
     
     // Validate region ID if provided
     if (regionId) {
@@ -118,13 +119,34 @@ export async function GET(request: NextRequest) {
     
     const aggregateIdsList = aggregateIds.map(agg => agg.id)
     
+    // If filtering by item name, look up the matching item ID(s) first
+    // Searches the short_name column (case-insensitive)
+    let itemNameFilter: number[] | null = null
+    if (itemName) {
+      const { data: matchingItems } = await supabase
+        .from('litter_items')
+        .select('id')
+        .ilike('short_name', `%${itemName}%`)
+      itemNameFilter = matchingItems?.map(i => i.id as number) ?? []
+    }
+
     // Build litter items aggregates query
     let litterItemsQuery = supabase
       .from('annual_litter_aggregates')
       .select('litter_item_id, total, avg_per_100m, presence')
       .in('aggregate_id', aggregateIdsList)
       .order('avg_per_100m', { ascending: false })
-    
+
+    if (itemNameFilter !== null) {
+      if (itemNameFilter.length === 0) {
+        // No matching items found — return empty result early
+        return NextResponse.json(
+          createSuccessResponse({ litterItems: [], summary: { totalItems: 0, totalLitter: 0, avgPresence: 0 } }, 0)
+        )
+      }
+      litterItemsQuery = litterItemsQuery.in('litter_item_id', itemNameFilter)
+    }
+
     if (limitValidation.value) {
       litterItemsQuery = litterItemsQuery.limit(limitValidation.value)
     }

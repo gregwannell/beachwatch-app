@@ -29,6 +29,7 @@ export function HorizontalBarChart({
   animationDuration = 1000,
   animationEasing = "ease-out",
   colors,
+  showBarLabel = true,
 }: BarChartProps) {
   const processedData = React.useMemo(() => {
     if (!data || data.length === 0) return []
@@ -110,15 +111,15 @@ export function HorizontalBarChart({
       >
         <ChartContainer
           config={chartConfig}
-          className="min-h-[200px] w-full"
-          style={{ height }}
+          className="w-full"
+          style={{ height, minHeight: height }}
         >
         <BarChart
           accessibilityLayer
           data={processedData}
           layout="vertical"
           margin={{
-            top: 20,
+            top: showBarLabel ? 20 : 4,
             right: 16,
           }}
           barCategoryGap="25%"
@@ -152,21 +153,23 @@ export function HorizontalBarChart({
             {processedData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />
             ))}
-            <LabelList
-              dataKey="name"
-              content={({ x, y, value }) => (
-                <text
-                  x={Number(x) + 2}              // shift right slightly from the bar start
-                  y={Number(y) - 6}              // place above the bar
-                  fill="var(--foreground)"
-                  fontSize={12}
-                  fontWeight={500}
-                  textAnchor="start"
-                >
-                  {value}
-                </text>
-              )}
-            />
+            {showBarLabel && (
+              <LabelList
+                dataKey="name"
+                content={({ x, y, value }) => (
+                  <text
+                    x={Number(x) + 2}
+                    y={Number(y) - 6}
+                    fill="var(--foreground)"
+                    fontSize={12}
+                    fontWeight={500}
+                    textAnchor="start"
+                  >
+                    {value}
+                  </text>
+                )}
+              />
+            )}
             <LabelList
               dataKey="value"
               position="insideRight"

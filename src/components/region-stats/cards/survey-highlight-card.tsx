@@ -25,7 +25,7 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
             </div>
           </div>
           <p className="text-xs leading-relaxed">
-            Our volunteers are making a measurable difference to the UK coastline. You can help too by signing up to a beach clean near you.
+            Help expand beach litter data by participating in local surveys.
           </p>
           <Button variant="cta" size="sm" className="h-auto py-1.5 text-xs w-fit" asChild>
             <a

@@ -13,10 +13,9 @@ export { AverageLitterKpiCard, LitterCollectionStats, EngagementStats, KpiCardsG
 // Insight components
 export {
   HistoricalContextInsight,
-  TopLitterItemInsight,
-  TopSourceInsight,
-  PlasticComparisonInsight,
-  TopLitterTypeCard
+  TopLitterTypeCard,
+  TopLitterItemSourceCard,
+  InsightsCarousel,
 } from './insights'
 
 // Small reusable components

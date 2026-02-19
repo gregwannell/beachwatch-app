@@ -27,7 +27,7 @@ export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps
           <p className="text-xs leading-relaxed">
             Our volunteers are making a measurable difference to the UK coastline. You can help too by signing up to a beach clean near you.
           </p>
-          <Button size="sm" className="h-auto py-1.5 text-xs font-semibold w-fit" asChild>
+          <Button variant="cta" size="sm" className="h-auto py-1.5 text-xs w-fit" asChild>
             <a
               href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/find-a-beach-clean/"
               target="_blank"

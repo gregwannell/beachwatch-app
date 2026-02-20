@@ -88,16 +88,16 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
         <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-mcs-teal/20 blur-2xl" />
 
         {/* Content */}
-        <div className="relative z-10 px-6 pt-10 pb-20 text-white text-center">
+        <div className="relative z-10 px-6 pt-3 pb-8 text-white text-center">
           {!hideHeader && (
             <div className="mb-4">
               <h3 className="text-lg md:text-xl font-extrabold tracking-widest uppercase opacity-90 drop-shadow-sm">
                 {regionData.name}
-                <span className="text-mcs-teal mx-2">•</span>
+                <span className="text mx-2">•</span>
                 {selectedYear || new Date().getFullYear()}
               </h3>
               {breadcrumbs.length > 1 && (
-                <div className="flex items-center justify-center gap-1 mt-2 text-[11px] text-white/60">
+                <div className="flex items-center justify-center gap-1 text-[11px] text-white/60">
                   {breadcrumbs.map((crumb, i) => (
                     <span key={crumb.level + crumb.name} className="flex items-center gap-1">
                       {i > 0 && <ChevronRight className="h-3 w-3" />}

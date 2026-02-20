@@ -94,8 +94,8 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
             const midpoint = Math.ceil(stats.totalYears / 2)
             const isInBetterHalf = stats.ranking <= midpoint
             return isInBetterHalf
-              ? <>{rankingText}. The lowest recorded in this period was <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
-              : <>{rankingText} — The highest recorded in this period was <strong>{stats.worstYear.value.toFixed(1)}/100m</strong> in <strong>{stats.worstYear.year}</strong></>
+              ? <>{rankingText}. The lowest recorded over this period was <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
+              : <>{rankingText}. The highest recorded over this period was <strong>{stats.worstYear.value.toFixed(1)}/100m</strong> in <strong>{stats.worstYear.year}</strong></>
           })()}
         </p>
       </div>

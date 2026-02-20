@@ -3,29 +3,36 @@
 import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { YearOverYearBadge } from "../components"
+import { formatNumber } from "@/lib/format-number"
 import type { RegionData } from '@/types/region-types'
+
+function SurveyYoYText({ change }: { change?: number }) {
+  if (change === undefined || Math.abs(change) < 1) return null
+  return change > 0
+    ? <>, a <strong className="text-mcs-green">{change.toFixed(1)}% increase</strong> compared to last year</>
+    : <>, a <strong className="text-mcs-red">{Math.abs(change).toFixed(1)}% decrease</strong> compared to last year</>
+}
 
 interface SurveyHighlightCardProps {
   engagementData: NonNullable<RegionData['engagementData']>
+  selectedYear?: number
 }
 
-export function SurveyHighlightCard({ engagementData }: SurveyHighlightCardProps) {
+export function SurveyHighlightCard({ engagementData, selectedYear }: SurveyHighlightCardProps) {
   return (
     <div className="bg-card bg-topography rounded-2xl shadow-sm hover:shadow-lg transition-shadow border overflow-hidden">
       <div className="flex items-stretch">
         {/* Left content */}
         <div className="basis-3/5 p-4 flex flex-col justify-between gap-3">
-          <div>
-            <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-5xl font-bold tabular-nums">
-                {engagementData.surveyCount.toLocaleString()}
-                <span className="text-xs font-medium ml-1">surveys</span>
-              </p>
-              <YearOverYearBadge change={engagementData.yearOverYearChanges?.surveys} increaseIsGood />
-            </div>
+          <div className="flex items-baseline gap-2 mt-1">
+            <p className="text-4xl font-bold tabular-nums">
+              {formatNumber(engagementData.volunteerCount)}
+              <span className="text-xs font-medium ml-1">volunteers</span>
+            </p>
+            <YearOverYearBadge change={engagementData.yearOverYearChanges?.volunteers} increaseIsGood />
           </div>
           <p className="text-xs leading-relaxed">
-            Help expand beach litter data by participating in local surveys.
+            participated in <strong className="text-sm">{engagementData.surveyCount.toLocaleString()}</strong> surveys{selectedYear ? ` in ${selectedYear}` : ''}<SurveyYoYText change={engagementData.yearOverYearChanges?.surveys} />. Help expand beach litter data by joining a local clean.
           </p>
           <Button variant="cta" size="sm" className="h-auto py-1.5 text-xs w-fit" asChild>
             <a

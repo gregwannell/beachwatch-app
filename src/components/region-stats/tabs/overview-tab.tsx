@@ -13,7 +13,7 @@ export function OverviewTab({ regionData, selectedYear }: OverviewTabProps) {
     <div className="space-y-6">
       {/* Survey Highlight Card */}
       {regionData.engagementData && (
-        <SurveyHighlightCard engagementData={regionData.engagementData} />
+        <SurveyHighlightCard engagementData={regionData.engagementData} selectedYear={selectedYear} />
       )}
 
       {/* KPI Cards Grid - 2x2 collection stats */}

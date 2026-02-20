@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, type ReactElement } from 'react'
 import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { RegionData } from '@/types/region-types'
@@ -11,12 +11,10 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import { CarouselDots } from "@/components/ui/carousel-dots"
-import {
-  HistoricalContextInsight,
-  TopLitterItemInsight,
-  TopSourceInsight,
-} from '.'
-import { TopLitterTypeCard } from './top-litter-type-card'
+import { HistoricalContextInsight } from './historical-context-insight'
+import { TopLitterMaterialCard } from './top-litter-material-card'
+import { TopLitterItemCard } from './top-litter-item-card'
+import { TopLitterSourceCard } from './top-litter-source-card'
 
 interface InsightsCarouselProps {
   regionData: RegionData
@@ -31,6 +29,34 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
   }
 
   const { litterData } = regionData
+
+  const slides = [
+    <HistoricalContextInsight
+      key="history"
+      regionData={regionData}
+      selectedYear={selectedYear}
+    />,
+    litterData.materialBreakdown.length > 0 ? (
+      <TopLitterMaterialCard
+        key="top-material"
+        materialBreakdown={litterData.materialBreakdown}
+      />
+    ) : null,
+    (litterData.topLitterItems?.length ?? 0) > 0 ? (
+      <TopLitterItemCard
+        key="top-item"
+        topLitterItems={litterData.topLitterItems}
+      />
+    ) : null,
+    litterData.sourceBreakdown.length > 0 ? (
+      <TopLitterSourceCard
+        key="top-source"
+        sourceBreakdown={litterData.sourceBreakdown}
+      />
+    ) : null,
+  ].filter((s): s is ReactElement => s !== null)
+
+  if (slides.length === 0) return null
 
   const scrollPrev = () => api?.scrollPrev()
   const scrollNext = () => api?.scrollNext()
@@ -72,30 +98,11 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
         className="w-full"
       >
         <CarouselContent className="-ml-3 py-1">
-          {/* Page 1: Historical Context + Top Litter Type */}
-          <CarouselItem className="pl-3 basis-full">
-            <div className="grid grid-cols-1 gap-4">
-              <HistoricalContextInsight
-                regionData={regionData}
-                selectedYear={selectedYear}
-              />
-              <TopLitterTypeCard
-                plasticPolystyreneComparison={litterData.plasticPolystyreneComparison}
-              />
-            </div>
-          </CarouselItem>
-
-          {/* Page 2: Top Litter Item + Top Source */}
-          <CarouselItem className="pl-3 basis-full">
-            <div className="grid grid-cols-1 gap-4">
-              <TopLitterItemInsight
-                topLitterItems={litterData.topLitterItems}
-              />
-              <TopSourceInsight
-                sourceBreakdown={litterData.sourceBreakdown}
-              />
-            </div>
-          </CarouselItem>
+          {slides.map((slide) => (
+            <CarouselItem key={slide.key} className="pl-3 basis-full">
+              {slide}
+            </CarouselItem>
+          ))}
         </CarouselContent>
       </Carousel>
 

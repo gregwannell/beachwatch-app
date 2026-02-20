@@ -1,6 +1,7 @@
 "use client"
 
-import { Info, TrendingDown, TrendingUp, Award, History } from "lucide-react"
+import Image from 'next/image'
+import { TrendingDown, TrendingUp, Award } from 'lucide-react'
 import type { RegionData } from '@/types/region-types'
 import { calculateHistoricalStats, getRankingText } from '../utils'
 
@@ -22,82 +23,87 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
 
   if (!stats) return null
 
-  // Determine the icon and color based on performance
-  const isGoodPerformance = !stats.isAboveAverage || stats.ranking <= 3
+  const isGoodPerformance = !stats.isAboveAverage || stats.isBestEver
   const IconComponent = stats.isBestEver ? Award : stats.isAboveAverage ? TrendingUp : TrendingDown
-  const iconBg = isGoodPerformance
-    ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600"
-    : "bg-amber-100 dark:bg-amber-900/40 text-amber-600"
+  const accentClass = isGoodPerformance ? 'text-mcs-teal' : 'text-mcs-red'
+  const iconBgClass = isGoodPerformance ? 'bg-mcs-teal/20' : 'bg-mcs-red/20'
+  const iconColorClass = isGoodPerformance ? 'text-mcs-teal' : 'text-mcs-orange'
+
+  let badgeText: string | null = null
+  let badgeClass = ''
+  if (stats.isBestEver) {
+    badgeText = 'REGIONS BEST YEAR'
+    badgeClass = 'bg-mcs-teal/20 text-mcs-teal border border-mcs-teal/30'
+  } else if (stats.isWorstEver) {
+    badgeText = 'REGIONS WORST YEAR'
+    badgeClass = 'bg-mcs-red/20 text-mcs-red border border-mcs-red/30'
+  } else if (!stats.isAboveAverage) {
+    badgeText = 'BELOW REGION AVERAGE'
+    badgeClass = 'bg-mcs-teal/20 text-mcs-teal border border-mcs-teal/30'
+  } else if (stats.isAboveAverage) {
+    badgeText = 'ABOVE REGION AVERAGE'
+    badgeClass = 'bg-mcs-red/20 text-mcs-red border border-mcs-red/30'
+  }
+
+  const avgLabel =
+    stats.percentDifference === 0
+      ? 'matches the average'
+      : `${stats.isAboveAverage ? 'above' : 'below'} 10 year average`
 
   return (
-    <div className="bg-card p-6 rounded-2xl shadow-sm border relative overflow-hidden min-h-[200px] flex flex-col group">
-      {/* Background watermark icon */}
-      <div className="absolute top-0 right-0 p-4">
-        <History className="w-20 h-20 text-muted-foreground/5" />
+    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[260px] flex flex-col justify-between relative overflow-hidden">
+      <Image
+        src="/waves-turquoise.png"
+        alt=""
+        fill
+        className="object-cover"
+        style={{ opacity: 0.06 }}
+      />
+
+      {/* Top section */}
+      <div className="relative z-10">
+        <div className="flex items-start justify-between mb-4">
+          <div className={`w-10 h-10 rounded-full ${iconBgClass} flex items-center justify-center`}>
+            <IconComponent className={`w-5 h-5 ${iconColorClass}`} />
+          </div>
+          {badgeText && (
+            <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${badgeClass}`}>
+              {badgeText}
+            </span>
+          )}
+        </div>
+        <p className="text-2xl font-bold text-white leading-tight">Average items/100m</p>
+        <div className="mt-1">
+          <span className={`text-5xl font-bold ${accentClass}`}>
+            {stats.percentDifference === 0 ? '—' : `${stats.percentDifference}%`} <span className="text-base font-semibold text-slate-200 mt-1">{avgLabel}</span>
+          </span>
+        </div>
       </div>
 
-      <div className="relative z-10 flex flex-col h-full">
-        <div className="flex items-center gap-2 text-primary font-bold mb-4">
-          <Info className="w-4 h-4" />
-          <span className="text-xs uppercase tracking-widest">Historical Context</span>
-        </div>
-
-        <div className="space-y-4 flex-1">
-          {/* Historical average comparison */}
-          <div className="flex items-start gap-3">
-            <div className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${iconBg}`}>
-              <IconComponent className="w-3.5 h-3.5" />
-            </div>
-            <p className="text-base leading-relaxed">
-              <strong>
-                {stats.percentDifference === 0
-                  ? "Matches"
-                  : `${stats.percentDifference}% ${stats.isAboveAverage ? "above" : "below"}`}
-              </strong>
-              <span className="text-muted-foreground"> the 10-year average </span>
-              <span className="text-muted-foreground/60">({stats.historicalAverage.toFixed(1)} per 100m)</span>
-            </p>
-          </div>
-
-          {/* Ranking information */}
-          <div className="flex items-start gap-3">
-            <div className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${stats.isBestEver ? iconBg : "bg-amber-100 dark:bg-amber-900/40 text-amber-600"}`}>
-              <Award className="w-3.5 h-3.5" />
-            </div>
-            <div>
-              <p className="text-base leading-relaxed">
-                <strong>{getRankingText(stats)}</strong>
-              </p>
-              {!stats.isBestEver && !stats.isWorstEver && (() => {
-                const midpoint = Math.ceil(stats.totalYears / 2)
-                const isInBetterHalf = stats.ranking <= midpoint
-
-                if (isInBetterHalf) {
-                  return (
-                    <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest">
-                      Best Record: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year}
-                    </span>
-                  )
-                } else {
-                  return (
-                    <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest">
-                      Worst Record: {stats.worstYear.value.toFixed(1)} in {stats.worstYear.year}
-                    </span>
-                  )
-                }
-              })()}
-              {stats.isWorstEver && stats.totalYears > 1 && (
-                <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-widest block">
-                  Previous low: {stats.bestYear.value.toFixed(1)} in {stats.bestYear.year}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Celebration message for best year */}
-          {stats.isBestEver && stats.totalYears > 1 && (
-            <p className="text-xs text-green-600 dark:text-green-400 font-medium pl-9">
-              Lowest litter levels in the last 10 years
+      {/* Bottom section */}
+      <div className="relative z-10">
+        <div className="space-y-1">
+          <p className="text-sm text-slate-200">{getRankingText(stats)}</p>
+          {!stats.isBestEver && !stats.isWorstEver && (() => {
+            const midpoint = Math.ceil(stats.totalYears / 2)
+            const isInBetterHalf = stats.ranking <= midpoint
+            if (isInBetterHalf) {
+              return (
+                <p className="text-sm  text-slate-200">
+                  Lowest Year: {stats.bestYear.value.toFixed(1)}/100m in {stats.bestYear.year}
+                </p>
+              )
+            } else {
+              return (
+                <p className="text-sm text-slate-200">
+                 Highest Year: {stats.worstYear.value.toFixed(1)}/100m in {stats.worstYear.year}
+                </p>
+              )
+            }
+          })()}
+          {stats.isWorstEver && stats.totalYears > 1 && (
+            <p className="text-sm text-slate-200">
+              Previous low: {stats.bestYear.value.toFixed(1)}/100m in {stats.bestYear.year}
             </p>
           )}
         </div>

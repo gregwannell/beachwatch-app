@@ -88,7 +88,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
         <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-mcs-teal/20 blur-2xl" />
 
         {/* Content */}
-        <div className="relative z-10 px-6 pt-3 pb-8 text-white text-center">
+        <div className="relative z-10 px-6 pt-10 pb-8 text-white text-center">
           {!hideHeader && (
             <div className="mb-4">
               <h3 className="text-lg md:text-xl font-extrabold tracking-widest uppercase opacity-90 drop-shadow-sm">

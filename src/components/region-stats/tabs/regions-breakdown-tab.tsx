@@ -119,7 +119,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
         return val != null ? (
           <div className="flex items-center gap-1.5">
             <span className="tabular-nums text-xs">{val.toFixed(1)}</span>
-            <YearOverYearBadge change={row.original.avgPer100mYoY ?? undefined} className="text-[10px] px-1 py-0 gap-0" />
+            <YearOverYearBadge change={row.original.avgPer100mYoY ?? undefined} variant="plain" className="text-[11px]"/>
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -135,7 +135,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
         return val != null ? (
           <div className="flex items-center gap-1.5">
             <span className="tabular-nums">{formatNumber(val, 0)}</span>
-            <YearOverYearBadge change={row.original.totalSurveysYoY ?? undefined} increaseIsGood className="text-[10px] px-1 py-0 gap-0" />
+            <YearOverYearBadge change={row.original.totalSurveysYoY ?? undefined} increaseIsGood variant="plain" className="text-[11px]" />
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -151,7 +151,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
         return val != null ? (
           <div className="flex items-center gap-1.5">
             <span className="tabular-nums">{formatNumber(val, 0)}</span>
-            <YearOverYearBadge change={row.original.totalVolunteersYoY ?? undefined} increaseIsGood className="text-[10px] px-1 py-0 gap-0" />
+            <YearOverYearBadge change={row.original.totalVolunteersYoY ?? undefined} increaseIsGood variant="plain" className="text-[11px]" />
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -245,12 +245,15 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
 
   return (
     <div className="space-y-2">
-      {excludedCount > 0 && (
-        <p className="text-xs text-muted-foreground">
-          {excludedCount} {excludedCount === 1 ? 'region' : 'regions'} without data not shown.
-        </p>
-      )}
-      <div className="rounded-lg border overflow-x-auto">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold">Regional Breakdown</h3>
+        {excludedCount > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {excludedCount} {excludedCount === 1 ? 'region' : 'regions'} without data not shown.
+          </p>
+        )}
+      </div>
+      <div className="rounded-lg border overflow-auto max-h-[400px]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
@@ -262,8 +265,8 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
                       key={header.id}
                       style={pinnedStyle(header.column)}
                       className={cn(
-                        'text-xs text-muted-foreground/50 h-9 px-3',
-                        isPinned && 'sticky z-20 bg-background',
+                        'text-xs text-muted-foreground/50 h-9 px-3 bg-background sticky top-0 z-10',
+                        isPinned && 'z-20',
                       )}
                     >
                       {header.isPlaceholder

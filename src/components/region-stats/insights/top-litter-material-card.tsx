@@ -47,7 +47,7 @@ export function TopLitterMaterialCard({ materialBreakdown }: TopLitterMaterialCa
           />
         </div>
         <p className="text-sm text-slate-200 leading-relaxed">
-          The most commonly found material across all surveyed sites in this region.
+          Found on <strong>{topMaterial.presence.toFixed(1)}%</strong> of surveys, averaging <strong>{topMaterial.avgPer100m.toFixed(1)}</strong> per 100m with <strong>{topMaterial.count.toLocaleString()}</strong> items recorded in total.
         </p>
       </div>
     </div>

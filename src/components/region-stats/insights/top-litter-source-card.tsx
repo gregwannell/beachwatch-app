@@ -45,7 +45,7 @@ export function TopLitterSourceCard({ sourceBreakdown }: TopLitterSourceCardProp
             style={{ width: `${Math.min(topSource.percentage, 100)}%` }}
           />
         </div>
-        <p className="text-sm text-slate-200">{topSource.avgPer100m.toFixed(1)} items per 100m on average</p>
+        <p className="text-sm text-slate-200">Found on <strong>{topSource.presence.toFixed(1)}%</strong> of surveys, averaging <strong>{topSource.avgPer100m.toFixed(1)}</strong> per 100m with <strong>{topSource.count.toLocaleString()}</strong> items recorded in total.</p>
       </div>
     </div>
   )

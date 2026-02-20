@@ -39,8 +39,7 @@ export function TopLitterItemCard({ topLitterItems }: TopLitterItemCardProps) {
 
       {/* Bottom section */}
       <div className="relative z-10 space-y-1">
-        <p className="text-sm text-slate-200">Found in {topItem.presence.toFixed(1)}% of surveys</p>
-        <p className="text-sm text-slate-400">{topItem.total.toLocaleString()} items recorded in total</p>
+        <p className="text-sm text-slate-200">Found on <strong>{topItem.presence.toFixed(1)}%</strong> of surveys with <strong>{topItem.total.toLocaleString()}</strong> items recorded in total</p>
       </div>
     </div>
   )

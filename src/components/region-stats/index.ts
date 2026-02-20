@@ -5,10 +5,10 @@ export { RegionStatsContent } from './region-stats-content'
 export { GradientHeroHeader } from './hero'
 
 // Tab components
-export { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
+export { OverviewTab, LitterStatsTab, RegionsTab } from './tabs'
 
 // Card components
-export { AverageLitterKpiCard, LitterCollectionStats, EngagementStats, KpiCardsGrid } from './cards'
+export { AverageLitterKpiCard, LitterCollectionStats, KpiCardsGrid } from './cards'
 
 // Insight components
 export {

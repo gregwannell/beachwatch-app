@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Users } from "lucide-react"
+import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Layers } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
 // Import extracted components
 import { EmptyState, LoadingSkeleton } from './components'
-import { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
+import { OverviewTab, LitterStatsTab, RegionsTab } from './tabs'
 import { GradientHeroHeader } from './hero'
 
 interface RegionStatsContentProps {
@@ -103,8 +103,8 @@ export function RegionStatsContent({
             <TabsTrigger value="litter" className="text-sm">
               <Trash2 /> Litter Stats
             </TabsTrigger>
-            <TabsTrigger value="engagement" className="text-sm">
-              <Users /> Engagement
+            <TabsTrigger value="regions" className="text-sm">
+              <Layers /> Regions
             </TabsTrigger>
           </TabsList>
         </div>
@@ -174,8 +174,8 @@ export function RegionStatsContent({
           <LitterStatsTab regionData={regionData} />
         </TabsContent>
 
-        <TabsContent value="engagement" className="space-y-4 mt-0">
-          <EngagementTab regionData={regionData} />
+        <TabsContent value="regions" className="space-y-4 mt-0">
+          <RegionsTab regionData={regionData} />
         </TabsContent>
       </div>
     </Tabs>

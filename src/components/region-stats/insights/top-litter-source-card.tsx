@@ -30,10 +30,10 @@ export function TopLitterSourceCard({ sourceBreakdown }: TopLitterSourceCardProp
             Top Source
           </span>
         </div>
-        <p className="text-2xl font-bold text-white leading-tight">{topSource.source}</p>
+        <p className="text-xl font-bold text-white leading-tight">{topSource.source}</p>
         <div className="mt-3">
           <span className="text-5xl font-bold text-mcs-clear-blue">{Math.round(topSource.percentage)}%</span>
-          <span className="text-base font-semibold text-slate-200 ml-2">of total litter</span>
+          <span className="text-sm font-normal text-slate-200 ml-2">of total litter</span>
         </div>
       </div>
 

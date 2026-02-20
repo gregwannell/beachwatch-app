@@ -31,7 +31,7 @@ export function TopLitterMaterialCard({ materialBreakdown }: TopLitterMaterialCa
             Top Material Type
           </span>
         </div>
-        <p className="text-2xl font-bold text-white leading-tight">{topMaterial.material}</p>
+        <p className="text-xl font-bold text-white leading-tight">{topMaterial.material}</p>
       </div>
 
       {/* Bottom section */}

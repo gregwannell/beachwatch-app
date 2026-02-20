@@ -72,10 +72,10 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
             </span>
           )}
         </div>
-        <p className="text-2xl font-bold text-white leading-tight">Average items/100m</p>
+        <p className="text-xl font-bold text-white leading-tight">Average items/100m</p>
         <div className="mt-1">
           <span className={`text-5xl font-bold ${accentClass}`}>
-            {stats.percentDifference === 0 ? '—' : `${stats.percentDifference}%`} <span className="text-base font-semibold text-slate-200 mt-1">{avgLabel}</span>
+            {stats.percentDifference === 0 ? '—' : `${stats.percentDifference}%`} <span className="font-normal text-sm text-slate-200 mt-1">{avgLabel}</span>
           </span>
         </div>
       </div>

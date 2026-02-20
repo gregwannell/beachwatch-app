@@ -30,10 +30,10 @@ export function TopLitterItemCard({ topLitterItems }: TopLitterItemCardProps) {
             Top Litter Item
           </span>
         </div>
-        <p className="text-2xl font-bold text-white leading-tight">{topItem.item.shortName ?? topItem.item.name}</p>
+        <p className="text-xl font-bold text-white leading-tight">{topItem.item.shortName ?? topItem.item.name}</p>
         <div className="mt-3">
           <span className="text-5xl font-bold text-mcs-teal">{topItem.avgPer100m.toFixed(1)}</span>
-          <span className="text-base font-semibold text-slate-200 ml-2">per 100m</span>
+          <span className="text-sm text-slate-200 ml-2">per 100m</span>
         </div>
       </div>
 

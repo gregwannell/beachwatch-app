@@ -120,7 +120,7 @@ function calculateYearOverYearChange(
   if (previous.avg_per_100m === 0) return 100 // If previous was 0, any increase is 100%
 
   const change = ((current.avg_per_100m - previous.avg_per_100m) / previous.avg_per_100m) * 100
-  return Math.round(change * 10) / 10 // Round to 1 decimal place
+  return Math.round(change)
 }
 
 // Helper function to calculate UK average comparison
@@ -153,7 +153,7 @@ function calculateEngagementYearOverYearChange(aggregates: { year: string, total
     if (current === 0 && previous === 0) return 0
     if (previous === 0) return 100
     const change = ((current - previous) / previous) * 100
-    return Math.round(change * 10) / 10
+    return Math.round(change)
   }
   
   return {

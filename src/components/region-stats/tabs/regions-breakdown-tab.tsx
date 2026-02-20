@@ -11,7 +11,7 @@ import {
   type SortingState,
   type Row,
 } from '@tanstack/react-table'
-import { ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, MapPin } from 'lucide-react'
+import { ArrowUpDown, ArrowUp, ArrowDown, MapPin } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { YearOverYearBadge } from '@/components/region-stats/components/year-over-year-badge'
 import { cn } from '@/lib/utils'
-import { formatNumber, formatBeachLength } from '@/lib/format-number'
+import { formatNumber, formatBeachLength, formatWeight } from '@/lib/format-number'
 import { useChildRegionStats, type ChildRegionStat } from '@/hooks/use-child-region-stats'
 import type { RegionData } from '@/types/region-types'
 
@@ -58,18 +58,20 @@ function SortableHeader({
   )
 }
 
-// Pushes rows with no data to the bottom regardless of sort direction
-function noDataLastSortFn(
+function numericSortFn(
   a: Row<ChildRegionStat>,
   b: Row<ChildRegionStat>,
   getValue: (row: Row<ChildRegionStat>) => number | null
 ): number {
-  if (!a.original.hasData && !b.original.hasData) return 0
-  if (!a.original.hasData) return 1
-  if (!b.original.hasData) return -1
   const aVal = getValue(a) ?? Infinity
   const bVal = getValue(b) ?? Infinity
   return aVal - bVal
+}
+
+function pinnedStyle(column: Column<ChildRegionStat>): React.CSSProperties {
+  return column.getIsPinned() === 'left'
+    ? { left: `${column.getStart('left')}px` }
+    : {}
 }
 
 export function RegionsTab({ regionData, selectedYear, onRegionSelect }: RegionsTabProps) {
@@ -78,6 +80,9 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
     selectedYear
   )
 
+  const withData = React.useMemo(() => children?.filter(c => c.hasData) ?? [], [children])
+  const excludedCount = (children?.length ?? 0) - withData.length
+
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: 'avgPer100m', desc: false },
   ])
@@ -85,31 +90,24 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
   const columns: ColumnDef<ChildRegionStat>[] = [
     {
       id: 'rank',
+      size: 36,
       header: '#',
       cell: ({ row, table }) => {
-        const sorted = table.getSortedRowModel().rows
-        const withData = sorted.filter(r => r.original.hasData)
-        const idx = withData.findIndex(r => r.id === row.id)
-        return idx >= 0 ? (
+        const idx = table.getSortedRowModel().rows.findIndex(r => r.id === row.id)
+        return (
           <span className="text-muted-foreground text-xs font-mono tabular-nums">{idx + 1}</span>
-        ) : null
+        )
       },
       enableSorting: false,
     },
     {
       accessorKey: 'name',
+      size: 160,
       header: 'Region',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <span className={cn('font-medium text-sm', !row.original.hasData && 'text-muted-foreground')}>
-            {row.original.name}
-          </span>
-          {!row.original.hasData && (
-            <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4">
-              No data
-            </Badge>
-          )}
-        </div>
+        <span className={cn('font-medium text-xs', !row.original.hasData && 'text-muted-foreground')}>
+          {row.original.name}
+        </span>
       ),
       enableSorting: false,
     },
@@ -119,12 +117,15 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.avgPer100m
         return val != null ? (
-          <span className="tabular-nums">{val.toFixed(1)}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="tabular-nums text-xs">{val.toFixed(1)}</span>
+            <YearOverYearBadge change={row.original.avgPer100mYoY ?? undefined} className="text-[10px] px-1 py-0 gap-0" />
+          </div>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
       },
-      sortingFn: (a, b) => noDataLastSortFn(a, b, r => r.original.avgPer100m),
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.avgPer100m),
     },
     {
       accessorKey: 'totalSurveys',
@@ -132,12 +133,57 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalSurveys
         return val != null ? (
+          <div className="flex items-center gap-1.5">
+            <span className="tabular-nums">{formatNumber(val, 0)}</span>
+            <YearOverYearBadge change={row.original.totalSurveysYoY ?? undefined} increaseIsGood className="text-[10px] px-1 py-0 gap-0" />
+          </div>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )
+      },
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.totalSurveys),
+    },
+    {
+      accessorKey: 'totalVolunteers',
+      header: ({ column }) => <SortableHeader column={column} label="Volunteers" />,
+      cell: ({ row }) => {
+        const val = row.original.totalVolunteers
+        return val != null ? (
+          <div className="flex items-center gap-1.5">
+            <span className="tabular-nums">{formatNumber(val, 0)}</span>
+            <YearOverYearBadge change={row.original.totalVolunteersYoY ?? undefined} increaseIsGood className="text-[10px] px-1 py-0 gap-0" />
+          </div>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )
+      },
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.totalVolunteers),
+    },
+    {
+      accessorKey: 'totalLitter',
+      header: ({ column }) => <SortableHeader column={column} label="Total litter" />,
+      cell: ({ row }) => {
+        const val = row.original.totalLitter
+        return val != null ? (
           <span className="tabular-nums">{formatNumber(val, 0)}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
       },
-      sortingFn: (a, b) => noDataLastSortFn(a, b, r => r.original.totalSurveys),
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.totalLitter),
+    },
+    {
+      accessorKey: 'totalWeightKg',
+      header: ({ column }) => <SortableHeader column={column} label="Weight" />,
+      cell: ({ row }) => {
+        const val = row.original.totalWeightKg
+        return val != null ? (
+          <span className="tabular-nums">{formatWeight(val)}</span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        )
+      },
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.totalWeightKg),
     },
     {
       accessorKey: 'totalLengthM',
@@ -150,26 +196,20 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
           <span className="text-muted-foreground">—</span>
         )
       },
-      sortingFn: (a, b) => noDataLastSortFn(a, b, r => r.original.totalLengthM),
-    },
-    {
-      id: 'navigate',
-      header: '',
-      cell: ({ row }) =>
-        row.original.hasData ? (
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
-        ) : null,
-      enableSorting: false,
+      sortingFn: (a, b) => numericSortFn(a, b, r => r.original.totalLengthM),
     },
   ]
 
   const table = useReactTable({
-    data: children ?? [],
+    data: withData,
     columns,
     state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    initialState: {
+      columnPinning: { left: ['rank', 'name'] },
+    },
   })
 
   if (isLoading) {
@@ -190,7 +230,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
     )
   }
 
-  if (children?.length === 0) {
+  if (children?.length === 0 || withData.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
         <MapPin className="w-5 h-5 text-muted-foreground" />
@@ -204,49 +244,73 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
   }
 
   return (
-    <div className="rounded-lg border overflow-hidden">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
-            <TableRow key={headerGroup.id} className="hover:bg-transparent">
-              {headerGroup.headers.map(header => (
-                <TableHead
-                  key={header.id}
-                  className="text-xs text-muted-foreground h-9 px-3 first:w-8 last:w-6"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map(row => (
-            <TableRow
-              key={row.id}
-              onClick={() => {
-                if (row.original.hasData && onRegionSelect) {
-                  onRegionSelect(row.original.id)
-                }
-              }}
-              className={cn(
-                'text-sm',
-                row.original.hasData && onRegionSelect
-                  ? 'cursor-pointer'
-                  : 'opacity-50 cursor-default'
-              )}
-            >
-              {row.getVisibleCells().map(cell => (
-                <TableCell key={cell.id} className="px-3 py-2.5">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="space-y-2">
+      {excludedCount > 0 && (
+        <p className="text-xs text-muted-foreground">
+          {excludedCount} {excludedCount === 1 ? 'region' : 'regions'} without data not shown.
+        </p>
+      )}
+      <div className="rounded-lg border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                {headerGroup.headers.map(header => {
+                  const isPinned = header.column.getIsPinned()
+                  return (
+                    <TableHead
+                      key={header.id}
+                      style={pinnedStyle(header.column)}
+                      className={cn(
+                        'text-xs text-muted-foreground/50 h-9 px-3',
+                        isPinned && 'sticky z-20 bg-background',
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map(row => (
+              <TableRow
+                key={row.id}
+                onClick={() => {
+                  if (row.original.hasData && onRegionSelect) {
+                    onRegionSelect(row.original.id)
+                  }
+                }}
+                className={cn(
+                  'group text-xs',
+                  row.original.hasData && onRegionSelect
+                    ? 'cursor-pointer'
+                    : 'opacity-50 cursor-default'
+                )}
+              >
+                {row.getVisibleCells().map(cell => {
+                  const isPinned = cell.column.getIsPinned()
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      style={pinnedStyle(cell.column)}
+                      className={cn(
+                        'px-3 py-2.5',
+                        isPinned && 'sticky z-10 bg-background group-hover:bg-accent',
+                      )}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  )
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

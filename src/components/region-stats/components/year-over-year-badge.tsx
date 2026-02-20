@@ -32,7 +32,7 @@ export function YearOverYearBadge({ change, increaseIsGood = false, vivid = fals
   return (
     <Badge variant={badgeVariant} className={cn("text-xs font-semibold gap-0.5 px-1.5 rounded-full", className)}>
       <Icon className="w-3 h-3 stroke-[2.5]" />
-      {symbol}{change.toFixed(1)}%
+      {symbol}{change.toFixed(0)}%
     </Badge>
   )
 }

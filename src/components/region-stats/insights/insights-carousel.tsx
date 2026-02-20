@@ -11,7 +11,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import { CarouselDots } from "@/components/ui/carousel-dots"
-import { HistoricalContextInsight } from './historical-context-insight'
+import { AveragePer100mCard } from './average-per-100m-card'
 import { TopLitterMaterialCard } from './top-litter-material-card'
 import { TopLitterItemCard } from './top-litter-item-card'
 import { TopLitterSourceCard } from './top-litter-source-card'
@@ -31,7 +31,7 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
   const { litterData } = regionData
 
   const slides = [
-    <HistoricalContextInsight
+    <AveragePer100mCard
       key="history"
       regionData={regionData}
       selectedYear={selectedYear}

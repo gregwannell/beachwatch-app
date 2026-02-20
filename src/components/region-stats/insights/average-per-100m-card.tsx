@@ -5,12 +5,12 @@ import { TrendingDown, TrendingUp, Award } from 'lucide-react'
 import type { RegionData } from '@/types/region-types'
 import { calculateHistoricalStats, getRankingText } from '../utils'
 
-interface HistoricalContextInsightProps {
+interface AveragePer100mCardProps {
   regionData: RegionData
   selectedYear?: number
 }
 
-export function HistoricalContextInsight({ regionData, selectedYear }: HistoricalContextInsightProps) {
+export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mCardProps) {
   if (!regionData.litterData?.trendData || regionData.litterData.trendData.length === 0) {
     return null
   }
@@ -82,31 +82,22 @@ export function HistoricalContextInsight({ regionData, selectedYear }: Historica
 
       {/* Bottom section */}
       <div className="relative z-10">
-        <div className="space-y-1">
-          <p className="text-sm text-slate-200">{getRankingText(stats)}</p>
-          {!stats.isBestEver && !stats.isWorstEver && (() => {
+        <p className="text-sm text-slate-200">
+          {(() => {
+            const rankingText = getRankingText(stats)
+            if (stats.isBestEver) return rankingText
+            if (stats.isWorstEver) {
+              return stats.totalYears > 1
+                ? <>{rankingText} — Previous low: <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
+                : rankingText
+            }
             const midpoint = Math.ceil(stats.totalYears / 2)
             const isInBetterHalf = stats.ranking <= midpoint
-            if (isInBetterHalf) {
-              return (
-                <p className="text-sm  text-slate-200">
-                  Lowest Year: {stats.bestYear.value.toFixed(1)}/100m in {stats.bestYear.year}
-                </p>
-              )
-            } else {
-              return (
-                <p className="text-sm text-slate-200">
-                 Highest Year: {stats.worstYear.value.toFixed(1)}/100m in {stats.worstYear.year}
-                </p>
-              )
-            }
+            return isInBetterHalf
+              ? <>{rankingText}. The lowest recorded in this period was <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
+              : <>{rankingText} — The highest recorded in this period was <strong>{stats.worstYear.value.toFixed(1)}/100m</strong> in <strong>{stats.worstYear.year}</strong></>
           })()}
-          {stats.isWorstEver && stats.totalYears > 1 && (
-            <p className="text-sm text-slate-200">
-              Previous low: {stats.bestYear.value.toFixed(1)}/100m in {stats.bestYear.year}
-            </p>
-          )}
-        </div>
+        </p>
       </div>
     </div>
   )

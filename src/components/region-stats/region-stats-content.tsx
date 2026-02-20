@@ -175,7 +175,7 @@ export function RegionStatsContent({
         </TabsContent>
 
         <TabsContent value="regions" className="space-y-4 mt-0">
-          <RegionsTab regionData={regionData} />
+          <RegionsTab regionData={regionData} selectedYear={selectedYear} onRegionSelect={onRegionSelect} />
         </TabsContent>
       </div>
     </Tabs>

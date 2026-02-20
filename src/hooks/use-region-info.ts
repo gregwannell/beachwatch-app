@@ -246,6 +246,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           count: item.total,
           avgPer100m: item.avgPer100m,
           percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          presence: item.presence,
           yearOverYearChange: item.yearOverYearChange
         }))
       }
@@ -262,6 +263,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           count: item.total,
           avgPer100m: item.avgPer100m,
           percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          presence: item.presence,
           yearOverYearChange: item.yearOverYearChange
         }))
       }

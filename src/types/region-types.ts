@@ -25,6 +25,7 @@ export interface RegionData {
       count: number
       avgPer100m: number
       percentage: number
+      presence: number
       yearOverYearChange?: number
     }>
     sourceBreakdown: Array<{
@@ -32,6 +33,7 @@ export interface RegionData {
       count: number
       avgPer100m: number
       percentage: number
+      presence: number
       yearOverYearChange?: number
     }>
     topLitterItems?: Array<{

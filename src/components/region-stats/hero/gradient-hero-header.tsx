@@ -30,7 +30,6 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
   const litterData = regionData.litterData
   const averageLitterPer100m = litterData?.averageLitterPer100m ?? 0
   const yearOverYearChange = litterData?.yearOverYearChange
-  const ukAverageComparison = litterData?.ukAverageComparison
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -50,15 +49,6 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
   const breadcrumbs = getBreadcrumbHierarchy(regionData)
 
   if (!litterData) return null
-
-  // Generate description from UK comparison data
-  const descriptionText = ukAverageComparison
-    ? ukAverageComparison.percentDifference === 0
-      ? "Overall coastline cleanliness matches the UK average. Explore the detailed metrics below to understand regional variations."
-      : ukAverageComparison.percentDifference > 0
-        ? "Overall coastline cleanliness has seen a slight shift this year. Explore the detailed metrics below to understand regional variations."
-        : "Overall coastline cleanliness is improving. Explore the detailed metrics below to understand regional variations."
-    : "Explore the detailed metrics below to understand regional variations."
 
   // Shared content for info modal
   const calculationContent = (
@@ -122,7 +112,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
             </div>
           )}
 
-          <div className="flex items-center justify-center gap-1 mb-1 mt-4">
+          <div className="flex items-center justify-center gap-1 mt-4">
             <p className="text-white/80 font-medium text-sm">Average Litter/100m</p>
             {/* Info button */}
             {isMobile ? (

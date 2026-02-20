@@ -155,7 +155,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
             <YearOverYearBadge change={yearOverYearChange} vivid />
             {yearOverYearChange !== undefined && (
               <span className="text-[10px] text-white/60 font-semibold tracking-widest">
-                vs prev year
+                vs previous year
               </span>
             )}
           </div>

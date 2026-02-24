@@ -1,5 +1,16 @@
 import { QueryClient } from '@tanstack/react-query'
 
+// Factory for creating per-request server-side query clients
+export function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 60 * 1000, // 1 minute — fresh enough to avoid hydration mismatches
+      },
+    },
+  })
+}
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

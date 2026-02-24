@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry } from '@/lib/geometry-utils'
-import type { Tables } from '@/lib/database.types'
+import type { Tables, RegionGeometry } from '@/lib/database.types'
+
+// Regions table no longer stores geometry; we re-attach it after the JOIN
+type RegionWithGeometry = Tables<'regions'> & { geometry?: RegionGeometry | null }
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
       .from('regions')
       .select(
         includeGeometry
-          ? 'id, name, parent_id, type, code, geometry, has_data, created_at, updated_at'
+          ? 'id, name, parent_id, type, code, has_data, created_at, updated_at, region_geometries(geometry)'
           : 'id, name, parent_id, type, code, has_data, created_at, updated_at'
       )
       .order('name')
@@ -60,8 +63,13 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Type assertion for dynamic select query
-    const regions = (data || []) as Partial<Tables<'regions'>>[]
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const regions = (data || []).map((r: any) => {
+      if (!includeGeometry) return r as Partial<RegionWithGeometry>
+      const { region_geometries: rg, ...rest } = r
+      return { ...rest, geometry: rg?.geometry ?? null } as Partial<RegionWithGeometry>
+    })
 
     // Validate geometry data if included
     let validatedData = regions.map(region => {
@@ -81,8 +89,8 @@ export async function GET(request: NextRequest) {
 
       let aggregatesQuery = supabase
         .from('annual_region_aggregates')
-        .select('name_id, total_surveys')
-        .in('name_id', regionIds)
+        .select('region_id, total_surveys')
+        .in('region_id', regionIds)
 
       // Apply year filter if provided
       if (year) {
@@ -96,7 +104,7 @@ export async function GET(request: NextRequest) {
       } else if (aggregates) {
         // Sum total_surveys per region
         const surveyCounts = aggregates.reduce((acc, agg) => {
-          acc[agg.name_id] = (acc[agg.name_id] || 0) + agg.total_surveys
+          acc[agg.region_id] = (acc[agg.region_id] || 0) + agg.total_surveys
           return acc
         }, {} as Record<number, number>)
 

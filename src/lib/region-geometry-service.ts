@@ -292,7 +292,7 @@ export class RegionGeometryService {
   }
   
   // Validate region data from database
-  static validateRegionFromDB(region: Tables<'regions'>): {
+  static validateRegionFromDB(region: Tables<'regions'> & { geometry?: RegionGeometry | null }): {
     isValid: boolean
     issues: string[]
     processedGeometry?: ProcessedGeometry

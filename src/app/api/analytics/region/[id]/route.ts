@@ -76,25 +76,25 @@ export async function GET(
       )
     }
     
-    // Build query for aggregated data using name_id
+    // Build query for aggregated data
     let aggregatesQuery = supabase
       .from('annual_region_aggregates')
       .select('*')
-      .eq('name_id', regionId)
+      .eq('region_id', regionId)
       .order('year', { ascending: false })
-    
+
     // Apply year filters using validated parameters
     const validatedYears = yearValidation.years
     if (validatedYears?.year) {
-      aggregatesQuery = aggregatesQuery.eq('year', validatedYears.year.toString())
+      aggregatesQuery = aggregatesQuery.eq('year', validatedYears.year)
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
       aggregatesQuery = aggregatesQuery
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     } else if (validatedYears?.startYear) {
-      aggregatesQuery = aggregatesQuery.gte('year', validatedYears.startYear.toString())
+      aggregatesQuery = aggregatesQuery.gte('year', validatedYears.startYear)
     } else if (validatedYears?.endYear) {
-      aggregatesQuery = aggregatesQuery.lte('year', validatedYears.endYear.toString())
+      aggregatesQuery = aggregatesQuery.lte('year', validatedYears.endYear)
     }
     
     const { data: aggregates, error: aggregatesError } = await aggregatesQuery

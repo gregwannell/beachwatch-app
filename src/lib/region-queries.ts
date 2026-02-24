@@ -51,32 +51,38 @@ export class RegionQueries {
     
     let selectFields = 'id, name, parent_id, type, code, has_data, created_at, updated_at'
     if (includeGeometry) {
-      selectFields += ', geometry'
+      selectFields += ', region_geometries(geometry)'
     }
-    
+
     let query = this.client
       .from('regions')
       .select(selectFields)
       .order(orderBy)
-    
+
     // Handle parent_id filter correctly
     if (parentId === null) {
       query = query.is('parent_id', null)
     } else {
       query = query.eq('parent_id', parentId)
     }
-    
+
     if (onlyWithData) {
       query = query.eq('has_data', true)
     }
-    
-    const { data: regions, error } = await query
-    
+
+    const { data: regionsRaw, error } = await query
+
     if (error) {
       throw new Error(`Failed to fetch regions by parent: ${error.message}`)
     }
-    
-    let result = regions || []
+
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let result = (regionsRaw || []).map((r: any) => {
+      if (!includeGeometry) return r
+      const { region_geometries: rg, ...rest } = r
+      return { ...rest, geometry: rg?.geometry ?? null }
+    }) as Tables<'regions'>[]
     
     // Add aggregates if requested
     if (includeAggregates && result.length > 0) {
@@ -84,20 +90,20 @@ export class RegionQueries {
       const { data: aggregates } = await this.client
         .from('annual_region_aggregates')
         .select(`
-          id, name_id, year, total_surveys, total_volunteers, 
+          id, region_id, year, total_surveys, total_volunteers,
           total_volunteer_min, total_length_m, additional_area_cleaned_m,
           total_bags, total_weight_kg, total_litter, avg_per_100m
         `)
-        .in('name_id', regionIds)
+        .in('region_id', regionIds)
         .order('year', { ascending: false })
-      
+
       // Group aggregates by region
       const aggregatesByRegion = new Map<number, Tables<'annual_region_aggregates'>[]>()
       aggregates?.forEach(agg => {
-        if (!aggregatesByRegion.has(agg.name_id)) {
-          aggregatesByRegion.set(agg.name_id, [])
+        if (!aggregatesByRegion.has(agg.region_id)) {
+          aggregatesByRegion.set(agg.region_id, [])
         }
-        aggregatesByRegion.get(agg.name_id)!.push(agg)
+        aggregatesByRegion.get(agg.region_id)!.push(agg)
       })
       
       result = result.map(region => ({
@@ -126,31 +132,39 @@ export class RegionQueries {
     // First get all regions
     let selectFields = 'id, name, parent_id, type, code, has_data, created_at, updated_at'
     if (includeGeometry) {
-      selectFields += ', geometry'
+      selectFields += ', region_geometries(geometry)'
     }
-    
+
     let query = this.client
       .from('regions')
       .select(selectFields)
       .order(orderBy, { ascending: orderDirection === 'asc' })
-    
+
     if (onlyWithData) {
       query = query.eq('has_data', true)
     }
-    
+
     if (rootType) {
       query = query.eq('type', rootType)
     }
-    
-    const { data: allRegions, error } = await query
-    
+
+    const { data: regionsRaw, error } = await query
+
     if (error) {
       throw new Error(`Failed to fetch hierarchy: ${error.message}`)
     }
-    
-    if (!allRegions || allRegions.length === 0) {
+
+    if (!regionsRaw || regionsRaw.length === 0) {
       return []
     }
+
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allRegions = regionsRaw.map((r: any) => {
+      if (!includeGeometry) return r
+      const { region_geometries: rg, ...rest } = r
+      return { ...rest, geometry: rg?.geometry ?? null }
+    }) as Tables<'regions'>[]
     
     // Build maps for efficient processing
     const regionMap = new Map<number, RegionWithRelations>()
@@ -244,26 +258,32 @@ export class RegionQueries {
     
     let selectFields = 'id, name, parent_id, type, code, has_data, created_at, updated_at'
     if (includeGeometry) {
-      selectFields += ', geometry'
+      selectFields += ', region_geometries(geometry)'
     }
-    
+
     let query = this.client
       .from('regions')
       .select(selectFields)
       .ilike('name', `%${searchTerm}%`)
       .order('name')
-    
+
     if (onlyWithData) {
       query = query.eq('has_data', true)
     }
-    
-    const { data: regions, error } = await query
-    
+
+    const { data: regionsRaw, error } = await query
+
     if (error) {
       throw new Error(`Failed to search regions: ${error.message}`)
     }
-    
-    let result: RegionWithRelations[] = (regions || []).map(region => ({ ...region }))
+
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let result: RegionWithRelations[] = (regionsRaw || []).map((r: any) => {
+      if (!includeGeometry) return { ...r }
+      const { region_geometries: rg, ...rest } = r
+      return { ...rest, geometry: rg?.geometry ?? null }
+    })
     
     // Add parent information if requested
     if (includeParent && result.length > 0) {
@@ -335,26 +355,32 @@ export class RegionQueries {
     
     let selectFields = 'id, name, parent_id, type, code, has_data, created_at, updated_at'
     if (includeGeometry) {
-      selectFields += ', geometry'
+      selectFields += ', region_geometries(geometry)'
     }
-    
+
     let query = this.client
       .from('regions')
       .select(selectFields)
       .eq('type', type)
       .order('name')
-    
+
     if (onlyWithData) {
       query = query.eq('has_data', true)
     }
-    
-    const { data: regions, error } = await query
-    
+
+    const { data: regionsRaw, error } = await query
+
     if (error) {
       throw new Error(`Failed to fetch regions by type: ${error.message}`)
     }
-    
-    let result: RegionWithRelations[] = (regions || []).map(region => ({ ...region }))
+
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let result: RegionWithRelations[] = (regionsRaw || []).map((r: any) => {
+      if (!includeGeometry) return { ...r }
+      const { region_geometries: rg, ...rest } = r
+      return { ...rest, geometry: rg?.geometry ?? null }
+    })
     
     // Add child counts if requested
     if (includeChildren) {
@@ -393,7 +419,7 @@ export class RegionQueries {
     // Get total regions and type counts
     const { data: regions, error } = await this.client
       .from('regions')
-      .select('id, type, has_data, geometry, parent_id')
+      .select('id, type, has_data, parent_id, region_geometries(geometry)')
     
     if (error || !regions) {
       throw new Error(`Failed to fetch region statistics: ${error?.message}`)
@@ -410,8 +436,9 @@ export class RegionQueries {
       // Count regions with data
       if (region.has_data) regionsWithData++
       
-      // Count regions with geometry
-      if (region.geometry) regionsWithGeometry++
+      // Count regions with geometry (now stored in region_geometries join)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((region as any).region_geometries) regionsWithGeometry++
     })
     
     // Calculate max depth

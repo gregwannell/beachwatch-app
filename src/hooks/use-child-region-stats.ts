@@ -50,17 +50,17 @@ export function useChildRegionStats(parentId: string | null, year?: number) {
       // Fetch all aggregates for all children in one query
       const { data: aggregates } = await supabase
         .from('annual_region_aggregates')
-        .select('name_id, year, avg_per_100m, total_surveys, total_volunteers, total_litter, total_weight_kg, total_length_m')
-        .in('name_id', childIds)
+        .select('region_id, year, avg_per_100m, total_surveys, total_volunteers, total_litter, total_weight_kg, total_length_m')
+        .in('region_id', childIds)
         .order('year', { ascending: false })
 
       // Group aggregates by child region id
       const aggregatesByRegion = new Map<number, NonNullable<typeof aggregates>>()
       aggregates?.forEach(agg => {
-        if (!aggregatesByRegion.has(agg.name_id)) {
-          aggregatesByRegion.set(agg.name_id, [])
+        if (!aggregatesByRegion.has(agg.region_id)) {
+          aggregatesByRegion.set(agg.region_id, [])
         }
-        aggregatesByRegion.get(agg.name_id)!.push(agg)
+        aggregatesByRegion.get(agg.region_id)!.push(agg)
       })
 
       return children.map(child => {
@@ -68,13 +68,13 @@ export function useChildRegionStats(parentId: string | null, year?: number) {
 
         // Find aggregate for the selected year, fall back to the most recent
         const target = year
-          ? childAggregates.find(a => parseInt(a.year) === year)
+          ? childAggregates.find(a => a.year === year)
           : childAggregates[0] // already sorted desc
 
         // Find the previous year's aggregate for YoY calculations
-        const targetYear = target ? parseInt(target.year) : null
+        const targetYear = target ? target.year : null
         const prev = targetYear
-          ? childAggregates.find(a => parseInt(a.year) === targetYear - 1)
+          ? childAggregates.find(a => a.year === targetYear - 1)
           : childAggregates[1] // second most recent
 
         return {

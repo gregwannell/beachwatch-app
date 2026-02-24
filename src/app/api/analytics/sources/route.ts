@@ -78,18 +78,18 @@ export async function GET(request: NextRequest) {
     
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
-      aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value!)
+      aggregateIdsQuery = aggregateIdsQuery.eq('region_id', regionValidation.value!)
     }
-    
+
     const validatedYears = yearValidation.years
     const currentYear = validatedYears?.year
 
     if (validatedYears?.year) {
-      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
+      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year)
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
       aggregateIdsQuery = aggregateIdsQuery
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     }
 
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
@@ -100,8 +100,8 @@ export async function GET(request: NextRequest) {
       const { data: prevAggregates } = await supabase
         .from('annual_region_aggregates')
         .select('id')
-        .eq('name_id', parseInt(regionId))
-        .eq('year', (currentYear - 1).toString())
+        .eq('region_id', parseInt(regionId))
+        .eq('year', currentYear - 1)
 
       previousYearAggregateIds = prevAggregates?.map(agg => agg.id) || []
     }

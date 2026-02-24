@@ -137,8 +137,8 @@ export function SupabaseQueryProvider({
                 queryKey: regionKeys.statistics()
               })
               
-              if ((payload.new as { name_id?: number })?.name_id || (payload.old as { name_id?: number })?.name_id) {
-                const regionId = ((payload.new as { name_id?: number })?.name_id || (payload.old as { name_id?: number })?.name_id) as number
+              if ((payload.new as { region_id?: number })?.region_id || (payload.old as { region_id?: number })?.region_id) {
+                const regionId = ((payload.new as { region_id?: number })?.region_id || (payload.old as { region_id?: number })?.region_id) as number
                 queryClient.invalidateQueries({
                   queryKey: regionKeys.detail(regionId)
                 })

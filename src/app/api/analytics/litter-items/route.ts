@@ -80,17 +80,17 @@ export async function GET(request: NextRequest) {
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
       if (regionValidation.isValid && regionValidation.value) {
-        aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value)
+        aggregateIdsQuery = aggregateIdsQuery.eq('region_id', regionValidation.value)
       }
     }
-    
+
     const validatedYears = yearValidation.years
     if (validatedYears?.year) {
-      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
+      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year)
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
       aggregateIdsQuery = aggregateIdsQuery
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     }
     
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery

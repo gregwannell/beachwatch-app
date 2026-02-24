@@ -78,18 +78,18 @@ export async function GET(request: NextRequest) {
     // Apply filters with validated values
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
-      query = query.eq('name_id', regionValidation.value!)
+      query = query.eq('region_id', regionValidation.value!)
     }
-    
+
     const validatedYears = yearValidation.years
     if (validatedYears?.startYear && validatedYears?.endYear) {
       query = query
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     } else if (validatedYears?.startYear) {
-      query = query.gte('year', validatedYears.startYear.toString())
+      query = query.gte('year', validatedYears.startYear)
     } else if (validatedYears?.endYear) {
-      query = query.lte('year', validatedYears.endYear.toString())
+      query = query.lte('year', validatedYears.endYear)
     }
     
     if (limitValidation.value) {
@@ -106,23 +106,23 @@ export async function GET(request: NextRequest) {
       )
     }
     
-    // Group data by year
-    const yearGroups: { [year: string]: Tables<'annual_region_aggregates'>[] } = {}
+    // Group data by year (year is now SMALLINT/number)
+    const yearGroups: { [year: number]: Tables<'annual_region_aggregates'>[] } = {}
     aggregates?.forEach(aggregate => {
       if (!yearGroups[aggregate.year]) {
         yearGroups[aggregate.year] = []
       }
       yearGroups[aggregate.year].push(aggregate)
     })
-    
+
     // Calculate trends for each year
     const trends: YearTrend[] = Object.entries(yearGroups).map(([year, data]) => {
       const totalSurveys = data.reduce((sum, agg) => sum + agg.total_surveys, 0)
       const totalLitter = data.reduce((sum, agg) => sum + agg.total_litter, 0)
-      const avgPer100m = data.length > 0 
-        ? data.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / data.length 
+      const avgPer100m = data.length > 0
+        ? data.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / data.length
         : 0
-      
+
       return {
         year,
         totalSurveys,
@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
         avgPer100m: Math.round(avgPer100m * 100) / 100,
         totalRegions: data.length
       }
-    }).sort((a, b) => b.year.localeCompare(a.year)) // Most recent first
+    }).sort((a, b) => Number(b.year) - Number(a.year)) // Most recent first
     
     // Calculate summary statistics
     const totalSurveys = trends.reduce((sum, trend) => sum + trend.totalSurveys, 0)

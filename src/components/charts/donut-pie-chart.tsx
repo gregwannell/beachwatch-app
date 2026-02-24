@@ -126,7 +126,7 @@ export function DonutPieChart({
                       aria-hidden="true"
                     />
                     <span className="truncate">{item.name}</span>
-                    {item.yearOverYearChange !== undefined && (
+                    {item.yearOverYearChange != null && (
                       <div className="scale-75 origin-left">
                         <YearOverYearBadge change={item.yearOverYearChange} />
                       </div>

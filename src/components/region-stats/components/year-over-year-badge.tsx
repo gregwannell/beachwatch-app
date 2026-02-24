@@ -14,7 +14,7 @@ interface YearOverYearBadgeProps {
 }
 
 export function YearOverYearBadge({ change, increaseIsGood = false, variant = "badge", className }: YearOverYearBadgeProps) {
-  if (change === undefined) return null
+  if (change == null) return null
 
   const isNeutral = Math.abs(change) < 1
   const isIncrease = change > 0

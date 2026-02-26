@@ -275,9 +275,9 @@ export function UKMap({
         bounds={UK_BOUNDS}
         maxBounds={UK_BOUNDS}
         maxBoundsViscosity={1.0}
-        zoom={5}
-        minZoom={5}
-        maxZoom={13}
+        zoom={6}
+        minZoom={6}
+        maxZoom={11}
         scrollWheelZoom={true}
         touchZoom={true}
         doubleClickZoom={true}

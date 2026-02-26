@@ -66,8 +66,6 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "supabase",
-    "puppeteer",
-    "taskmaster-ai"
+    "supabase"
   ]
 }

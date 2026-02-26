@@ -18,7 +18,7 @@ import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Layers } from "lu
 import type { RegionData } from '@/types/region-types'
 
 // Import extracted components
-import { EmptyState, LoadingSkeleton } from './components'
+import { EmptyState, LoadingSkeleton, NoDataForYear } from './components'
 import { OverviewTab, LitterStatsTab, RegionsTab } from './tabs'
 import { GradientHeroHeader } from './hero'
 
@@ -167,15 +167,21 @@ export function RegionStatsContent({
         )}
 
         <TabsContent value="overview" className="space-y-4 mt-0">
-          <OverviewTab regionData={regionData} selectedYear={selectedYear} />
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <OverviewTab regionData={regionData} selectedYear={selectedYear} />}
         </TabsContent>
 
         <TabsContent value="litter" className="space-y-4 mt-0">
-          <LitterStatsTab regionData={regionData} />
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <LitterStatsTab regionData={regionData} />}
         </TabsContent>
 
         <TabsContent value="regions" className="space-y-4 mt-0">
-          <RegionsTab regionData={regionData} selectedYear={selectedYear} onRegionSelect={onRegionSelect} />
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <RegionsTab regionData={regionData} selectedYear={selectedYear} onRegionSelect={onRegionSelect} />}
         </TabsContent>
       </div>
     </Tabs>

@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
-import { Info, ChevronRight } from "lucide-react"
+import { Info, ChevronRight, CalendarX } from "lucide-react"
 import { YearOverYearBadge } from "../components"
 import { AverageLitterChart } from "../charts"
 import { getBreadcrumbHierarchy } from "../utils/breadcrumb-helpers"
@@ -30,6 +30,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
   const litterData = regionData.litterData
   const averageLitterPer100m = litterData?.averageLitterPer100m ?? 0
   const yearOverYearChange = litterData?.yearOverYearChange
+  const hasDataForYear = regionData.hasDataForYear !== false
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
@@ -48,7 +49,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
 
   const breadcrumbs = getBreadcrumbHierarchy(regionData)
 
-  if (!litterData) return null
+  if (!litterData && hasDataForYear) return null
 
   // Shared content for info modal
   const calculationContent = (
@@ -76,6 +77,30 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
     </Button>
   )
 
+  // Shared header block (region name + breadcrumbs + divider)
+  const regionHeader = !hideHeader && (
+    <div className="mb-4">
+      <h3 className="text-lg md:text-xl font-extrabold tracking-widest uppercase opacity-90 drop-shadow-sm">
+        {regionData.name}
+        <span className="text mx-2">•</span>
+        {selectedYear || new Date().getFullYear()}
+      </h3>
+      {breadcrumbs.length > 1 && (
+        <div className="flex items-center justify-center gap-1 text-[11px] text-white/60">
+          {breadcrumbs.map((crumb, i) => (
+            <span key={crumb.level + crumb.name} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="h-3 w-3" />}
+              <span className={i === breadcrumbs.length - 1 ? "text-white/90 font-medium" : ""}>
+                {crumb.name}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="w-16 h-0.5 bg-white/40 mx-auto mt-3 rounded-full" />
+    </div>
+  )
+
   return (
     <div>
       {/* Gradient Hero Section */}
@@ -89,96 +114,105 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
 
         {/* Content */}
         <div className="relative z-10 px-6 pt-10 pb-8 text-white text-center">
-          {!hideHeader && (
-            <div className="mb-4">
-              <h3 className="text-lg md:text-xl font-extrabold tracking-widest uppercase opacity-90 drop-shadow-sm">
-                {regionData.name}
-                <span className="text mx-2">•</span>
-                {selectedYear || new Date().getFullYear()}
-              </h3>
-              {breadcrumbs.length > 1 && (
-                <div className="flex items-center justify-center gap-1 text-[11px] text-white/60">
-                  {breadcrumbs.map((crumb, i) => (
-                    <span key={crumb.level + crumb.name} className="flex items-center gap-1">
-                      {i > 0 && <ChevronRight className="h-3 w-3" />}
-                      <span className={i === breadcrumbs.length - 1 ? "text-white/90 font-medium" : ""}>
-                        {crumb.name}
-                      </span>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="w-16 h-0.5 bg-white/40 mx-auto mt-3 rounded-full" />
-            </div>
+          {regionHeader}
+
+          {/* No data for selected year — mirrors normal hero layout to keep the same height */}
+          {!hasDataForYear ? (
+            <>
+              {/* Label row — mirrors "Average Litter/100m" */}
+              <div className="flex items-center justify-center gap-1 mt-4">
+                <CalendarX className="w-4 h-4 text-white/60" />
+                <p className="text-white/80 font-medium text-sm">No surveys recorded</p>
+              </div>
+
+              {/* Large year — mirrors the animated number */}
+              <p className="text-5xl md:text-6xl font-extrabold tracking-tighter tabular-nums text-white/70 mt-1">
+                {selectedYear}
+              </p>
+
+              {/* Sub-label — mirrors the YoY badge row */}
+              <div className="flex items-center justify-center gap-2 mt-2">
+                {regionData.lastDataYear ? (
+                  <span className="text-[10px] text-white/60 font-semibold tracking-widest uppercase">
+                    Last recorded {regionData.lastDataYear}
+                  </span>
+                ) : (
+                  <span className="text-[10px] text-white/40 font-semibold tracking-widest uppercase">
+                    No historical data
+                  </span>
+                )}
+              </div>
+
+              {/* Spacer — mirrors the trend button row */}
+              <div className="mt-6 h-8" />
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-center gap-1 mt-4">
+                <p className="text-white/80 font-medium text-sm">Average Litter/100m</p>
+                {/* Info button */}
+                {isMobile ? (
+                  <Drawer open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                    <DrawerTrigger asChild>
+                      {infoButton}
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Average Litter Calculation</DrawerTitle>
+                        <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
+                      </DrawerHeader>
+                      <div className="px-4 pb-6">
+                        {calculationContent}
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                ) : (
+                  <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
+                    <DialogTrigger asChild>
+                      {infoButton}
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Average Litter Calculation</DialogTitle>
+                        <DialogDescription>Understanding how we calculate this metric</DialogDescription>
+                      </DialogHeader>
+                      {calculationContent}
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+
+              <motion.span className="text-5xl md:text-6xl font-extrabold tracking-tighter tabular-nums">
+                {rounded}
+              </motion.span>
+
+              {/* YoY badge + vs prev year */}
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <YearOverYearBadge change={yearOverYearChange} variant="vivid" />
+                {yearOverYearChange !== undefined && (
+                  <span className="text-[10px] text-white/60 font-semibold tracking-widest">
+                    vs previous year
+                  </span>
+                )}
+              </div>
+
+              {/* Trend button - sits on the curve */}
+              <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="plain"
+                    size="sm"
+                    className="mt-6 rounded-full px-4 h-8 shadow-md z-20 relative"
+                  >
+                    <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
+                    <ChevronRight
+                      className={`h-3 w-3 ml-1 transition-transform duration-200 ${isTrendOpen ? 'rotate-90' : ''}`}
+                    />
+                  </Button>
+                </CollapsibleTrigger>
+              </Collapsible>
+            </>
           )}
-
-          <div className="flex items-center justify-center gap-1 mt-4">
-            <p className="text-white/80 font-medium text-sm">Average Litter/100m</p>
-            {/* Info button */}
-            {isMobile ? (
-              <Drawer open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-                <DrawerTrigger asChild>
-                  {infoButton}
-                </DrawerTrigger>
-                <DrawerContent>
-                  <DrawerHeader>
-                    <DrawerTitle>Average Litter Calculation</DrawerTitle>
-                    <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
-                  </DrawerHeader>
-                  <div className="px-4 pb-6">
-                    {calculationContent}
-                  </div>
-                </DrawerContent>
-              </Drawer>
-            ) : (
-              <Dialog open={isInfoOpen} onOpenChange={setIsInfoOpen}>
-                <DialogTrigger asChild>
-                  {infoButton}
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Average Litter Calculation</DialogTitle>
-                    <DialogDescription>Understanding how we calculate this metric</DialogDescription>
-                  </DialogHeader>
-                  {calculationContent}
-                </DialogContent>
-              </Dialog>
-            )}
-          </div>
-
-          <motion.span className="text-5xl md:text-6xl font-extrabold tracking-tighter tabular-nums">
-            {rounded}
-          </motion.span>
-
-          {/* YoY badge + vs prev year */}
-          <div className="flex items-center justify-center gap-2 mt-2">
-            <YearOverYearBadge change={yearOverYearChange} variant="vivid" />
-            {yearOverYearChange !== undefined && (
-              <span className="text-[10px] text-white/60 font-semibold tracking-widest">
-                vs previous year
-              </span>
-            )}
-          </div>
-
-          {/* <p className="mt-4 text-white/70 max-w-sm mx-auto text-sm leading-relaxed">
-            {descriptionText}
-          </p>*/}
-
-          {/* Trend button - sits on the curve */}
-          <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="plain"
-                size="sm"
-                className="mt-6 rounded-full px-4 h-8 shadow-md z-20 relative"
-              >
-                <span className="text-xs font-medium">{isTrendOpen ? 'Hide Trend' : 'View Trend'}</span>
-                <ChevronRight
-                  className={`h-3 w-3 ml-1 transition-transform duration-200 ${isTrendOpen ? 'rotate-90' : ''}`}
-                />
-              </Button>
-            </CollapsibleTrigger>
-          </Collapsible>
         </div>
 
         {/* Curved bottom edge */}
@@ -188,12 +222,14 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
         />
       </div>
 
-      {/* Collapsible Trend Chart - below gradient */}
-      <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
-        <CollapsibleContent className="bg-background px-4 pb-2">
-          <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
-        </CollapsibleContent>
-      </Collapsible>
+      {/* Collapsible Trend Chart - below gradient (only when data exists) */}
+      {hasDataForYear && (
+        <Collapsible open={isTrendOpen} onOpenChange={setIsTrendOpen}>
+          <CollapsibleContent className="bg-background px-4 pb-2">
+            <AverageLitterChart regionData={regionData} selectedYear={selectedYear} />
+          </CollapsibleContent>
+        </Collapsible>
+      )}
     </div>
   )
 }

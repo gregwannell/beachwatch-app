@@ -13,6 +13,8 @@ export interface RegionData {
   parentId?: string
   parentName?: string
   hasData: boolean
+  hasDataForYear?: boolean   // false when region has data overall but not for the selected year
+  lastDataYear?: number      // most recent year that had data (used in no-data-for-year UI)
   suggestedRegions?: SuggestedRegion[]
   litterData?: {
     topItems: Array<{

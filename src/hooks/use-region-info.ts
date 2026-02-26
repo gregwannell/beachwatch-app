@@ -279,6 +279,26 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         ? [aggregates.sort((a, b) => b.year - a.year)[0]]
         : []
 
+      // Detect "no data for selected year" (region has data in other years, but not this one)
+      const lastDataYear = aggregates.length > 0
+        ? Math.max(...aggregates.map((a) => a.year))
+        : undefined
+
+      if (filteredAggregates.length === 0) {
+        return {
+          id: region.id.toString(),
+          name: region.name,
+          level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' :
+                 region.type === 'County Unitary' ? 'county' : 'region',
+          parentId: region.parent_id?.toString(),
+          parentName: parent?.name,
+          hasData: true,
+          hasDataForYear: false,
+          lastDataYear,
+          suggestedRegions: generateSuggestedRegions(region.id)
+        }
+      }
+
       const averageLitterPer100m = filteredAggregates.length > 0
         ? filteredAggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / filteredAggregates.length
         : 0

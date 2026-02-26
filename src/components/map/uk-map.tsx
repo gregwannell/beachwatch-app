@@ -19,10 +19,10 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
-// UK map bounds
+// UK map bounds (expanded to include Jersey ~49.2°N and Shetland ~60.8°N)
 const UK_BOUNDS = new LatLngBounds(
-  [49.5, -8.5], // Southwest
-  [61.0, 2.0]   // Northeast
+  [48.8, -8.5], // Southwest (includes Jersey)
+  [61.8, 2.0]   // Northeast (includes Shetland)
 )
 
 // Geographic region colors
@@ -275,8 +275,8 @@ export function UKMap({
         bounds={UK_BOUNDS}
         maxBounds={UK_BOUNDS}
         maxBoundsViscosity={1.0}
-        zoom={6}
-        minZoom={6}
+        zoom={5}
+        minZoom={5}
         maxZoom={13}
         scrollWheelZoom={true}
         touchZoom={true}

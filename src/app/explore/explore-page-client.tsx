@@ -222,6 +222,11 @@ function ExplorePageContent() {
     if (filters.dataAvailability.showNoData) {
       return true
     }
+    // Always show Crown Dependencies (Isle of Man, Jersey, Guernsey) even with no data
+    // for the selected year — they're small territories easily missed if hidden
+    if (region.type === 'Crown Dependency') {
+      return true
+    }
     // Otherwise, only show regions with year-specific data
     return region.total_surveys !== undefined && region.total_surveys > 0
   })

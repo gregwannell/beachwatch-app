@@ -9,7 +9,7 @@ import type { RegionData } from '@/types/region-types'
 function SurveyYoYText({ change }: { change?: number }) {
   if (change === undefined || Math.abs(change) < 1) return null
   return change > 0
-    ? <>, a <strong className="text-mcs-green">{change.toFixed(1)}% increase</strong> compared to last year</>
+    ? <>, a <strong className="text-mcs-green">{change}% increase</strong> compared to last year</>
     : <>, a <strong className="text-mcs-red">{Math.abs(change).toFixed(1)}% decrease</strong> compared to last year</>
 }
 

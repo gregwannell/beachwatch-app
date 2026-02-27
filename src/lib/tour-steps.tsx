@@ -57,29 +57,29 @@ export const allTours: Tour[] = [
         icon: <>📊</>,
         selector: '#region-stats-tabs',
         title: 'Statistics Tabs',
-        content: 
+        content:
           <>
               Switch between different views of your data: <strong>Overview</strong> shows key metrics
-              and insights, <strong>Litter Stats</strong> breaks down items by type and source,
-              and <strong>Engagement</strong> shows volunteer participation</>,
-        side: 'top-left',
+              and insights, <strong>Litter Stats</strong> offers more insight into top items, litter type and source,
+              and <strong>Regions</strong> breaks down key stats for each region.</>,
+        side: 'left',
         pointerPadding: 10,
         pointerRadius: 10
       },
       {
         icon: <>ℹ️</>,
-        selector: '#average-litter-info-button',
+        selector: '#total-litter-info-button',
         title: 'Metric Information',
         content:
-        <>Click the info icon on any metric to learn how it&apos;s calculated. This helps you understand what the numbers mean and how to interpret them.</>,
-        side: 'top-right',
+        <>Click the <strong>ⓘ info buttons</strong> on any metric card to learn how it&apos;s calculated. This helps you understand what the numbers mean and how to interpret them.</>,
+        side: 'bottom-right',
         pointerPadding: 10,
         pointerRadius: 10
       },
       {
         icon: <>☀️🌑</>,
         selector: '#theme-toggle',
-        title: 'Toggle between light and dark mode',
+        title: 'Light & dark mode',
         content:
           <>Click here to toggle between light and dark mode. You can also toggle between themes in the settings menu. </>,
         side: 'top-right',

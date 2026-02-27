@@ -73,6 +73,7 @@ function KpiCard({ config, litterData }: { config: typeof cardConfigs[number]; l
           )}
         </div>
         <button
+          id={`${config.id}-info-button`}
           onClick={() => setShowInfo(!showInfo)}
           className="shrink-0 rounded-full p-0.5 text-muted-foreground/40 hover:text-muted-foreground hover:bg-muted transition-colors"
           aria-label={showInfo ? `Hide info for ${config.label}` : `Show info for ${config.label}`}

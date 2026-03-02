@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layout/main-layout'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
 import { useFilterOptions } from '@/hooks/use-filter-options'
-import { useState, useEffect, useMemo, Suspense } from 'react'
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MapLoadingOverlay } from '@/components/map/map-loading-overlay'
 import dynamic from 'next/dynamic'
@@ -169,7 +169,20 @@ function ExplorePageContent() {
   }
 
   // Fetch filter options for region lookup
-  const { data: filterOptions } = useFilterOptions()
+  const { data: filterOptions, isLoading: isFilterOptionsLoading } = useFilterOptions()
+  const maxYear = filterOptions?.availableYears.max
+
+  // On first load with no year param, initialise to the most recent available year
+  const yearInitialized = useRef(false)
+  useEffect(() => {
+    if (!isFilterOptionsLoading && maxYear && !yearParam && !yearInitialized.current) {
+      yearInitialized.current = true
+      setFilters(prev => ({
+        ...prev,
+        yearRange: { startYear: maxYear, endYear: maxYear, mode: 'single' as const }
+      }))
+    }
+  }, [isFilterOptionsLoading, maxYear, yearParam])
 
   const handleResetFilters = () => {
     if (!filterOptions) return
@@ -390,12 +403,12 @@ function ExplorePageContent() {
     if (filters.region.selectedRegionId && filters.region.selectedRegionId !== 1) {
       count++
     }
-    // Count year filter (if not default year 2024)
-    if (filters.yearRange.startYear !== 2024) {
+    // Count year filter (if not the most recent year)
+    if (maxYear && filters.yearRange.startYear !== maxYear) {
       count++
     }
     return count
-  }, [filters.region.selectedRegionId, filters.yearRange.startYear])
+  }, [filters.region.selectedRegionId, filters.yearRange.startYear, maxYear])
 
   return (
     <MainLayout>

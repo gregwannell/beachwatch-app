@@ -115,7 +115,7 @@ export function validateLimit(limit: string | null): ValidationResult & { value?
 /**
  * Create standardized error response
  */
-export function createErrorResponse(message: string, status: number = 400) {
+export function createErrorResponse(message: string) {
   return {
     error: message,
     timestamp: new Date().toISOString()
@@ -136,23 +136,32 @@ export function createSuccessResponse<T>(data: T, count?: number) {
 /**
  * Handle common database errors
  */
-export function handleDatabaseError(error: any): { message: string, status: number } {
+export function handleDatabaseError(error: unknown): { message: string, status: number } {
   // Log the full error for debugging
   console.error('Database error:', error)
-  
+
+  // Type guard for error objects
+  const isErrorWithMessage = (e: unknown): e is { message: string } => {
+    return typeof e === 'object' && e !== null && 'message' in e && typeof (e as { message: unknown }).message === 'string'
+  }
+
+  const isErrorWithCode = (e: unknown): e is { code: string } => {
+    return typeof e === 'object' && e !== null && 'code' in e
+  }
+
   // Return user-friendly message based on error type
-  if (error.message?.includes('relation') && error.message?.includes('does not exist')) {
+  if (isErrorWithMessage(error) && error.message.includes('relation') && error.message.includes('does not exist')) {
     return { message: 'Database configuration error', status: 503 }
   }
-  
-  if (error.message?.includes('timeout') || error.message?.includes('connection')) {
+
+  if (isErrorWithMessage(error) && (error.message.includes('timeout') || error.message.includes('connection'))) {
     return { message: 'Database connection error', status: 503 }
   }
-  
-  if (error.code === '23503') { // Foreign key violation
+
+  if (isErrorWithCode(error) && error.code === '23503') { // Foreign key violation
     return { message: 'Referenced data not found', status: 404 }
   }
-  
+
   // Generic database error
   return { message: 'Failed to fetch data', status: 500 }
 }

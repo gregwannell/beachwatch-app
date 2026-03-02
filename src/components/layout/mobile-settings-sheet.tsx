@@ -1,6 +1,6 @@
 'use client'
 
-import { LogOut, HelpCircle, Info } from 'lucide-react'
+import { LogOut, HelpCircle, Info, Compass } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,7 +14,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Separator } from '@/components/ui/separator'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
+import { useNextStep } from 'nextstepjs'
 
 interface MobileSettingsSheetProps {
   open: boolean
@@ -23,7 +25,10 @@ interface MobileSettingsSheetProps {
 
 export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { startNextStep } = useNextStep()
+  const { theme } = useTheme()
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -50,7 +55,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
         <SheetHeader className="p-6 pb-4">
           <div className="flex justify-center mb-4">
             <Image
-              src="/MCS_Logo_Stacked_Ink.png"
+              src={theme === 'dark' ? '/bubbles-light.gif' : '/bubbles-dark.gif'}
               alt="Marine Conservation Society"
               width={120}
               height={120}
@@ -81,6 +86,38 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
             <Button
               variant="ghost"
               className="w-full justify-start h-auto py-3"
+              onClick={() => {
+                onOpenChange(false)
+
+                // Determine tour based on viewport
+                const isMobile = window.innerWidth < 768
+                const tourName = isMobile ? 'mobileTour' : 'desktopTour'
+
+                console.log('Mobile settings - Starting tour:', tourName)
+
+                // Clear validation flags when starting tour
+                if (tourName === 'mobileTour') {
+                  localStorage.removeItem('stats-sheet-opened');
+                }
+
+                // Navigate to explore page if not already there
+                if (pathname !== '/explore') {
+                  router.push('/explore')
+                  setTimeout(() => {
+                    console.log('Starting tour after navigation (mobile sheet):', tourName)
+                    startNextStep(tourName)
+                  }, 1500) // Increased to 1500ms to ensure all elements are mounted
+                } else {
+                  startNextStep(tourName)
+                }
+              }}
+            >
+              <Compass className="mr-3 h-5 w-5" />
+              <span>How to Use</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start h-auto py-3"
               asChild
             >
               <Link href="#help" onClick={() => onOpenChange(false)}>
@@ -98,6 +135,38 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
                 <span>About</span>
               </Link>
             </Button>
+          </div>
+
+          <Separator />
+
+          {/* Data Sources / Attribution Section */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-muted-foreground">Data Sources</h3>
+            <div className="text-xs text-muted-foreground space-y-2 py-2">
+              <p>Map data:</p>
+              <ul className="space-y-1 pl-4">
+                <li>
+                  © <a
+                    href="https://www.openstreetmap.org/copyright"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    OpenStreetMap
+                  </a> contributors
+                </li>
+                <li>
+                  © <a
+                    href="https://carto.com/attributions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    CARTO
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <Separator />

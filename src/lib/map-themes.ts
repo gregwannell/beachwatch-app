@@ -19,4 +19,4 @@ export const MAP_THEMES: Record<MapTheme, MapTileConfig> = {
   }
 }
 
-export const DEFAULT_MAP_THEME: MapTheme = 'dark'
+export const DEFAULT_MAP_THEME: MapTheme = 'light'

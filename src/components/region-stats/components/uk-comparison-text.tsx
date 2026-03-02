@@ -22,18 +22,12 @@ export function UkComparisonText({ ukAverageComparison }: UkComparisonTextProps)
   // Choose icon based on comparison
   const Icon = isSame ? Minus : isHigher ? ArrowUpRight : ArrowDownRight
 
-  // Choose icon and text colors
-  const iconColor = isSame
+  // Choose icon and text colors (MCS brand colors)
+  const semanticColor = isSame
     ? "text-muted-foreground"
     : isHigher
-    ? "text-destructive"
-    : "text-green-600 dark:text-green-500"
-
-  const textColor = isSame
-    ? "text-muted-foreground"
-    : isHigher
-    ? "text-destructive"
-    : "text-green-600 dark:text-green-500"
+    ? "text-mcs-red"
+    : "text-mcs-green"
 
   // Format the comparison text
   const absPercent = Math.abs(percentDifference).toFixed(0)
@@ -45,8 +39,8 @@ export function UkComparisonText({ ukAverageComparison }: UkComparisonTextProps)
 
   return (
     <div className="flex items-start gap-2 text-sm">
-      <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${iconColor}`} />
-      <span className={`line-clamp-2 ${textColor}`}>
+      <Icon className={`w-4 h-4 mt-0.5 shrink-0 ${semanticColor}`} />
+      <span className={`line-clamp-2 ${semanticColor}`}>
         {comparisonText}
       </span>
     </div>

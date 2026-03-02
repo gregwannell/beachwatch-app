@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import type { Tables } from '@/lib/database.types'
 
-interface RegionWithChildren extends Tables<'regions'> {
+interface RegionWithChildren extends Partial<Tables<'regions'>> {
   children?: RegionWithChildren[]
   childCount?: number
 }

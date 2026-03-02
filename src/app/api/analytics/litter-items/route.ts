@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
-import { 
-  validateRegionId, 
+import {
+  validateRegionId,
   validateYearParams, 
   validateLimit,
   createErrorResponse, 
@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
     const startYear = searchParams.get('startYear')
     const endYear = searchParams.get('endYear')
     const limit = searchParams.get('limit')
+    const itemName = searchParams.get('itemName')
     
     // Validate region ID if provided
     if (regionId) {
@@ -79,17 +80,17 @@ export async function GET(request: NextRequest) {
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
       if (regionValidation.isValid && regionValidation.value) {
-        aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value)
+        aggregateIdsQuery = aggregateIdsQuery.eq('region_id', regionValidation.value)
       }
     }
-    
+
     const validatedYears = yearValidation.years
     if (validatedYears?.year) {
-      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
+      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year)
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
       aggregateIdsQuery = aggregateIdsQuery
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     }
     
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
@@ -118,13 +119,34 @@ export async function GET(request: NextRequest) {
     
     const aggregateIdsList = aggregateIds.map(agg => agg.id)
     
+    // If filtering by item name, look up the matching item ID(s) first
+    // Searches the short_name column (case-insensitive)
+    let itemNameFilter: number[] | null = null
+    if (itemName) {
+      const { data: matchingItems } = await supabase
+        .from('litter_items')
+        .select('id')
+        .ilike('short_name', `%${itemName}%`)
+      itemNameFilter = matchingItems?.map(i => i.id as number) ?? []
+    }
+
     // Build litter items aggregates query
     let litterItemsQuery = supabase
       .from('annual_litter_aggregates')
       .select('litter_item_id, total, avg_per_100m, presence')
       .in('aggregate_id', aggregateIdsList)
       .order('avg_per_100m', { ascending: false })
-    
+
+    if (itemNameFilter !== null) {
+      if (itemNameFilter.length === 0) {
+        // No matching items found — return empty result early
+        return NextResponse.json(
+          createSuccessResponse({ litterItems: [], summary: { totalItems: 0, totalLitter: 0, avgPresence: 0 } }, 0)
+        )
+      }
+      litterItemsQuery = litterItemsQuery.in('litter_item_id', itemNameFilter)
+    }
+
     if (limitValidation.value) {
       litterItemsQuery = litterItemsQuery.limit(limitValidation.value)
     }
@@ -146,15 +168,17 @@ export async function GET(request: NextRequest) {
       .from('litter_items')
       .select('id, item_name, short_name')
       .in('id', litterItemIds)
-    
+
     if (litterItemsLookupError) {
       console.error('Litter items lookup error:', litterItemsLookupError)
     }
-    
-    const litterItemsMap = new Map(litterItems_lookup?.map(item => [
-      item.id, 
-      { name: item.item_name, shortName: item.short_name }
-    ]) || [])
+
+    const litterItemsMap = new Map<number, { name: string; shortName: string | null }>(
+      litterItems_lookup?.map(item => [
+        item.id as number,
+        { name: item.item_name as string, shortName: item.short_name as string | null }
+      ]) || []
+    )
     
     // Group and sum by litter item
     const litterItemGroups: { [itemId: number]: { 

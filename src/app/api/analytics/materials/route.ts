@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
-import type { Tables } from '@/lib/database.types'
-import { 
-  validateRegionId, 
-  validateYearParams, 
+import {
+  validateRegionId,
+  validateYearParams,
   validateLimit,
-  createErrorResponse, 
+  createErrorResponse,
   createSuccessResponse,
-  handleDatabaseError 
+  handleDatabaseError
 } from '@/lib/analytics-validation'
 
 // Response types
@@ -80,19 +79,19 @@ export async function GET(request: NextRequest) {
     if (regionId) {
       const regionValidation = validateRegionId(regionId)
       if (regionValidation.isValid && regionValidation.value) {
-        aggregateIdsQuery = aggregateIdsQuery.eq('name_id', regionValidation.value)
+        aggregateIdsQuery = aggregateIdsQuery.eq('region_id', regionValidation.value)
       }
     }
-    
+
     const validatedYears = yearValidation.years
     const currentYear = validatedYears?.year
 
     if (validatedYears?.year) {
-      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year.toString())
+      aggregateIdsQuery = aggregateIdsQuery.eq('year', validatedYears.year)
     } else if (validatedYears?.startYear && validatedYears?.endYear) {
       aggregateIdsQuery = aggregateIdsQuery
-        .gte('year', validatedYears.startYear.toString())
-        .lte('year', validatedYears.endYear.toString())
+        .gte('year', validatedYears.startYear)
+        .lte('year', validatedYears.endYear)
     }
 
     const { data: aggregateIds, error: aggregateError } = await aggregateIdsQuery
@@ -103,8 +102,8 @@ export async function GET(request: NextRequest) {
       const { data: prevAggregates } = await supabase
         .from('annual_region_aggregates')
         .select('id')
-        .eq('name_id', parseInt(regionId))
-        .eq('year', (currentYear - 1).toString())
+        .eq('region_id', parseInt(regionId))
+        .eq('year', currentYear - 1)
 
       previousYearAggregateIds = prevAggregates?.map(agg => agg.id) || []
     }
@@ -161,12 +160,14 @@ export async function GET(request: NextRequest) {
       .from('materials')
       .select('id, material')
       .in('id', materialIds)
-    
+
     if (materialsLookupError) {
       console.error('Materials lookup error:', materialsLookupError)
     }
-    
-    const materialsMap = new Map(materials_lookup?.map(m => [m.id, m.material]) || [])
+
+    const materialsMap = new Map<number, string>(
+      materials_lookup?.map(m => [m.id as number, m.material as string]) || []
+    )
 
     // Fetch previous year materials data for year-over-year comparison
     const previousYearMaterials: { [materialId: number]: number } = {}

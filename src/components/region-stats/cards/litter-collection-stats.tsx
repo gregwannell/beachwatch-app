@@ -36,7 +36,7 @@ export function LitterCollectionStats({ litterData }: LitterCollectionStatsProps
   ]
 
   return (
-    <Accordion type="single" collapsible className="w-full rounded-lg border bg-card">
+    <Accordion type="single" collapsible className="w-full rounded-lg border bg-card shadow-sm">
       {stats.map((stat) => (
         <AccordionItem key={stat.id} value={stat.id} className="border-none">
           <AccordionTrigger className="px-4 py-3 hover:no-underline">

@@ -18,12 +18,14 @@ interface ApiRegionData {
   } | null
   aggregates: Array<{
     id: number
-    year: string
+    year: number
     total_litter: number
     avg_per_100m: number
     total_length_m: number
     total_bags: number
     total_weight_kg: number
+    total_surveys: number
+    total_volunteers: number
   }>
 }
 
@@ -102,14 +104,14 @@ function calculateYearOverYearChange(
 
   if (selectedYear) {
     // Find data for the selected year and the previous year
-    current = aggregates.find(agg => parseInt(agg.year) === selectedYear)
-    previous = aggregates.find(agg => parseInt(agg.year) === selectedYear - 1)
+    current = aggregates.find(agg => agg.year === selectedYear)
+    previous = aggregates.find(agg => agg.year === selectedYear - 1)
 
     // If either year is missing, return undefined
     if (!current || !previous) return undefined
   } else {
     // Fall back to comparing the two most recent years
-    const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+    const sorted = [...aggregates].sort((a, b) => b.year - a.year)
     current = sorted[0]
     previous = sorted[1]
   }
@@ -118,7 +120,7 @@ function calculateYearOverYearChange(
   if (previous.avg_per_100m === 0) return 100 // If previous was 0, any increase is 100%
 
   const change = ((current.avg_per_100m - previous.avg_per_100m) / previous.avg_per_100m) * 100
-  return Math.round(change * 10) / 10 // Round to 1 decimal place
+  return Math.round(change)
 }
 
 // Helper function to calculate UK average comparison
@@ -139,19 +141,19 @@ function calculateUkAverageComparison(
 }
 
 // Helper function to calculate engagement year-over-year changes
-function calculateEngagementYearOverYearChange(aggregates: { year: string, total_surveys: number, total_volunteers: number, total_length_m: number }[]): RegionData['engagementData']['yearOverYearChanges'] | undefined {
+function calculateEngagementYearOverYearChange(aggregates: { year: number, total_surveys: number, total_volunteers: number, total_length_m: number }[]): RegionData['engagementData']['yearOverYearChanges'] | undefined {
   if (aggregates.length < 2) return undefined
   
   // Sort by year descending to get current and previous year
-  const sorted = [...aggregates].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+  const sorted = [...aggregates].sort((a, b) => b.year - a.year)
   const current = sorted[0]
   const previous = sorted[1]
-  
+
   const calculatePercentChange = (current: number, previous: number): number => {
     if (current === 0 && previous === 0) return 0
     if (previous === 0) return 100
     const change = ((current - previous) / previous) * 100
-    return Math.round(change * 10) / 10
+    return Math.round(change)
   }
   
   return {
@@ -168,30 +170,42 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
     queryFn: async (): Promise<RegionData | null> => {
       if (!regionId) return null
 
-      // Fetch basic region data with parent info
-      // Note: We don't filter by year here because we need multiple years for year-over-year comparison
-      const regionResponse = await fetch(
-        `/api/regions/${regionId}?includeParent=true&includeAggregates=true`
-      )
-      
-      if (!regionResponse.ok) {
-        throw new Error(`Failed to fetch region data: ${regionResponse.statusText}`)
-      }
-      
-      const regionApiData: {
-        region: ApiRegionData['region']
-        parent?: ApiRegionData['parent']
-        aggregates: ApiRegionData['aggregates']
-      } = await regionResponse.json()
+      // Single RPC call replacing 7–8 parallel HTTP requests
+      const yearParam = year ? `&year=${year}` : ''
+      const panelResponse = await fetch(`/api/analytics/region-panel?regionId=${regionId}${yearParam}`)
 
-      const { region, parent, aggregates = [] } = regionApiData
+      if (!panelResponse.ok) {
+        throw new Error(`Failed to fetch region panel data: ${panelResponse.statusText}`)
+      }
+
+      const panelApiData: { data: {
+        region: ApiRegionData['region'] | null
+        parent: ApiRegionData['parent']
+        aggregates: ApiRegionData['aggregates']
+        effectiveYear: number | null
+        materials: MaterialBreakdown[]
+        sources: SourceBreakdown[]
+        litterItems: LitterItemBreakdown[]
+        plasticFragmentsItem: LitterItemBreakdown | null
+        ukComparison: {
+          aggregates: ApiRegionData['aggregates']
+          materials: MaterialBreakdown[]
+        } | null
+      } } = await panelResponse.json()
+
+      const panelData = panelApiData.data
+      const { region, parent, aggregates = [] } = panelData
+
+      if (!region) {
+        throw new Error('Region not found')
+      }
 
       // If no data, return basic info with suggestions
       if (!region.has_data || aggregates.length === 0) {
         return {
           id: region.id.toString(),
           name: region.name,
-          level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' : 
+          level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' :
                  region.type === 'County Unitary' ? 'county' : 'region',
           parentId: region.parent_id?.toString(),
           parentName: parent?.name,
@@ -200,151 +214,138 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         }
       }
 
-      // Fetch detailed breakdown data in parallel
-      const yearQueryParam = year ? `&year=${year}` : ''
-      const [materialsResponse, sourcesResponse, litterItemsResponse, trendsResponse, ukDataResponse, ukMaterialsResponse] = await Promise.all([
-        fetch(`/api/analytics/materials?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/sources?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/litter-items?regionId=${regionId}&limit=5${yearQueryParam}`).catch(() => null),
-        fetch(`/api/analytics/trends?regionId=${regionId}`).catch(() => null),
-        // Fetch UK data for comparison (UK region ID is 1)
-        // Don't filter by year - we need all years for comparison
-        region.name !== 'United Kingdom'
-          ? fetch(`/api/regions/1?includeAggregates=true`).catch(() => null)
-          : null,
-        // Fetch UK material breakdown for plastic/polystyrene comparison
-        region.name !== 'United Kingdom'
-          ? fetch(`/api/analytics/materials?regionId=1&limit=5${yearQueryParam}`).catch(() => null)
-          : null
-      ])
-
+      // --- Materials ---
       let topItems: RegionData['litterData']['topItems'] = []
       let materialBreakdown: RegionData['litterData']['materialBreakdown'] = []
-      let sourceBreakdown: RegionData['litterData']['sourceBreakdown'] = []
-      let topLitterItems: LitterItemBreakdown[] = []
-      let trendData: RegionData['litterData']['trendData'] = undefined
-
-      // Process materials data (represents top litter items)
-      if (materialsResponse?.ok) {
-        const materialsData: { data: { materials: MaterialBreakdown[] } } = await materialsResponse.json()
-
-        topItems = materialsData.data.materials.slice(0, 5).map(item => ({
+      if (panelData.materials.length > 0) {
+        topItems = panelData.materials.slice(0, 5).map(item => ({
           category: item.material.name,
           count: item.total,
           percentage: item.presence
         }))
-
-        // Calculate total avgPer100m for percentage calculation
-        const totalAvgPer100m = materialsData.data.materials.reduce((sum, item) => sum + item.avgPer100m, 0)
-
-        materialBreakdown = materialsData.data.materials.map(item => ({
+        const totalAvgPer100m = panelData.materials.reduce((sum, item) => sum + item.avgPer100m, 0)
+        materialBreakdown = panelData.materials.map(item => ({
           material: item.material.name,
           count: item.total,
           avgPer100m: item.avgPer100m,
           percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          presence: item.presence,
           yearOverYearChange: item.yearOverYearChange
         }))
       }
 
-      // Process sources data
-      if (sourcesResponse?.ok) {
-        const sourcesData: { data: { sources: SourceBreakdown[] } } = await sourcesResponse.json()
-
-        // Calculate total avgPer100m for percentage calculation
-        const totalAvgPer100m = sourcesData.data.sources.reduce((sum, item) => sum + item.avgPer100m, 0)
-
-        sourceBreakdown = sourcesData.data.sources.map(item => ({
+      // --- Sources ---
+      let sourceBreakdown: RegionData['litterData']['sourceBreakdown'] = []
+      if (panelData.sources.length > 0) {
+        const totalAvgPer100m = panelData.sources.reduce((sum, item) => sum + item.avgPer100m, 0)
+        sourceBreakdown = panelData.sources.map(item => ({
           source: item.source.name,
           count: item.total,
           avgPer100m: item.avgPer100m,
           percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
+          presence: item.presence,
           yearOverYearChange: item.yearOverYearChange
         }))
       }
 
-      // Process litter items data
-      if (litterItemsResponse?.ok) {
-        const litterItemsData: { data: { litterItems: LitterItemBreakdown[] } } = await litterItemsResponse.json()
-        topLitterItems = litterItemsData.data.litterItems
+      // --- Litter items ---
+      const topLitterItems: LitterItemBreakdown[] = panelData.litterItems
+
+      // --- Plastic fragments ---
+      let plasticFragmentsItem: { avgPer100m: number; presence: number } | undefined = undefined
+      if (panelData.plasticFragmentsItem) {
+        plasticFragmentsItem = {
+          avgPer100m: panelData.plasticFragmentsItem.avgPer100m,
+          presence: panelData.plasticFragmentsItem.presence
+        }
       }
 
-      // Process trends data
-      if (trendsResponse?.ok) {
-        const trendsData: { data: { trends: Array<{ year: string, avgPer100m: number }> } } = await trendsResponse.json()
-        trendData = trendsData.data.trends.map(trend => ({
-          year: parseInt(trend.year),
-          averageLitterPer100m: trend.avgPer100m,
-          date: `${trend.year}-01-01`
-        }))
-      }
+      // --- Trend data: built from aggregates (all years, no extra request) ---
+      const trendData: RegionData['litterData']['trendData'] = aggregates.length > 0
+        ? [...aggregates]
+            .sort((a, b) => a.year - b.year)
+            .map(agg => ({
+              year: agg.year,
+              averageLitterPer100m: agg.avg_per_100m,
+              date: `${agg.year}-01-01`
+            }))
+        : undefined
 
-      // Filter aggregates to selected year (or most recent if no year selected)
-      const filteredAggregates = year
-        ? aggregates.filter(agg => parseInt(agg.year) === year)
+      // --- Filter aggregates to effective year ---
+      const effectiveYear = panelData.effectiveYear
+      const filteredAggregates = effectiveYear
+        ? aggregates.filter(agg => agg.year === effectiveYear)
         : aggregates.length > 0
-        ? [aggregates.sort((a, b) => parseInt(b.year) - parseInt(a.year))[0]]
+        ? [aggregates.sort((a, b) => b.year - a.year)[0]]
         : []
 
-      // Calculate average litter per 100m from filtered aggregates
+      // Detect "no data for selected year" (region has data in other years, but not this one)
+      const lastDataYear = aggregates.length > 0
+        ? Math.max(...aggregates.map((a) => a.year))
+        : undefined
+
+      if (filteredAggregates.length === 0) {
+        return {
+          id: region.id.toString(),
+          name: region.name,
+          level: region.type === 'Country' || region.type === 'Crown Dependency' ? 'country' :
+                 region.type === 'County Unitary' ? 'county' : 'region',
+          parentId: region.parent_id?.toString(),
+          parentName: parent?.name,
+          hasData: true,
+          hasDataForYear: false,
+          lastDataYear,
+          suggestedRegions: generateSuggestedRegions(region.id)
+        }
+      }
+
       const averageLitterPer100m = filteredAggregates.length > 0
         ? filteredAggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / filteredAggregates.length
         : 0
 
-      // Calculate year-over-year change (uses all aggregates internally)
       const yearOverYearChange = calculateYearOverYearChange(aggregates, year)
 
-      // Calculate UK average comparison
+      // --- UK comparison ---
       let ukAverageComparison: RegionData['litterData']['ukAverageComparison'] = undefined
-      if (ukDataResponse?.ok && region.name !== 'United Kingdom') {
-        const ukData: {
-          aggregates: ApiRegionData['aggregates']
-        } = await ukDataResponse.json()
+      let plasticPolystyreneComparison: RegionData['litterData']['plasticPolystyreneComparison'] = undefined
 
-        if (ukData.aggregates && ukData.aggregates.length > 0) {
-          // Filter UK data to the same year for comparison
-          const filteredUkAggregates = year
-            ? ukData.aggregates.filter(agg => parseInt(agg.year) === year)
-            : ukData.aggregates.length > 0
-            ? [ukData.aggregates.sort((a, b) => parseInt(b.year) - parseInt(a.year))[0]]
-            : []
+      if (panelData.ukComparison && region.name !== 'United Kingdom') {
+        const ukAggregates = panelData.ukComparison.aggregates ?? []
+
+        if (ukAggregates.length > 0) {
+          const filteredUkAggregates = effectiveYear
+            ? ukAggregates.filter(agg => agg.year === effectiveYear)
+            : [ukAggregates.sort((a, b) => b.year - a.year)[0]]
 
           if (filteredUkAggregates.length > 0) {
             const ukAverage = filteredUkAggregates.reduce((sum, agg) => sum + agg.avg_per_100m, 0) / filteredUkAggregates.length
             ukAverageComparison = calculateUkAverageComparison(averageLitterPer100m, ukAverage)
           }
         }
-      }
 
-      // Calculate plastic/polystyrene comparison
-      let plasticPolystyreneComparison: RegionData['litterData']['plasticPolystyreneComparison'] = undefined
-      if (ukMaterialsResponse?.ok && materialBreakdown.length > 0) {
-        const ukMaterialsData: { data: { materials: MaterialBreakdown[] } } = await ukMaterialsResponse.json()
-
-        // Find plastic/polystyrene in regional data
-        const regionalPlastic = materialBreakdown.find(m =>
-          m.material.toLowerCase().includes('plastic') || m.material.toLowerCase().includes('polystyrene')
-        )
-
-        // Find plastic/polystyrene in UK data
-        const ukPlastic = ukMaterialsData.data.materials.find(m =>
-          m.material.name.toLowerCase().includes('plastic') || m.material.name.toLowerCase().includes('polystyrene')
-        )
-
-        if (regionalPlastic && ukPlastic) {
-          // Calculate total avgPer100m for UK materials to get percentage
-          const ukTotalAvgPer100m = ukMaterialsData.data.materials.reduce((sum, item) => sum + item.avgPer100m, 0)
-          const ukPlasticShare = ukTotalAvgPer100m > 0 ? (ukPlastic.avgPer100m / ukTotalAvgPer100m) * 100 : 0
-
-          plasticPolystyreneComparison = {
-            regionalAvgPer100m: regionalPlastic.avgPer100m,
-            regionalShare: regionalPlastic.percentage,
-            ukShare: ukPlasticShare,
-            shareDifference: regionalPlastic.percentage - ukPlasticShare
+        // Plastic/polystyrene comparison using RPC-provided UK materials
+        const ukMaterials = panelData.ukComparison.materials ?? []
+        if (ukMaterials.length > 0 && materialBreakdown.length > 0) {
+          const regionalPlastic = materialBreakdown.find(m =>
+            m.material.toLowerCase().includes('plastic') || m.material.toLowerCase().includes('polystyrene')
+          )
+          const ukPlastic = ukMaterials.find(m =>
+            m.material.name.toLowerCase().includes('plastic') || m.material.name.toLowerCase().includes('polystyrene')
+          )
+          if (regionalPlastic && ukPlastic) {
+            const ukTotalAvgPer100m = ukMaterials.reduce((sum, item) => sum + item.avgPer100m, 0)
+            const ukPlasticShare = ukTotalAvgPer100m > 0 ? (ukPlastic.avgPer100m / ukTotalAvgPer100m) * 100 : 0
+            plasticPolystyreneComparison = {
+              regionalAvgPer100m: regionalPlastic.avgPer100m,
+              regionalShare: regionalPlastic.percentage,
+              ukShare: ukPlasticShare,
+              shareDifference: regionalPlastic.percentage - ukPlasticShare
+            }
           }
         }
       }
 
-      // Calculate aggregate totals from filtered aggregates
+      // --- Aggregate totals ---
       const totalLitter = filteredAggregates.reduce((sum, agg) => sum + agg.total_litter, 0)
       const totalLengthSurveyed = filteredAggregates.reduce((sum, agg) => sum + agg.total_length_m, 0)
       const totalBags = filteredAggregates.reduce((sum, agg) => sum + agg.total_bags, 0)
@@ -363,6 +364,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           materialBreakdown,
           sourceBreakdown,
           topLitterItems,
+          plasticFragmentsItem,
           averageLitterPer100m,
           yearOverYearChange,
           ukAverageComparison,
@@ -387,12 +389,3 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
   })
 }
 
-// Hook for prefetching region info (useful for hover states)
-export function usePrefetchRegionInfo() {
-  // This could be implemented to prefetch region data on hover
-  return {
-    prefetch: (regionId: number) => {
-      // Implementation would prefetch the data without triggering loading state
-    }
-  }
-}

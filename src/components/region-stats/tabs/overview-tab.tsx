@@ -1,6 +1,6 @@
 import type { RegionData } from '@/types/region-types'
-import { AverageLitterKpiCard } from '../cards/average-litter-kpi-card'
-import { LitterCollectionStats } from '../cards/litter-collection-stats'
+import { KpiCardsGrid } from '../cards/kpi-cards-grid'
+import { SurveyHighlightCard } from '../cards/survey-highlight-card'
 import { InsightsCarousel } from '../insights'
 
 interface OverviewTabProps {
@@ -11,14 +11,14 @@ interface OverviewTabProps {
 export function OverviewTab({ regionData, selectedYear }: OverviewTabProps) {
   return (
     <div className="space-y-6">
-      {/* Primary KPI Card - Main focal point */}
-      {regionData.litterData && (
-        <AverageLitterKpiCard regionData={regionData} selectedYear={selectedYear} />
+      {/* Survey Highlight Card */}
+      {regionData.engagementData && (
+        <SurveyHighlightCard engagementData={regionData.engagementData} selectedYear={selectedYear} />
       )}
 
-      {/* Collection Stats - Compact summary */}
+      {/* KPI Cards Grid - 2x2 collection stats */}
       {regionData.litterData && (
-        <LitterCollectionStats litterData={regionData.litterData} />
+        <KpiCardsGrid litterData={regionData.litterData} />
       )}
 
       {/* Key Insights Carousel */}

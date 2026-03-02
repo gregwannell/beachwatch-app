@@ -49,7 +49,6 @@ export interface Database {
           parent_id: number | null
           type: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
           code: string
-          geometry: RegionGeometry | null
           has_data: boolean
           created_at: string
           updated_at: string
@@ -60,7 +59,6 @@ export interface Database {
           parent_id?: number | null
           type: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
           code: string
-          geometry?: RegionGeometry | null
           has_data?: boolean
           created_at?: string
           updated_at?: string
@@ -71,10 +69,29 @@ export interface Database {
           parent_id?: number | null
           type?: 'UK' | 'Country' | 'Crown Dependency' | 'County Unitary'
           code?: string
-          geometry?: RegionGeometry | null
           has_data?: boolean
           created_at?: string
           updated_at?: string
+        }
+      }
+      region_geometries: {
+        Row: {
+          id: number
+          region_id: number
+          geometry: RegionGeometry
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          region_id: number
+          geometry: RegionGeometry
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          region_id?: number
+          geometry?: RegionGeometry
+          created_at?: string
         }
       }
       materials: {
@@ -140,8 +157,8 @@ export interface Database {
       annual_region_aggregates: {
         Row: {
           id: number
-          name_id: number
-          year: string
+          region_id: number
+          year: number
           total_surveys: number
           total_volunteers: number
           total_volunteer_min: number
@@ -156,8 +173,8 @@ export interface Database {
         }
         Insert: {
           id?: number
-          name_id: number
-          year: string
+          region_id: number
+          year: number
           total_surveys?: number
           total_volunteers?: number
           total_volunteer_min?: number
@@ -172,8 +189,8 @@ export interface Database {
         }
         Update: {
           id?: number
-          name_id?: number
-          year?: string
+          region_id?: number
+          year?: number
           total_surveys?: number
           total_volunteers?: number
           total_volunteer_min?: number

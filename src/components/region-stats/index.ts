@@ -1,18 +1,22 @@
 // Main component
 export { RegionStatsContent } from './region-stats-content'
 
+// Hero components
+export { GradientHeroHeader } from './hero'
+
 // Tab components
-export { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
+export { OverviewTab, LitterStatsTab, RegionsTab } from './tabs'
 
 // Card components
-export { AverageLitterKpiCard, LitterCollectionStats, EngagementStats } from './cards'
+export { AverageLitterKpiCard, LitterCollectionStats, KpiCardsGrid } from './cards'
 
 // Insight components
 export {
-  HistoricalContextInsight,
-  TopLitterItemInsight,
-  TopSourceInsight,
-  PlasticComparisonInsight
+  AveragePer100mCard,
+  TopLitterMaterialCard,
+  TopLitterItemCard,
+  TopLitterSourceCard,
+  InsightsCarousel,
 } from './insights'
 
 // Small reusable components

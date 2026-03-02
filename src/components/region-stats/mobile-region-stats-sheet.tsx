@@ -4,12 +4,10 @@ import { ArrowLeft } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { RegionStatsContent } from './region-stats-content'
-import { getBreadcrumbHierarchy } from './utils/breadcrumb-helpers'
 import type { RegionData } from '@/types/region-types'
 
 interface MobileRegionStatsSheetProps {
@@ -29,57 +27,37 @@ export function MobileRegionStatsSheet({
   selectedYear,
   onRegionSelect,
 }: MobileRegionStatsSheetProps) {
-  // Generate breadcrumb hierarchy
-  const breadcrumbHierarchy = getBreadcrumbHierarchy(regionData)
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
         className="!w-[100vw] !max-w-none p-0 flex flex-col h-full"
       >
-        {/* Header with back button */}
-        <SheetHeader className="bg-primary dark:bg-background text-primary-foreground dark:text-foreground px-4 py-3 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="h-9 w-9 flex-shrink-0 hover:bg-primary-foreground/10 dark:hover:bg-accent text-primary-foreground dark:text-foreground"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex flex-col gap-1 min-w-0">
-              <SheetTitle className="text-lg text-primary-foreground dark:text-foreground">
-                {regionData?.name || 'Regional Statistics'}
-                {selectedYear && (
-                  <span className="opacity-80 dark:text-muted-foreground font-normal ml-2">
-                    {selectedYear}
-                  </span>
-                )}
-              </SheetTitle>
-              {breadcrumbHierarchy.length > 0 && (
-                <div className="flex items-center gap-1 text-xs opacity-90 dark:text-muted-foreground dark:opacity-100">
-                  {breadcrumbHierarchy.map((item, index) => (
-                    <span key={index}>
-                      {index > 0 && <span className="mx-1">›</span>}
-                      {item.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </SheetHeader>
+        {/* Accessible title for screen readers */}
+        <SheetTitle className="sr-only">
+          {regionData?.name || 'Regional Statistics'}
+        </SheetTitle>
 
-        {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Back button overlaid on gradient hero */}
+        <div className="absolute top-3 left-3 z-30">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onOpenChange(false)}
+            className="h-9 w-9 text-white hover:bg-white/20 rounded-full"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+        </div>
+
+        {/* Content — gradient hero is the header, tabs + scrolling below */}
+        <div className="flex-1 min-h-0">
           <RegionStatsContent
             regionData={regionData}
             isLoading={isLoading}
             onRegionSelect={onRegionSelect}
             selectedYear={selectedYear}
-            hideHeader={true}
+            hideHeader={false}
           />
         </div>
       </SheetContent>

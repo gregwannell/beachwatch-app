@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
 import { YearRangeFilter } from "@/types/filter-types"
 
 interface YearRangePickerProps {

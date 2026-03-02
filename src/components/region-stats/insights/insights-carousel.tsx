@@ -1,22 +1,20 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, type ReactElement } from 'react'
+import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import type { RegionData } from '@/types/region-types'
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel"
 import { CarouselDots } from "@/components/ui/carousel-dots"
-import {
-  HistoricalContextInsight,
-  TopLitterItemInsight,
-  TopSourceInsight,
-  PlasticComparisonInsight
-} from '.'
+import { AveragePer100mCard } from './average-per-100m-card'
+import { TopLitterMaterialCard } from './top-litter-material-card'
+import { TopLitterItemCard } from './top-litter-item-card'
+import { TopLitterSourceCard } from './top-litter-source-card'
 
 interface InsightsCarouselProps {
   regionData: RegionData
@@ -32,52 +30,80 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
 
   const { litterData } = regionData
 
+  const slides = [
+    <AveragePer100mCard
+      key="history"
+      regionData={regionData}
+      selectedYear={selectedYear}
+    />,
+    litterData.materialBreakdown.length > 0 ? (
+      <TopLitterMaterialCard
+        key="top-material"
+        materialBreakdown={litterData.materialBreakdown}
+      />
+    ) : null,
+    (litterData.topLitterItems?.length ?? 0) > 0 ? (
+      <TopLitterItemCard
+        key="top-item"
+        topLitterItems={litterData.topLitterItems}
+      />
+    ) : null,
+    litterData.sourceBreakdown.length > 0 ? (
+      <TopLitterSourceCard
+        key="top-source"
+        sourceBreakdown={litterData.sourceBreakdown}
+      />
+    ) : null,
+  ].filter((s): s is ReactElement => s !== null)
+
+  if (slides.length === 0) return null
+
+  const scrollPrev = () => api?.scrollPrev()
+  const scrollNext = () => api?.scrollNext()
+
   return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-medium text-muted-foreground">Key Insights</h3>
+    <div className="space-y-4">
+      {/* Section header with navigation arrows */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-extrabold flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-primary" />
+          Key Insights
+        </h2>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 rounded-full shadow-sm"
+            onClick={scrollPrev}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 rounded-full shadow-sm"
+            onClick={scrollNext}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
       <Carousel
         setApi={setApi}
         opts={{
-          align: "center",
+          align: "start",
           loop: true,
         }}
         className="w-full"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
-          {/* Historical Context Insight */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
-            <HistoricalContextInsight
-              regionData={regionData}
-              selectedYear={selectedYear}
-            />
-          </CarouselItem>
-
-          {/* Top Litter Item */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
-            <TopLitterItemInsight
-              topLitterItems={litterData.topLitterItems}
-            />
-          </CarouselItem>
-
-          {/* Top Litter Source */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
-            <TopSourceInsight
-              sourceBreakdown={litterData.sourceBreakdown}
-            />
-          </CarouselItem>
-
-          {/* Plastic/Polystyrene Comparison */}
-          <CarouselItem className="pl-2 md:pl-4 basis-[70%]">
-            <PlasticComparisonInsight
-              plasticPolystyreneComparison={litterData.plasticPolystyreneComparison}
-            />
-          </CarouselItem>
+        <CarouselContent className="-ml-3 py-1">
+          {slides.map((slide) => (
+            <CarouselItem key={slide.key} className="pl-3 basis-full">
+              {slide}
+            </CarouselItem>
+          ))}
         </CarouselContent>
-
-        {/* Navigation arrows - desktop only */}
-        <CarouselPrevious className="hidden md:flex left-2 md:left-4" />
-        <CarouselNext className="hidden md:flex right-2 md:right-4" />
       </Carousel>
 
       {/* Page indicator dots */}

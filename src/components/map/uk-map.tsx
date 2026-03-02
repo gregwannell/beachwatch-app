@@ -1,15 +1,17 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
 import { LatLngBounds, LatLng } from 'leaflet'
+import { Plus, Minus, House } from 'lucide-react'
+import type { Feature } from 'geojson'
 import type { MapComponentProps, MapRegion } from '@/types/map-types'
 import { MAP_THEMES, type MapTheme, DEFAULT_MAP_THEME } from '@/lib/map-themes'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-providers'
 
 // Fix for Leaflet default markers in Next.js
-import L, { LeafletMouseEvent } from 'leaflet'
+import L from 'leaflet'
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl: unknown })._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -17,10 +19,10 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 })
 
-// UK map bounds
+// UK map bounds (expanded to include Jersey ~49.2°N and Shetland ~60.8°N)
 const UK_BOUNDS = new LatLngBounds(
-  [49.5, -8.5], // Southwest
-  [61.0, 2.0]   // Northeast
+  [48.8, -8.5], // Southwest (includes Jersey)
+  [61.8, 2.0]   // Northeast (includes Shetland)
 )
 
 // Geographic region colors
@@ -53,10 +55,12 @@ function calculateGeometryBounds(geometry: { type: string; coordinates: number[]
   try {
     if (geometry.type === 'Polygon') {
       // Polygon: coordinates[0] is the outer ring
-      addCoordinatesToBounds(geometry.coordinates[0])
+      const polygonCoords = geometry.coordinates as number[][][]
+      addCoordinatesToBounds(polygonCoords[0])
     } else if (geometry.type === 'MultiPolygon') {
       // MultiPolygon: coordinates is array of polygons
-      geometry.coordinates.forEach((polygon: number[][][]) => {
+      const multiPolygonCoords = geometry.coordinates as number[][][][]
+      multiPolygonCoords.forEach((polygon: number[][][]) => {
         addCoordinatesToBounds(polygon[0]) // outer ring of each polygon
       })
     }
@@ -126,8 +130,8 @@ export function UKMap({
   const mapRef = useRef<L.Map | null>(null)
   const [hoveredRegionId, setHoveredRegionId] = useState<number | null>(null)
 
-  // Helper function to zoom to a region by ID
-  const zoomToRegion = (regionId: number) => {
+  // Helper function to zoom to a region by ID (wrapped in useCallback to fix exhaustive-deps warning)
+  const zoomToRegion = useCallback((regionId: number) => {
     if (!mapRef.current) return
 
     // Special case: -1 means zoom to fit all current regions
@@ -170,13 +174,13 @@ export function UKMap({
 
     // Different zoom levels based on region type
     const maxZoom = canDrillDown ? 8 : 10 // Countries: zoom 8, Counties: zoom 10
-    const padding = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
+    const padding: [number, number] = canDrillDown ? [20, 20] : [10, 10] // Tighter padding for counties
 
     mapRef.current.fitBounds(bounds, {
       padding: padding,
       maxZoom: maxZoom
     })
-  }
+  }, [regions])
 
   // Handle reset to UK view
   useEffect(() => {
@@ -192,7 +196,7 @@ export function UKMap({
     if (zoomToRegionId && mapRef.current) {
       zoomToRegion(zoomToRegionId)
     }
-  }, [zoomToRegionId, regions])
+  }, [zoomToRegionId, zoomToRegion])
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {
@@ -225,32 +229,29 @@ export function UKMap({
 
     layer.on({
       click: () => {
-        // Zoom to polygon bounds
+        // Zoom to polygon bounds (works for both mouse and touch)
         zoomToRegion(regionId)
 
         onRegionClick?.(regionId)
       },
-      touchstart: () => {
-        // Zoom to polygon bounds
-        zoomToRegion(regionId)
-
-        // Handle touch for mobile
-        onRegionClick?.(regionId)
-      },
-      mouseover: (e: LeafletMouseEvent) => {
+      mouseover: () => {
         // Set hover state to trigger re-render with hover styles
         setHoveredRegionId(regionId)
         // Set cursor style based on whether region can be drilled down
-        const mapContainer = (e.target as L.Path)._map.getContainer()
-        mapContainer.style.cursor = canDrillDown ? 'pointer' : 'default'
+        if (mapRef.current) {
+          const mapContainer = mapRef.current.getContainer()
+          mapContainer.style.cursor = canDrillDown ? 'pointer' : 'default'
+        }
         onRegionHover?.(regionId)
       },
-      mouseout: (e: LeafletMouseEvent) => {
+      mouseout: () => {
         // Clear hover state to trigger re-render with normal styles
         setHoveredRegionId(null)
         // Reset cursor
-        const mapContainer = (e.target as L.Path)._map.getContainer()
-        mapContainer.style.cursor = ''
+        if (mapRef.current) {
+          const mapContainer = mapRef.current.getContainer()
+          mapContainer.style.cursor = ''
+        }
         onRegionHover?.(null)
       }
     })
@@ -276,7 +277,7 @@ export function UKMap({
         maxBoundsViscosity={1.0}
         zoom={6}
         minZoom={6}
-        maxZoom={13}
+        maxZoom={11}
         scrollWheelZoom={true}
         touchZoom={true}
         doubleClickZoom={true}
@@ -284,13 +285,7 @@ export function UKMap({
         zoomControl={false}
         className="w-full h-full rounded-lg"
         keyboard={true}
-        attributionControl={true}
-        whenReady={(e) => {
-          // Add zoom control to bottom-right
-          L.control.zoom({
-            position: 'bottomright'
-          }).addTo(e.target)
-        }}
+        attributionControl={false}
       >
         <TileLayer
           key={mapTheme}
@@ -300,26 +295,56 @@ export function UKMap({
         
         {regions.map((region) => {
           if (!region.geometry) return null
-          
+
+          const feature: Feature = {
+            type: 'Feature',
+            properties: {
+              id: region.id,
+              name: region.name,
+              has_data: region.has_data,
+              type: region.type
+            },
+            geometry: region.geometry
+          }
+
           return (
             <GeoJSON
               key={region.id}
-              data={{
-                type: 'Feature',
-                properties: { 
-                  id: region.id, 
-                  name: region.name,
-                  has_data: region.has_data,
-                  type: region.type
-                },
-                geometry: region.geometry
-              }}
+              data={feature}
               style={() => getRegionStyle(region)}
               onEachFeature={onEachRegion}
             />
           )
         })}
       </MapContainer>
+
+      {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
+      <div className="absolute bottom-28 right-3 z-[10] flex flex-col gap-1 md:bottom-4 md:right-4">
+        <button
+          onClick={() => mapRef.current?.zoomIn()}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Zoom in"
+          title="Zoom in"
+        >
+          <Plus className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => mapRef.current?.zoomOut()}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 border-t-0 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Zoom out"
+          title="Zoom out"
+        >
+          <Minus className="h-4 w-4" />
+        </button>
+        <button
+          onClick={() => mapRef.current?.fitBounds(UK_BOUNDS, { padding: [10, 10] })}
+          className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-b-sm mt-1 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"
+          aria-label="Reset to UK view"
+          title="Reset to UK view"
+        >
+          <House className="h-3.5 w-3.5" />
+        </button>
+      </div>
     </div>
   )
 }

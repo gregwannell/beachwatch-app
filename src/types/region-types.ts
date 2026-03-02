@@ -13,6 +13,8 @@ export interface RegionData {
   parentId?: string
   parentName?: string
   hasData: boolean
+  hasDataForYear?: boolean   // false when region has data overall but not for the selected year
+  lastDataYear?: number      // most recent year that had data (used in no-data-for-year UI)
   suggestedRegions?: SuggestedRegion[]
   litterData?: {
     topItems: Array<{
@@ -25,6 +27,7 @@ export interface RegionData {
       count: number
       avgPer100m: number
       percentage: number
+      presence: number
       yearOverYearChange?: number
     }>
     sourceBreakdown: Array<{
@@ -32,6 +35,7 @@ export interface RegionData {
       count: number
       avgPer100m: number
       percentage: number
+      presence: number
       yearOverYearChange?: number
     }>
     topLitterItems?: Array<{
@@ -50,6 +54,10 @@ export interface RegionData {
       ukAverage: number
       percentDifference: number
       multiplier: number
+    }
+    plasticFragmentsItem?: {
+      avgPer100m: number
+      presence: number
     }
     plasticPolystyreneComparison?: {
       regionalAvgPer100m: number

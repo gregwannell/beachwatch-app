@@ -1,10 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase'
 import { validateRegionGeometry, createBoundaryData } from '@/lib/geometry-utils'
-import type { Tables } from '@/lib/database.types'
+import type { Tables, BoundaryData, RegionGeometry } from '@/lib/database.types'
+
+// Regions table no longer stores geometry; we re-attach it after the JOIN
+type RegionWithGeometry = Tables<'regions'> & { geometry?: RegionGeometry | null }
 
 interface RouteParams {
   params: Promise<{ id: string }>
+}
+
+interface RegionApiResponse {
+  region: RegionWithGeometry | Partial<RegionWithGeometry>
+  boundaryData?: BoundaryData
+  children?: Partial<Tables<'regions'>>[]
+  childrenError?: string
+  parent?: Partial<Tables<'regions'>> | null
+  parentError?: string
+  aggregates?: Partial<Tables<'annual_region_aggregates'>>[]
+  aggregatesError?: string
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -27,16 +41,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const includeAggregates = searchParams.get('includeAggregates') === 'true'
     const year = searchParams.get('year')
 
-    // Base region query - use explicit type to avoid conditional type issues
+    // Base region query - embed region_geometries to get geometry after table separation
     const regionQuery = supabase
       .from('regions')
-      .select('*')
+      .select('*, region_geometries(geometry)')
       .eq('id', regionId)
       .single()
 
-    const { data: region, error: regionError } = await regionQuery
+    const { data: regionRaw, error: regionError } = await regionQuery
 
-    if (regionError || !region) {
+    if (regionError || !regionRaw) {
       if (regionError?.code === 'PGRST116') {
         return NextResponse.json(
           { error: 'Region not found' },
@@ -51,6 +65,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       )
     }
 
+    // Flatten embedded region_geometries join into geometry field
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { region_geometries: rg, ...regionFields } = regionRaw as any
+    const region = { ...regionFields, geometry: rg?.geometry ?? null } as RegionWithGeometry
+
     // Validate and process geometry
     if (includeGeometry && region.geometry) {
       const isValid = validateRegionGeometry(region.geometry)
@@ -60,7 +79,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    const response: any = {
+    const response: RegionApiResponse = {
       region: includeGeometry ? region : {
         ...region,
         geometry: undefined  // Remove geometry if not requested
@@ -111,12 +130,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           total_length_m, additional_area_cleaned_m, total_bags, total_weight_kg,
           total_litter, avg_per_100m, created_at, updated_at
         `)
-        .eq('name_id', regionId)
+        .eq('region_id', regionId)
         .order('year', { ascending: false })
       
       // Apply year filter if provided
       if (year) {
-        aggregatesQuery = aggregatesQuery.eq('year', year)
+        aggregatesQuery = aggregatesQuery.eq('year', parseInt(year))
       }
       
       const { data: aggregates, error: aggregatesError } = await aggregatesQuery

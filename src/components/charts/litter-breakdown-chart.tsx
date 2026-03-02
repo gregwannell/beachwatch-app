@@ -83,7 +83,7 @@ export function LitterBreakdownChart({
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <div className="flex-1">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-m font-bold text-muted-foreground">
               {title}
             </CardTitle>
             {description && (

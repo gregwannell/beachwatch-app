@@ -1,10 +1,8 @@
-import type { 
-  Coordinates, 
-  CoordinateRing, 
-  PolygonCoordinates, 
-  RegionGeometry,
-  GeoJSONPolygon,
-  GeoJSONMultiPolygon
+import type {
+  Coordinates,
+  CoordinateRing,
+  PolygonCoordinates,
+  RegionGeometry
 } from './database.types'
 import { isGeoJSONPolygon, isGeoJSONMultiPolygon } from './geometry-utils'
 

@@ -1,7 +1,6 @@
 import { queryClient } from './query-client'
 import { regionKeys } from '@/hooks/use-region-queries'
 import type { RegionWithRelations } from './region-queries'
-import type { Tables } from './database.types'
 
 // Cache strategy configurations for different data types
 export const CACHE_STRATEGIES = {
@@ -132,9 +131,7 @@ export class CachePreloadingStrategies {
   }
   
   // Preload data for map interactions
-  static async preloadMapData(bounds: {
-    north: number, south: number, east: number, west: number
-  }) {
+  static async preloadMapData() {
     // For now, preload all regions with geometry (in a real app, you'd filter by bounds)
     return queryClient.prefetchQuery({
       queryKey: regionKeys.list('map-bounds'),
@@ -327,10 +324,10 @@ export class CacheWarming {
       }
 
       // Step 3: Major regions with geometry (top-level regions)
-      const majorRegionTypes = ['UK', 'Country']
+      const majorRegionTypes: Array<'UK' | 'Country'> = ['UK', 'Country']
       for (const type of majorRegionTypes) {
         await queryClient.prefetchQuery({
-          queryKey: regionKeys.byType(type as any, { includeGeometry: true }),
+          queryKey: regionKeys.byType(type, { includeGeometry: true }),
           queryFn: () => fetch(`/api/regions?type=${type}&includeGeometry=true`).then(r => r.json()),
           ...CACHE_STRATEGIES.GEOMETRY_DATA
         })

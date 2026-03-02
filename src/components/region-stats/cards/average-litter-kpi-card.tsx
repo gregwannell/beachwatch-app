@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator"
 import { Info, ChevronRight } from "lucide-react"
 import { YearOverYearBadge, UkComparisonText } from "../components"
 import { AverageLitterChart } from "../charts"
-import { CardWithBackground } from "../insights/card-with-background"
 import type { RegionData } from '@/types/region-types'
 
 interface AverageLitterKpiCardProps {
@@ -28,7 +27,13 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   const count = useMotionValue(0)
   const rounded = useTransform(count, (latest) => latest.toFixed(1))
 
-  // Detect screen size
+  // Extract data before hooks (to avoid conditional rendering issues)
+  const litterData = regionData.litterData
+  const averageLitterPer100m = litterData?.averageLitterPer100m ?? 0
+  const yearOverYearChange = litterData?.yearOverYearChange
+  const ukAverageComparison = litterData?.ukAverageComparison
+
+  // Detect screen size (called before any early returns - Rules of Hooks)
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768) // md breakpoint
@@ -42,11 +47,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  if (!regionData.litterData) return null
-
-  const { averageLitterPer100m, yearOverYearChange, ukAverageComparison } = regionData.litterData
-
-  // Animate count-up when value changes
+  // Animate count-up when value changes (called before any early returns - Rules of Hooks)
   useEffect(() => {
     const controls = animate(count, averageLitterPer100m, {
       duration: 1.5,
@@ -54,6 +55,9 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
     })
     return () => controls.stop()
   }, [averageLitterPer100m, count])
+
+  // Early return after all hooks have been called
+  if (!litterData) return null
 
   // Shared content for both Drawer and Dialog
   const calculationContent = (
@@ -70,17 +74,17 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
   )
 
   return (
-    <CardWithBackground backgroundImage="/waves-turquoise.svg" backgroundOpacity={0.05}>
-      <Card className="@container/card bg-gradient-to-t from-primary/5 to-transparent shadow-none border-0 pb-3 gap-2">
+      <Card className="@container/card bg-card border-0 pb-3 gap-2">
         <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardDescription>Average Litter per 100m</CardDescription>
+          <CardDescription>Average Litter/100m</CardDescription>
 
           {/* Conditionally render Drawer (mobile) or Dialog (desktop) */}
           {isMobile ? (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
               <DrawerTrigger asChild>
                 <Button
+                  id="average-litter-info-button"
                   variant="ghost"
                   size="sm"
                   className="h-auto w-auto p-1 hover:bg-primary/10"
@@ -103,6 +107,7 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <Button
+                  id="average-litter-info-button"
                   variant="ghost"
                   size="sm"
                   className="h-auto w-auto p-1 hover:bg-primary/10"
@@ -158,6 +163,5 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
         </CollapsibleContent>
       </Collapsible>
       </Card>
-    </CardWithBackground>
   )
 }

@@ -24,8 +24,8 @@ export function FloatingResetButton({
       variant="outline"
       className={cn(
         'fixed top-[4.5rem] right-20 z-[1000] h-12 w-12 rounded-full shadow-lg',
-        'bg-background/95 backdrop-blur-sm border-muted-foreground/20',
-        'hover:bg-accent hover:border-destructive/50',
+        'border-mcs-red bg-mcs-red text-white',
+        'hover:bg-mcs-red/80 hover:border-mcs-red/80',
         'transition-all duration-300 ease-in-out',
         'animate-in fade-in slide-in-from-right-5',
         'lg:hidden', // Only show on mobile

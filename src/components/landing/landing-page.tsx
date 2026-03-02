@@ -28,7 +28,7 @@ export function LandingPage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen pb-24 lg:pb-0 pt-14 lg:pt-0">
+      <main className="min-h-screen pb-24 lg:pb-0 pt-0 lg:pt-16">
         <Suspense fallback={null}>
           <LogoutToastHandler />
         </Suspense>

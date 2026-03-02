@@ -3,16 +3,24 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { cn } from "@/lib/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { ExternalLink, AlertTriangle } from "lucide-react"
+import { ExternalLink, AlertTriangle, LayoutDashboard, Trash2, Layers } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
 // Import extracted components
-import { EmptyState, LoadingSkeleton } from './components'
-import { OverviewTab, LitterStatsTab, EngagementTab } from './tabs'
-import { getBreadcrumbHierarchy } from './utils'
+import { EmptyState, LoadingSkeleton, NoDataForYear } from './components'
+import { OverviewTab, LitterStatsTab, RegionsTab } from './tabs'
+import { GradientHeroHeader } from './hero'
 
 interface RegionStatsContentProps {
   regionData?: RegionData
@@ -29,6 +37,18 @@ export function RegionStatsContent({
   selectedYear,
   hideHeader = false,
 }: RegionStatsContentProps) {
+  const isLimitedSurvey = Boolean(
+    regionData?.hasData &&
+    regionData?.engagementData &&
+    regionData.engagementData.surveyCount < 5
+  )
+
+  const [dialogOpen, setDialogOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    setDialogOpen(isLimitedSurvey)
+  }, [regionData?.id, isLimitedSurvey])
+
   if (isLoading) {
     return <LoadingSkeleton />
   }
@@ -63,103 +83,107 @@ export function RegionStatsContent({
     )
   }
 
-  // Generate breadcrumb hierarchy
-  const breadcrumbHierarchy = getBreadcrumbHierarchy(regionData)
-
   return (
-    <div className="space-y-4 px-6 py-2">
-      {/* Header with region name and status badge */}
-      {!hideHeader && (
-        <div className="space-y-1">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-baseline gap-2">
-              <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-              {selectedYear && (
-                <span className="text-sm text-muted-foreground font-normal">
-                  {selectedYear}
-                </span>
-              )}
-            </div>
-          </div>
+    <Tabs defaultValue="overview" className="flex flex-col h-full">
+      {/* Gradient Hero Header + Floating Tab Strip — never scrolls */}
+      <div className="flex-shrink-0">
+        {/* Gradient Hero with Average Litter/100m */}
+        <GradientHeroHeader
+          regionData={regionData}
+          selectedYear={selectedYear}
+          hideHeader={hideHeader}
+        />
 
-          {/* Regional Breadcrumb */}
-          {breadcrumbHierarchy.length > 0 && (
-            <Breadcrumb>
-              <BreadcrumbList>
-                {breadcrumbHierarchy.map((item, index) => (
-                  <div key={index} className="flex items-center ">
-                    {index > 0 && <BreadcrumbSeparator />}
-                    <BreadcrumbItem>
-                      {index === breadcrumbHierarchy.length - 1 ? (
-                        <BreadcrumbPage className="font-medium text-xs">
-                          {item.name}
-                        </BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink className="text-muted-foreground text-xs">
-                          {item.name}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
+        {/* Tab Strip */}
+        <div className="px-4 py-2 bg-background">
+          <TabsList id="region-stats-tabs" className="grid w-full grid-cols-3">
+            <TabsTrigger value="overview" className="text-sm">
+              <LayoutDashboard /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="litter" className="text-sm">
+              <Trash2 /> Litter Stats
+            </TabsTrigger>
+            <TabsTrigger value="regions" className="text-sm">
+              <Layers /> Regions
+            </TabsTrigger>
+          </TabsList>
+        </div>
+      </div>
+
+      {/* Scrollable tab content */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        {/* Low survey count warning — alert dialog + persistent indicator */}
+        {isLimitedSurvey && (
+          <>
+            <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <AlertDialogContent
+                className="border-amber-900 bg-amber-100 text-amber-900"
+              >
+                <AlertDialogHeader>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                    <AlertDialogTitle>Limited Survey Data</AlertDialogTitle>
                   </div>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-          )}
-        </div>
-      )}
+                  <AlertDialogDescription className="text-amber-900">
+                    This region has fewer than 5 surveys. Statistics should be
+                    interpreted with caution as they may not be representative.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <Button
+                    variant="plain"
+                    onClick={() =>
+                      window.open(
+                        "https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/",
+                        "_blank"
+                      )
+                    }
+                  >
+                    Contribute Data
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  </Button>
+                  <AlertDialogAction>
+                    I understand
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
-      {/* Low survey count warning */}
-      {regionData.hasData && regionData.engagementData && regionData.engagementData.surveyCount < 5 && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-          <Alert className="border-orange-500/50 bg-orange-50 dark:bg-orange-950/20 border-2 p-4">
-            <AlertTriangle className="h-5 w-5 text-orange-600" />
-            <AlertDescription>
-              <div className="space-y-2">
-                <p className="font-medium">Limited Survey Data</p>
-                <p className="text-sm text-muted-foreground">
-                  This region has fewer than 5 surveys. Statistics should be interpreted with caution as they may not be representative.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Contribute Data
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
+            <button
+              type="button"
+              onClick={() => setDialogOpen(true)}
+              className={cn(
+                "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm",
+                "border border-amber-200 bg-amber-50 text-amber-900",
+                "dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50",
+                "hover:bg-amber-100 dark:hover:bg-amber-900/50",
+                "transition-colors cursor-pointer"
+              )}
+            >
+              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <span className="font-medium">Limited survey data</span>
+            </button>
+          </>
+        )}
 
-      {/* Tabbed Interface */}
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" className="text-sm">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="litter" className="text-sm">
-            Litter Stats
-          </TabsTrigger>
-          <TabsTrigger value="engagement" className="text-sm">
-            Engagement
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4 mt-3">
-          <OverviewTab regionData={regionData} selectedYear={selectedYear} />
+        <TabsContent value="overview" className="space-y-4 mt-0">
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <OverviewTab regionData={regionData} selectedYear={selectedYear} />}
         </TabsContent>
 
-        <TabsContent value="litter" className="space-y-4 mt-3">
-          <LitterStatsTab regionData={regionData} />
+        <TabsContent value="litter" className="space-y-4 mt-0">
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <LitterStatsTab regionData={regionData} />}
         </TabsContent>
 
-        <TabsContent value="engagement" className="space-y-4 mt-3">
-          <EngagementTab regionData={regionData} />
+        <TabsContent value="regions" className="space-y-4 mt-0">
+          {regionData.hasDataForYear === false
+            ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
+            : <RegionsTab regionData={regionData} selectedYear={selectedYear} onRegionSelect={onRegionSelect} />}
         </TabsContent>
-      </Tabs>
-    </div>
+      </div>
+    </Tabs>
   )
 }

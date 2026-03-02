@@ -50,7 +50,7 @@ export function MapLoadingOverlay({ isComplete = false, className }: MapLoadingO
       } ${className ?? ''}`}
     >
       <div className="w-56 space-y-3 text-center">
-        <p className="text-sm font-medium text-foreground">Loading map data</p>
+        <p className="text-sm font-medium text-foreground">Loading beach litter data</p>
         <Progress value={progress} className="h-2.5" />
         <p className="text-xs text-muted-foreground tabular-nums">{displayPercent}%</p>
       </div>

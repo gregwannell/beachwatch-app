@@ -4,7 +4,7 @@ import { MainLayout } from '@/components/layout/main-layout'
 import { useMapRegions } from '@/hooks/use-map-regions'
 import { useRegionInfo } from '@/hooks/use-region-info'
 import { useFilterOptions } from '@/hooks/use-filter-options'
-import { useState, useEffect, useMemo, useRef, Suspense } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MapLoadingOverlay } from '@/components/map/map-loading-overlay'
 import dynamic from 'next/dynamic'
@@ -29,11 +29,6 @@ import { useNextStep } from 'nextstepjs'
 // Dynamic import to prevent SSR issues with Leaflet
 const UKMap = dynamic(() => import('@/components/map/uk-map').then(mod => ({ default: mod.UKMap })), {
   ssr: false,
-  loading: () => (
-    <div className="h-full relative">
-      <MapLoadingOverlay />
-    </div>
-  )
 })
 
 function ExplorePageContent() {
@@ -70,8 +65,8 @@ function ExplorePageContent() {
   const [filters, setFilters] = useState<FilterState>({
     region: { selectedRegionId: regionIdParam ? parseInt(regionIdParam) : 1 },
     yearRange: {
-      startYear: yearParam ? parseInt(yearParam) : 2024,
-      endYear: yearParam ? parseInt(yearParam) : 2024,
+      startYear: yearParam ? parseInt(yearParam) : 2025,
+      endYear: yearParam ? parseInt(yearParam) : 2025,
       mode: 'single'
     },
     categories: {},
@@ -169,20 +164,8 @@ function ExplorePageContent() {
   }
 
   // Fetch filter options for region lookup
-  const { data: filterOptions, isLoading: isFilterOptionsLoading } = useFilterOptions()
+  const { data: filterOptions } = useFilterOptions()
   const maxYear = filterOptions?.availableYears.max
-
-  // On first load with no year param, initialise to the most recent available year
-  const yearInitialized = useRef(false)
-  useEffect(() => {
-    if (!isFilterOptionsLoading && maxYear && !yearParam && !yearInitialized.current) {
-      yearInitialized.current = true
-      setFilters(prev => ({
-        ...prev,
-        yearRange: { startYear: maxYear, endYear: maxYear, mode: 'single' as const }
-      }))
-    }
-  }, [isFilterOptionsLoading, maxYear, yearParam])
 
   const handleResetFilters = () => {
     if (!filterOptions) return

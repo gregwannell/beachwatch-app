@@ -411,14 +411,15 @@ function ExplorePageContent() {
             </div>
           </div>
         ) : (
-          <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg">
+          <Card className="h-full overflow-hidden rounded-none border-0 py-0 shadow-lg relative">
+            {/* Single loading overlay covering both map and stats panel */}
+            {isLoading && !hasLoadedInitialRegions ? (
+              <MapLoadingOverlay isComplete={hasLoadedInitialRegions} />
+            ) : null}
+
             {/* Mobile: Full-height map only */}
             <div className="h-full flex flex-col md:hidden">
               <div id="uk-map-container" className="relative flex-1 overflow-hidden">
-                {/* Show loading overlay only during very first map load */}
-                {isLoading && !hasLoadedInitialRegions ? (
-                  <MapLoadingOverlay isComplete={hasLoadedInitialRegions} />
-                ) : null}
 
                 <UKMap
                   regions={filteredRegions}
@@ -483,11 +484,6 @@ function ExplorePageContent() {
                     />
                   </div>
                 )}
-
-                {/* Show loading overlay only during very first map load */}
-                {isLoading && !hasLoadedInitialRegions ? (
-                  <MapLoadingOverlay isComplete={hasLoadedInitialRegions} />
-                ) : null}
 
                 <UKMap
                   regions={filteredRegions}

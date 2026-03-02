@@ -2,7 +2,7 @@
 export { createClient } from './client'
 
 // Server-side Supabase client (SSR/API routes)
-export { createServerClient, getUser, getSession } from './server'
+export { createServerClient } from './server'
 
 // Default export for compatibility with existing imports
 import { createClient } from './client'

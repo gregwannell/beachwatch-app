@@ -1,7 +1,6 @@
 'use client'
 
-import { LogOut, HelpCircle, Info, Compass } from 'lucide-react'
-import { useState } from 'react'
+import { HelpCircle, Info, Compass } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -26,28 +25,8 @@ interface MobileSettingsSheetProps {
 export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { startNextStep } = useNextStep()
   const { theme } = useTheme()
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true)
-    try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-      })
-
-      if (response.ok) {
-        router.push('/?logout=success')
-      } else {
-        console.error('Logout failed')
-        setIsLoggingOut(false)
-      }
-    } catch (error) {
-      console.error('Logout error:', error)
-      setIsLoggingOut(false)
-    }
-  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -169,21 +148,6 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
             </div>
           </div>
 
-          <Separator />
-
-          {/* Account Section */}
-          <div className="space-y-3">
-            <h3 className="text-sm font-medium text-muted-foreground">Account</h3>
-            <Button
-              variant="ghost"
-              className="w-full justify-start h-auto py-3 text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-            >
-              <LogOut className="mr-3 h-5 w-5" />
-              <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
-            </Button>
-          </div>
         </div>
 
         {/* Footer */}

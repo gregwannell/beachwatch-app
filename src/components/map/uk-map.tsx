@@ -200,7 +200,8 @@ export function UKMap({
 
   // Region styling based on geographic region, selection, and hover state
   const getRegionStyle = (region: MapRegion) => {
-    const baseColor = getRegionColor(region, regions)
+    const hasNoData = !region.total_surveys || region.total_surveys === 0
+    const baseColor = hasNoData ? '#9ca3af' : getRegionColor(region, regions)
     const isSelected = selectedRegionId === region.id
     const isHovered = hoveredRegionId === region.id
     const hasLimitedSurveys = region.total_surveys !== undefined && region.total_surveys > 0 && region.total_surveys < 5

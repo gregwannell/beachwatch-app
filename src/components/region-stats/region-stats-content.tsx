@@ -92,6 +92,7 @@ export function RegionStatsContent({
           regionData={regionData}
           selectedYear={selectedYear}
           hideHeader={hideHeader}
+          onRegionSelect={onRegionSelect}
         />
 
         {/* Tab Strip */}

@@ -7,6 +7,7 @@ import type { RegionData } from '@/types/region-types'
 export interface BreadcrumbItem {
   level: string
   name: string
+  id?: string
 }
 
 /**
@@ -21,17 +22,17 @@ export function getBreadcrumbHierarchy(regionData: RegionData | undefined): Brea
 
   // Always start with United Kingdom unless we're already at UK level
   if (regionData.name !== 'United Kingdom') {
-    hierarchy.push({ level: 'country', name: 'United Kingdom' })
+    hierarchy.push({ level: 'country', name: 'United Kingdom', id: '1' })
   }
 
   if (regionData.level === 'region' && regionData.parentName) {
     // For regions: UK > [Country/County] > Region
-    hierarchy.push({ level: 'parent', name: regionData.parentName })
+    hierarchy.push({ level: 'parent', name: regionData.parentName, id: regionData.parentId })
     hierarchy.push({ level: 'region', name: regionData.name })
   } else if (regionData.level === 'county') {
     // For counties: UK > [Country if exists] > County
     if (regionData.parentName && regionData.parentName !== 'United Kingdom') {
-      hierarchy.push({ level: 'country', name: regionData.parentName })
+      hierarchy.push({ level: 'country', name: regionData.parentName, id: regionData.parentId })
     }
     hierarchy.push({ level: 'county', name: regionData.name })
   } else if (regionData.level === 'country') {

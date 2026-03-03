@@ -284,21 +284,9 @@ function ExplorePageContent() {
 
   const handleRegionSelect = (regionId: string) => {
     const numericRegionId = parseInt(regionId)
-    setSelectedRegionId(numericRegionId)
-    // Use functional updater to preserve all filter settings including data availability
-    setFilters(prev => {
-      const updatedFilters = {
-        ...prev,
-        region: { selectedRegionId: numericRegionId }
-      }
-      // Manually call the filter change handler logic
-      const params = new URLSearchParams()
-      params.set('region', numericRegionId.toString())
-      if (prev.yearRange.startYear) {
-        params.set('year', prev.yearRange.startYear.toString())
-      }
-      router.push(`/explore?${params.toString()}`, { scroll: false })
-      return updatedFilters
+    handleFiltersChange({
+      ...filters,
+      region: { selectedRegionId: numericRegionId }
     })
   }
 

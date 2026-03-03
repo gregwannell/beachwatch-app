@@ -16,9 +16,10 @@ interface GradientHeroHeaderProps {
   regionData: RegionData
   selectedYear?: number
   hideHeader?: boolean
+  onRegionSelect?: (regionId: string) => void
 }
 
-export function GradientHeroHeader({ regionData, selectedYear, hideHeader = false }: GradientHeroHeaderProps) {
+export function GradientHeroHeader({ regionData, selectedYear, hideHeader = false, onRegionSelect }: GradientHeroHeaderProps) {
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [isTrendOpen, setIsTrendOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -87,14 +88,26 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
       </h3>
       {breadcrumbs.length > 1 && (
         <div className="flex items-center justify-center gap-1 text-[11px] text-white/60">
-          {breadcrumbs.map((crumb, i) => (
-            <span key={crumb.level + crumb.name} className="flex items-center gap-1">
-              {i > 0 && <ChevronRight className="h-3 w-3" />}
-              <span className={i === breadcrumbs.length - 1 ? "text-white/90 font-medium" : ""}>
-                {crumb.name}
+          {breadcrumbs.map((crumb, i) => {
+            const isCurrent = i === breadcrumbs.length - 1
+            return (
+              <span key={crumb.level + crumb.name} className="flex items-center gap-1">
+                {i > 0 && <ChevronRight className="h-3 w-3" />}
+                {!isCurrent && crumb.id && onRegionSelect ? (
+                  <button
+                    onClick={() => onRegionSelect(crumb.id!)}
+                    className="hover:text-white underline-offset-2 hover:underline transition-colors cursor-pointer"
+                  >
+                    {crumb.name}
+                  </button>
+                ) : (
+                  <span className={isCurrent ? "text-white/90 font-medium" : ""}>
+                    {crumb.name}
+                  </span>
+                )}
               </span>
-            </span>
-          ))}
+            )
+          })}
         </div>
       )}
       <div className="w-16 h-0.5 bg-white/40 mx-auto mt-3 rounded-full" />

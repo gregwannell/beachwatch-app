@@ -1,7 +1,6 @@
 "use client"
 
 import { HeroSection } from './hero-section'
-import { FeaturesSection } from './features-section'
 import { ModernMobileNav } from '@/components/layout/modern-mobile-nav'
 import { Header } from '@/components/layout/header'
 import { useSearchParams } from 'next/navigation'
@@ -33,7 +32,6 @@ export function LandingPage() {
           <LogoutToastHandler />
         </Suspense>
         <HeroSection />
-        <FeaturesSection />
       </main>
       <ModernMobileNav />
     </>

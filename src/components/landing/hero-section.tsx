@@ -50,7 +50,7 @@ export function HeroSection() {
           </Button>
 
           <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3 h-auto w-44 border-1 border-white dark:border-white hover:text-mcs-navy text-mcs-navy dark:text-mcs-navy hover:bg-white/80 bg-white dark:bg-white dark:hover:bg-white/80 backdrop-blur-sm shadow-lg rounded-full">
-            <Link href="#features">
+            <Link href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/" target="_blank" rel="noopener noreferrer">
               Learn More
             </Link>
           </Button>

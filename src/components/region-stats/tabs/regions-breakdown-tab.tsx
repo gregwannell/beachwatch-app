@@ -133,10 +133,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalSurveys
         return val != null ? (
-          <div className="flex items-center gap-1.5">
-            <span className="tabular-nums">{formatNumber(val, 0)}</span>
-            <YearOverYearBadge change={row.original.totalSurveysYoY ?? undefined} increaseIsGood variant="plain" className="text-[11px]" />
-          </div>
+          <span className="tabular-nums">{formatNumber(val, 0)}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
@@ -149,10 +146,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalVolunteers
         return val != null ? (
-          <div className="flex items-center gap-1.5">
-            <span className="tabular-nums">{formatNumber(val, 0)}</span>
-            <YearOverYearBadge change={row.original.totalVolunteersYoY ?? undefined} increaseIsGood variant="plain" className="text-[11px]" />
-          </div>
+          <span className="tabular-nums">{formatNumber(val, 0)}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )

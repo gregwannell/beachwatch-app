@@ -248,10 +248,13 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
         }))
       }
 
-      // --- Litter items ---
+      // --- Litter items (exclude plastic/polystyrene 0-2.5cm — shown separately) ---
+      // Sort by avgPer100m desc, then total desc as tiebreaker
       const topLitterItems: LitterItemBreakdown[] = panelData.litterItems
+        .filter(item => item.item.name !== 'Plastic/Polystyrene: Plastic/polystyrene pieces 0 - 2.5cm')
+        .sort((a, b) => b.avgPer100m - a.avgPer100m || b.total - a.total)
 
-      // --- Plastic fragments ---
+      // --- Plastic pieces ---
       let plasticFragmentsItem: { avgPer100m: number; presence: number } | undefined = undefined
       if (panelData.plasticFragmentsItem) {
         plasticFragmentsItem = {

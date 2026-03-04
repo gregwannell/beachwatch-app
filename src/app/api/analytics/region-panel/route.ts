@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       p_region_id: validatedRegionId,
       p_year: validatedYear,
       p_uk_region_id: 1,
-      p_top_n: 5
+      p_top_n: 10
     })
 
     if (error) {

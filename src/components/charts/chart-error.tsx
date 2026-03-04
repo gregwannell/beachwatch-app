@@ -25,7 +25,7 @@ export function ChartError({
         "flex flex-col items-center justify-center border-2 border-dashed border-muted rounded-lg bg-muted/20",
         className
       )}
-      style={{ height }}
+      style={{ height: `${height / 16}rem` }}
       role="alert"
       aria-live="polite"
     >
@@ -62,7 +62,7 @@ export function ChartEmptyState({
         "flex flex-col items-center justify-center border-2 border-dashed border-muted rounded-lg bg-muted/10",
         className
       )}
-      style={{ height }}
+      style={{ height: `${height / 16}rem` }}
       role="status"
       aria-label={`Empty ${type} chart: ${message}`}
     >

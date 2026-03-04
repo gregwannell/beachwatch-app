@@ -417,8 +417,8 @@ function ExplorePageContent() {
                   className="h-full w-full"
                 />
 
-                {/* MCS Logo overlay */}
-                <div className="absolute bottom-28 md:bottom-4 left-4 z-[900] pointer-events-none">
+                {/* MCS Logo overlay - top-left on mobile to avoid nav bar */}
+                <div className="absolute top-4 left-4 z-[900] pointer-events-none">
                   <Image
                     src={theme === 'dark' ? '/MCS_Logo_Stacked_White.png' : '/MCS_Logo_Stacked_Ink.png'}
                     alt="Marine Conservation Society"
@@ -456,7 +456,7 @@ function ExplorePageContent() {
             {/* Tablet & Desktop: Split view with responsive widths */}
             <div className="hidden md:flex md:flex-row h-full">
               {/* Map Section */}
-              <div id="uk-map-container" className="relative flex-1 min-w-0 md:min-w-[400px] lg:min-w-[600px] overflow-hidden">
+              <div id="uk-map-container" className="relative flex-1 min-w-0 md:min-w-[400px] overflow-hidden">
                 {/* Map Filter Bar - Desktop only */}
                 {filterOptions && (
                   <div className="absolute top-4 right-6 z-[950]">

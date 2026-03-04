@@ -112,7 +112,7 @@ export function HorizontalBarChart({
         <ChartContainer
           config={chartConfig}
           className="w-full"
-          style={{ height, minHeight: height }}
+          style={{ height: `${height / 16}rem`, minHeight: `${height / 16}rem` }}
         >
         <BarChart
           accessibilityLayer
@@ -161,7 +161,7 @@ export function HorizontalBarChart({
                     x={Number(x) + 2}
                     y={Number(y) - 6}
                     fill="var(--foreground)"
-                    fontSize={12}
+                    style={{ fontSize: '0.75rem' }}
                     fontWeight={500}
                     textAnchor="start"
                   >
@@ -175,7 +175,7 @@ export function HorizontalBarChart({
               position="insideRight"
               offset={5}
               fill="#ffffff"
-              fontSize={12}
+              style={{ fontSize: '0.75rem' }}
               formatter={(value: number) => formatChartValue(value, false)}
             />
           </Bar>

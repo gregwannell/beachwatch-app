@@ -12,7 +12,7 @@ export function TopLitterMaterialCard({ materialBreakdown }: TopLitterMaterialCa
   const topMaterial = [...materialBreakdown].sort((a, b) => b.percentage - a.percentage)[0]
 
   return (
-    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[260px] flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[16.25rem] flex flex-col justify-between relative overflow-hidden">
       <Image
         src="/topography-dark.svg"
         alt=""

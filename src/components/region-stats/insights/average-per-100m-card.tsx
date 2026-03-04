@@ -51,7 +51,7 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
       : `${stats.isAboveAverage ? 'above' : 'below'} 10 year average`
 
   return (
-    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[260px] flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[16.25rem] flex flex-col justify-between relative overflow-hidden">
       <Image
         src="/waves-turquoise.png"
         alt=""

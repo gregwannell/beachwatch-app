@@ -27,15 +27,6 @@ export function LitterStatsTab({ regionData }: LitterStatsTabProps) {
 
   return (
     <div className="space-y-6">
-      {/* Plastic Fragments 0-2.5cm highlight */}
-      {regionData.litterData.plasticFragmentsItem && (
-        <PlasticFragmentsCard
-          avgPer100m={regionData.litterData.plasticFragmentsItem.avgPer100m}
-          presence={regionData.litterData.plasticFragmentsItem.presence}
-          className="w-full"
-        />
-      )}
-
       {/* Top Litter Items */}
       {regionData.litterData.topLitterItems && regionData.litterData.topLitterItems.length > 0 && (
         <TopLitterItemsChart
@@ -73,6 +64,15 @@ export function LitterStatsTab({ regionData }: LitterStatsTabProps) {
             </div>
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* Plastic Pieces 0-2.5cm highlight */}
+      {regionData.litterData.plasticFragmentsItem && (
+        <PlasticFragmentsCard
+          avgPer100m={regionData.litterData.plasticFragmentsItem.avgPer100m}
+          presence={regionData.litterData.plasticFragmentsItem.presence}
+          className="w-full"
+        />
       )}
     </div>
   )

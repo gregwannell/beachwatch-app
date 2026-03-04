@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import { Trash2 } from 'lucide-react'
 import type { RegionData } from '@/types/region-types'
 
 interface TopLitterItemCardProps {
@@ -11,7 +10,7 @@ export function TopLitterItemCard({ topLitterItems }: TopLitterItemCardProps) {
   if (!topItem) return null
 
   return (
-    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[260px] flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[13rem] flex flex-col justify-between relative overflow-hidden">
       <Image
         src="/waves-turquoise.png"
         alt=""
@@ -22,16 +21,13 @@ export function TopLitterItemCard({ topLitterItems }: TopLitterItemCardProps) {
 
       {/* Top section */}
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-10 h-10 rounded-full bg-mcs-teal/20 flex items-center justify-center">
-            <Trash2 className="w-5 h-5 text-mcs-teal" />
-          </div>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-l font-bold text-white leading-tight">{topItem.item.shortName ?? topItem.item.name}</p>
           <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-mcs-teal/20 text-mcs-teal border border-mcs-teal/30">
             Top Litter Item
           </span>
         </div>
-        <p className="text-xl font-bold text-white leading-tight">{topItem.item.shortName ?? topItem.item.name}</p>
-        <div className="mt-3">
+        <div className="mt-1">
           <span className="text-5xl font-bold text-mcs-teal">{topItem.avgPer100m.toFixed(1)}</span>
           <span className="text-sm text-slate-200 ml-2">per 100m</span>
         </div>

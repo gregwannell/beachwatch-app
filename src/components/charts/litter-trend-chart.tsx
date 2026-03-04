@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, XAxis, YAxis } from "recharts"
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,7 +17,8 @@ interface DotProps {
 
 export interface TrendDataPoint {
   year: number
-  averageLitterPer100m: number
+  averageLitterPer100m: number | null
+  surveyCount?: number
   date: string
 }
 
@@ -51,11 +52,17 @@ export function LitterTrendChart({
     },
   } satisfies ChartConfig
 
-  // Process and filter data based on year range
+  // Process and filter data based on year range; use null for years with no surveys
   const chartData = React.useMemo(() => {
     if (!data || data.length === 0) return []
 
-    const sorted = [...data].sort((a, b) => a.year - b.year)
+    const sorted = [...data]
+      .sort((a, b) => a.year - b.year)
+      .map(d => ({
+        ...d,
+        averageLitterPer100m: d.surveyCount === 0 ? null : d.averageLitterPer100m,
+      }))
+
     if (yearRange === "all") return sorted
 
     const maxYear = sorted[sorted.length - 1].year
@@ -84,7 +91,7 @@ export function LitterTrendChart({
   // Empty state
   if (!chartData || chartData.length === 0) {
     return (
-      <div className={`flex items-center justify-center ${className}`} style={{ height }}>
+      <div className={`flex items-center justify-center ${className}`} style={{ height: `${height / 16}rem` }}>
         <div className="text-center text-muted-foreground">
           <p className="text-sm">No trend data available</p>
         </div>
@@ -97,7 +104,7 @@ export function LitterTrendChart({
       <div className="mb-2">
         <h3 className="text-sm font-medium leading-none">Average litter/100m</h3>
         <p className="text-xs text-muted-foreground mt-1">
-          Average number of litter items per 100 metres of beach surveyed each year
+          Average number of litter items per 100 metres of beach surveyed each year. Gaps indicate years with no survey data.
         </p>
         <Select value={yearRange} onValueChange={(v: YearRange) => setYearRange(v)}>
           <SelectTrigger
@@ -116,7 +123,7 @@ export function LitterTrendChart({
       <ChartContainer
           config={chartConfig}
           className="w-full"
-          style={{ height }}
+          style={{ height: `${height / 16}rem` }}
         >
           <AreaChart
             data={chartData}
@@ -142,19 +149,21 @@ export function LitterTrendChart({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              fontSize={11}
+              style={{ fontSize: '0.6875rem' }}
               angle={-45}
               textAnchor="end"
               tickFormatter={(value) => `${value}`}
             />
             <YAxis
               hide={true}
-              domain={[0, 'auto']}
+              domain={[-10, 'auto']}
             />
             <ChartTooltip
               content={<ChartTooltipContent labelFormatter={(value, payload) => {
-                const dataPoint = payload?.[0]?.payload
-                return dataPoint?.year ? `${dataPoint.year}` : value
+                const dataPoint = payload?.[0]?.payload as TrendDataPoint | undefined
+                if (!dataPoint?.year) return value
+                if (dataPoint.surveyCount === 0) return `${dataPoint.year} — No surveys recorded`
+                return `${dataPoint.year}`
               }} />}
               cursor={{
                 stroke: "var(--color-averageLitterPer100m)",
@@ -167,10 +176,11 @@ export function LitterTrendChart({
               type="natural"
               fill="url(#fillLitter)"
               stroke="var(--color-averageLitterPer100m)"
+              connectNulls={false}
               dot={(props: DotProps) => {
                 const { cx, cy, payload } = props
                 // Only show dot for the selected year
-                if (selectedYear && payload.year === selectedYear) {
+                if (selectedYear && payload?.year === selectedYear) {
                   return (
                     <circle
                       key={`dot-${payload.year}`}

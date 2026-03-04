@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,25 +59,6 @@ export function RegionStatsContent({
         <div className="text-sm text-muted-foreground mt-1">
           Click on a region in the map to view details
         </div>
-      </div>
-    )
-  }
-
-  // Show empty state if no data is available
-  if (!regionData.hasData) {
-    return (
-      <div className="p-6">
-        <div className="space-y-2 mb-6">
-          <h2 className="text-lg font-semibold truncate">{regionData.name}</h2>
-          <Badge variant="secondary" className="text-xs w-fit">
-            No Data
-          </Badge>
-        </div>
-        <EmptyState
-          regionName={regionData.name}
-          suggestedRegions={regionData.suggestedRegions}
-          onRegionSelect={onRegionSelect}
-        />
       </div>
     )
   }
@@ -168,19 +148,25 @@ export function RegionStatsContent({
         )}
 
         <TabsContent value="overview" className="space-y-4 mt-0">
-          {regionData.hasDataForYear === false
+          {!regionData.hasData
+            ? <EmptyState regionName={regionData.name} />
+            : regionData.hasDataForYear === false
             ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
             : <OverviewTab regionData={regionData} selectedYear={selectedYear} />}
         </TabsContent>
 
         <TabsContent value="litter" className="space-y-4 mt-0">
-          {regionData.hasDataForYear === false
+          {!regionData.hasData
+            ? <EmptyState regionName={regionData.name} />
+            : regionData.hasDataForYear === false
             ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
             : <LitterStatsTab regionData={regionData} />}
         </TabsContent>
 
         <TabsContent value="regions" className="space-y-4 mt-0">
-          {regionData.hasDataForYear === false
+          {!regionData.hasData
+            ? <EmptyState regionName={regionData.name} />
+            : regionData.hasDataForYear === false
             ? <NoDataForYear regionData={regionData} selectedYear={selectedYear} />
             : <RegionsTab regionData={regionData} selectedYear={selectedYear} onRegionSelect={onRegionSelect} />}
         </TabsContent>

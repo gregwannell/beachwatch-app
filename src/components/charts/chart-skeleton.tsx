@@ -13,7 +13,7 @@ export function ChartSkeleton({ className, height = 300, type }: ChartSkeletonPr
   return (
     <div 
       className={cn("w-full animate-pulse", className)}
-      style={{ height }}
+      style={{ height: `${height / 16}rem` }}
       role="status"
       aria-label="Loading chart data"
     >

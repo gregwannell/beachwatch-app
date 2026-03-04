@@ -59,7 +59,7 @@ export function DonutPieChart({
   if (!data || data.length === 0) {
     return (
       <div className={className}>
-        <div className="flex items-center justify-center h-[200px]">
+        <div className="flex items-center justify-center h-[12.5rem]">
           <div className="text-center text-muted-foreground">
             <p>No data available</p>
           </div>
@@ -73,8 +73,8 @@ export function DonutPieChart({
       <div className="flex-1">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-          style={{ height }}
+          className="mx-auto aspect-square max-h-[15.625rem]"
+          style={{ height: `${height / 16}rem` }}
         >
           <PieChart>
             <ChartTooltip

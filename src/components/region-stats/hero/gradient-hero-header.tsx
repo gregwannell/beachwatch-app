@@ -31,7 +31,7 @@ export function GradientHeroHeader({ regionData, selectedYear, hideHeader = fals
   const litterData = regionData.litterData
   const averageLitterPer100m = litterData?.averageLitterPer100m ?? 0
   const yearOverYearChange = litterData?.yearOverYearChange
-  const hasDataForYear = regionData.hasDataForYear !== false
+  const hasDataForYear = regionData.hasDataForYear !== false && regionData.hasData !== false
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)

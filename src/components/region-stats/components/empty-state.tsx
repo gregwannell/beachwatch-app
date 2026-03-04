@@ -1,88 +1,35 @@
 import { Button } from "@/components/ui/button"
-import { Database, MapPin, ExternalLink } from "lucide-react"
-import type { SuggestedRegion } from '@/types/region-types'
+import { Waves, ExternalLink } from "lucide-react"
 
 interface EmptyStateProps {
   regionName: string
-  suggestedRegions?: SuggestedRegion[]
-  onRegionSelect?: (regionId: string) => void
 }
 
-export function EmptyState({
-  regionName,
-  suggestedRegions,
-  onRegionSelect
-}: EmptyStateProps) {
+export function EmptyState({ regionName }: EmptyStateProps) {
   return (
-    <div className="space-y-6">
-      {/* Main empty state */}
-      <div className="flex flex-col items-center justify-center py-6 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-          <Database className="w-6 h-6 text-muted-foreground" />
-        </div>
-
-        <div className="space-y-2">
-          <h4 className="text-base font-semibold">No Data Available</h4>
-          <p className="text-muted-foreground text-sm max-w-sm">
-            No litter survey data is currently available for <strong>{regionName}</strong>.
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center space-y-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-xs"
-            onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
-          >
-            <ExternalLink className="w-3 h-3 mr-2" />
-            Contribute Data
-          </Button>
-        </div>
+    <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-4">
+      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+        <Waves className="w-6 h-6 text-muted-foreground" />
       </div>
 
-      {/* Suggested regions */}
-      {suggestedRegions && suggestedRegions.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
-            <h4 className="text-sm font-medium">
-              Nearby Regions with Data
-            </h4>
-          </div>
-
-          <div className="space-y-2">
-            {suggestedRegions.map((region) => (
-              <div
-                key={region.id}
-                className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent transition-colors"
-              >
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm font-medium">{region.name}</span>
-                    {region.distance && (
-                      <span className="text-xs text-muted-foreground">
-                        ~{region.distance}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {onRegionSelect && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onRegionSelect(region.id)}
-                    className="text-xs"
-                  >
-                    View
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <div className="space-y-1.5">
+        <h4 className="text-base font-semibold">No surveys recorded</h4>
+        <p className="text-sm text-muted-foreground">
+          No beach litter surveys have ever been recorded for <strong>{regionName}</strong>.
+        </p>
+        <p className="text-xs text-muted-foreground pt-1">
+          This may be because the region has no coastline, or it hasn&apos;t yet been included in the MCS survey programme.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-2"
+          onClick={() => window.open('https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/', '_blank')}
+        >
+          Get involved with beach surveys
+          <ExternalLink className="w-3 h-3 ml-1.5" />
+        </Button>
+      </div>
     </div>
   )
 }

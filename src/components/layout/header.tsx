@@ -62,17 +62,30 @@ export function Header() {
 
           {/* Center: Navigation Links */}
           <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
-              Home
-            </Link>
             <button
               onClick={handleStartTour}
               className="text-sm font-medium text-white hover:text-mcs-orange transition-colors"
             >
               How to Use
             </button>
-            <Link href="#" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
-              Contact
+            <Link href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-white hover:text-mcs-orange transition-colors">
+              Get involved
+            </Link>
+            <Link
+              href="https://www.mcsuk.org/make-a-donation/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-white hover:text-mcs-orange transition-colors"
+            >
+              Donate
+            </Link>
+            <Link
+              href="https://www.mcsuk.org/become-a-member/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium px-4 py-2 rounded-md bg-mcs-red text-white hover:bg-mcs-navy transition-colors"
+            >
+              Become a member
             </Link>
           </nav>
 

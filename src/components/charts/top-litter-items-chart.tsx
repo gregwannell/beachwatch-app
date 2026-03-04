@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { HorizontalBarChart } from "./horizontal-bar-chart"
 import { barGradientColors } from "./chart-config"
 import type { BarChartData, ChartProps } from "./types"
+import { cn } from "@/lib/utils"
 import {
   Card,
   CardContent,
@@ -12,8 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { Info } from "lucide-react"
 
@@ -42,7 +43,7 @@ export function TopLitterItemsChart({
   className,
   height = 220,
   title = "Top 5 Litter Items",
-  description = "Top litter items by average per 100m",
+  description = "Ranked by average/100m",
   maxItems = 5,
   showAvgPer100m = true,
   loading = false,
@@ -82,15 +83,14 @@ export function TopLitterItemsChart({
   // Shared content for both Drawer and Dialog
   const explanationContent = (
     <div className="text-sm text-muted-foreground space-y-3">
-      <p className="font-semibold">How are top items ranked?</p>
       <p className="text-sm">
-        Items are ranked by their average per 100 metres of beach. We calculate how often each item appears across all surveys in this region, then work out the typical amount found per 100m. The &ldquo;presence&rdquo; percentage shows how frequently this item appears in surveys - a higher presence means it&apos;s consistently found, while a lower presence might indicate it appears in large quantities but less frequently.
+        Items are ranked by their average per 100 metres of beach. We calculate how often each item appears across all surveys in this region, then work out the typical amount found per 100m. This gives a more accurate picture of how common each item is, regardless of how many surveys have been done. If an item has the same average per 100m as another, we then look at the total count across all surveys to determine the final ranking.
       </p>
     </div>
   )
 
   return (
-    <Card className={className}>
+    <Card className={cn("gap-2", className)}>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
           <div className="flex-1">
@@ -119,8 +119,7 @@ export function TopLitterItemsChart({
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Top Litter Items Ranking</DrawerTitle>
-                  <DrawerDescription>Understanding how items are ranked</DrawerDescription>
+                  <DrawerTitle>How are top items ranked?</DrawerTitle>
                 </DrawerHeader>
                 <div className="px-4 pb-6">
                   {explanationContent}
@@ -141,8 +140,7 @@ export function TopLitterItemsChart({
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Top Litter Items Ranking</DialogTitle>
-                  <DialogDescription>Understanding how items are ranked</DialogDescription>
+                  <DialogTitle>How are top items ranked?</DialogTitle>
                 </DialogHeader>
                 {explanationContent}
               </DialogContent>

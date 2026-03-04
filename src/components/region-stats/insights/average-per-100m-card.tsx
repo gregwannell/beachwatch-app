@@ -1,7 +1,6 @@
 "use client"
 
 import Image from 'next/image'
-import { TrendingDown, TrendingUp, Award } from 'lucide-react'
 import type { RegionData } from '@/types/region-types'
 import { calculateHistoricalStats, getRankingText } from '../utils'
 
@@ -24,10 +23,7 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
   if (!stats) return null
 
   const isGoodPerformance = !stats.isAboveAverage || stats.isBestEver
-  const IconComponent = stats.isBestEver ? Award : stats.isAboveAverage ? TrendingUp : TrendingDown
   const accentClass = isGoodPerformance ? 'text-mcs-teal' : 'text-mcs-red'
-  const iconBgClass = isGoodPerformance ? 'bg-mcs-teal/20' : 'bg-mcs-red/20'
-  const iconColorClass = isGoodPerformance ? 'text-mcs-teal' : 'text-mcs-orange'
 
   let badgeText: string | null = null
   let badgeClass = ''
@@ -51,7 +47,7 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
       : `${stats.isAboveAverage ? 'above' : 'below'} 10 year average`
 
   return (
-    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[260px] flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-gradient-to-br from-mcs-ink to-mcs-navy rounded-2xl border border-white/10 p-6 min-h-[13rem] flex flex-col justify-between relative overflow-hidden">
       <Image
         src="/waves-turquoise.png"
         alt=""
@@ -62,17 +58,14 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
 
       {/* Top section */}
       <div className="relative z-10">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`w-10 h-10 rounded-full ${iconBgClass} flex items-center justify-center`}>
-            <IconComponent className={`w-5 h-5 ${iconColorClass}`} />
-          </div>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-l font-bold text-white leading-tight">Average items/100m</p>
           {badgeText && (
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${badgeClass}`}>
               {badgeText}
             </span>
           )}
         </div>
-        <p className="text-xl font-bold text-white leading-tight">Average items/100m</p>
         <div className="mt-1">
           <span className={`text-5xl font-bold ${accentClass}`}>
             {stats.percentDifference === 0 ? '—' : `${stats.percentDifference}%`} <span className="font-normal text-sm text-slate-200 mt-1">{avgLabel}</span>
@@ -85,11 +78,11 @@ export function AveragePer100mCard({ regionData, selectedYear }: AveragePer100mC
         <p className="text-sm text-slate-200">
           {(() => {
             const rankingText = getRankingText(stats)
-            if (stats.isBestEver) return rankingText
+            if (stats.isBestEver) return <>🏆 {rankingText}</>
             if (stats.isWorstEver) {
               return stats.totalYears > 1
-                ? <>{rankingText} — Previous low: <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
-                : rankingText
+                ? <>⚠️ {rankingText} — Previous low: <strong>{stats.bestYear.value.toFixed(1)}/100m</strong> in <strong>{stats.bestYear.year}</strong></>
+                : <>⚠️ {rankingText}</>
             }
             const midpoint = Math.ceil(stats.totalYears / 2)
             const isInBetterHalf = stats.ranking <= midpoint

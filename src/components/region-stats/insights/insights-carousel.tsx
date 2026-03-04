@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, type ReactElement } from 'react'
-import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { RegionData } from '@/types/region-types'
 import {
@@ -65,8 +65,7 @@ export function InsightsCarousel({ regionData, selectedYear }: InsightsCarouselP
     <div className="space-y-4">
       {/* Section header with navigation arrows */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-extrabold flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-primary" />
+        <h2 className="text-lg font-extrabold flex items-center gap-2 pl-2">
           Key Insights
         </h2>
         <div className="flex gap-2">

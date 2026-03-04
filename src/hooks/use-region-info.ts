@@ -267,6 +267,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
             .map(agg => ({
               year: agg.year,
               averageLitterPer100m: agg.avg_per_100m,
+              surveyCount: agg.total_surveys,
               date: `${agg.year}-01-01`
             }))
         : undefined

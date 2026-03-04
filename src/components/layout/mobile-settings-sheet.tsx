@@ -1,6 +1,6 @@
 'use client'
 
-import { HelpCircle, Info, Compass } from 'lucide-react'
+import { Heart, Compass, HandCoins } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -99,9 +99,9 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
               className="w-full justify-start h-auto py-3"
               asChild
             >
-              <Link href="#help" onClick={() => onOpenChange(false)}>
-                <HelpCircle className="mr-3 h-5 w-5" />
-                <span>Help & Support</span>
+              <Link href="https://www.mcsuk.org/what-you-can-do/join-a-beach-clean/" target="_blank" rel="noopener noreferrer" onClick={() => onOpenChange(false)}>
+                <Heart className="mr-3 h-5 w-5" />
+                <span>Get involved</span>
               </Link>
             </Button>
             <Button
@@ -109,11 +109,20 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
               className="w-full justify-start h-auto py-3"
               asChild
             >
-              <Link href="#about" onClick={() => onOpenChange(false)}>
-                <Info className="mr-3 h-5 w-5" />
-                <span>About</span>
+              <Link href="https://www.mcsuk.org/make-a-donation/" target="_blank" rel="noopener noreferrer" onClick={() => onOpenChange(false)}>
+                <HandCoins className="mr-3 h-5 w-5" />
+                <span>Donate</span>
               </Link>
             </Button>
+            <Link
+              href="https://www.mcsuk.org/become-a-member/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => onOpenChange(false)}
+              className="flex items-center justify-center w-full py-3 rounded-md text-sm font-medium bg-mcs-red text-white hover:bg-mcs-navy transition-colors"
+            >
+              Become a member
+            </Link>
           </div>
 
           <Separator />

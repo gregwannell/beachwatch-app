@@ -245,7 +245,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           percentage: totalAvgPer100m > 0 ? (item.avgPer100m / totalAvgPer100m) * 100 : 0,
           presence: item.presence,
           yearOverYearChange: item.yearOverYearChange
-        }))
+        })).sort((a, b) => b.avgPer100m - a.avgPer100m)
       }
 
       // --- Litter items (exclude plastic/polystyrene 0-2.5cm — shown separately) ---

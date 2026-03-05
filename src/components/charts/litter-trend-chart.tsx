@@ -101,14 +101,16 @@ export function LitterTrendChart({
 
   return (
     <div className={className}>
-      <div className="mb-2">
-        <h3 className="text-sm font-medium leading-none">Average litter/100m</h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          Average number of litter items per 100 metres of beach surveyed each year. Gaps indicate years with no survey data.
-        </p>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div className="min-w-0">
+          <h3 className="text-sm font-medium leading-none">Average litter/100m</h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Average number of litter items per 100 metres of beach surveyed each year. Gaps indicate years with no survey data.
+          </p>
+        </div>
         <Select value={yearRange} onValueChange={(v: YearRange) => setYearRange(v)}>
           <SelectTrigger
-            className="w-[130px] rounded-lg text-xs h-8 mt-2"
+            className="w-[130px] shrink-0 rounded-lg text-xs h-8"
             aria-label="Select year range"
           >
             <SelectValue placeholder="All years" />
@@ -123,11 +125,11 @@ export function LitterTrendChart({
       <ChartContainer
           config={chartConfig}
           className="w-full"
-          style={{ height: `${height / 16}rem` }}
+          style={{ height: `${height / 14}rem` }}
         >
           <AreaChart
             data={chartData}
-            margin={{ top: 10, right: 10, left: 10, bottom: 40 }}>
+            margin={{ top: 20, right: 10, left: 10, bottom: 30 }}>
             <defs>
               <linearGradient id="fillLitter" x1="0" y1="0" x2="0" y2="1">
                 <stop
@@ -148,7 +150,7 @@ export function LitterTrendChart({
               dataKey="year"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              tickMargin={4}
               style={{ fontSize: '0.6875rem' }}
               angle={-45}
               textAnchor="end"
@@ -156,7 +158,7 @@ export function LitterTrendChart({
             />
             <YAxis
               hide={true}
-              domain={[-10, 'auto']}
+              domain={[0, 'auto']}
             />
             <ChartTooltip
               content={<ChartTooltipContent labelFormatter={(value, payload) => {

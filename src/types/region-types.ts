@@ -59,6 +59,13 @@ export interface RegionData {
       avgPer100m: number
       presence: number
     }
+    policyBreakdown?: Array<{
+      policyItem: string
+      total: number
+      avgPer100m: number
+      presence: number
+      yearOverYearChange?: number
+    }>
     plasticPolystyreneComparison?: {
       regionalAvgPer100m: number
       regionalShare: number

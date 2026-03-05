@@ -83,7 +83,7 @@ export function Header() {
               href="https://www.mcsuk.org/become-a-member/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium px-4 py-2 rounded-md bg-mcs-red text-white hover:bg-mcs-navy transition-colors"
+              className="text-sm font-medium px-4 py-2 rounded-md bg-mcs-red text-white hover:bg-mcs-green transition-colors"
             >
               Become a member
             </Link>

@@ -23,9 +23,11 @@ export function FloatingResetButton({
       size="icon"
       variant="outline"
       className={cn(
-        'fixed top-[4.5rem] right-20 z-[1000] h-12 w-12 rounded-full shadow-lg',
+        'fixed top-4 right-20 z-[1000] h-12 w-12 rounded-full shadow-lg',
         'border-mcs-red bg-mcs-red text-white',
+        'dark:bg-mcs-red dark:border-mcs-red dark:text-white',
         'hover:bg-mcs-red/80 hover:border-mcs-red/80',
+        'dark:hover:bg-mcs-red/80 dark:hover:border-mcs-red/80',
         'transition-all duration-300 ease-in-out',
         'animate-in fade-in slide-in-from-right-5',
         'lg:hidden', // Only show on mobile

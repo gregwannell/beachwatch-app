@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { animate, motion, useMotionValue, useTransform } from "framer-motion"
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -64,11 +64,9 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
     <div className="text-sm text-muted-foreground space-y-3">
       <p className="font-semibold">How is this calculated?</p>
       <p className="text-sm">
-        First, we work out how much litter is found per 100 metres of beach, so every
-        stretch is measured in the same way. For each beach stretch, we then find the
-        middle result (median) from all its surveys, which gives a fair &ldquo;typical&rdquo; value.
-        Finally, we take the middle of those typical values across all beaches, so no single
-        beach or unusual survey dominates the result.
+        First, we calculate how much litter is found per 100 metres of beach so that all surveys can be compared fairly.
+        For each beach, we then find the middle result (median) from all the surveys carried out there. This gives a typical amount of litter for that beach and avoids unusual surveys having too much influence.
+        Finally, we find the middle value across all beaches (median of medians), so the overall result reflects the typical level of litter rather than being dominated by a few beaches with very high or very low amounts of litter.
       </p>
     </div>
   )
@@ -96,7 +94,6 @@ export function AverageLitterKpiCard({ regionData, selectedYear }: AverageLitter
               <DrawerContent>
                 <DrawerHeader>
                   <DrawerTitle>Average Litter Calculation</DrawerTitle>
-                  <DrawerDescription>Understanding how we calculate this metric</DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-6">
                   {calculationContent}

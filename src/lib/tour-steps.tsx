@@ -169,7 +169,7 @@ export const allTours: Tour[] = [
           <>
             <p>
               You&apos;re all set! Explore the data, discover trends, and learn about beach litter
-              across the UK. If you need help again, click &quot;How to Use&quot; in the header.
+              across the UK. To restart this tour, tap the settings icon and select &quot;How to Use&quot;.
             </p>
           </>
         ),

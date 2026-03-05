@@ -3,7 +3,7 @@
 import { ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { YearOverYearBadge } from "../components"
-import { formatNumber } from "@/lib/format-number"
+
 import type { RegionData } from '@/types/region-types'
 
 function SurveyYoYText({ change }: { change?: number }) {
@@ -26,7 +26,7 @@ export function SurveyHighlightCard({ engagementData, selectedYear }: SurveyHigh
         <div className="basis-3/5 p-4 flex flex-col justify-between gap-3">
           <div className="flex items-baseline gap-2 mt-1">
             <p className="text-4xl font-bold tabular-nums">
-              {formatNumber(engagementData.volunteerCount)}
+              {engagementData.volunteerCount.toLocaleString()}
               <span className="text-xs font-medium ml-1">volunteers</span>
             </p>
             <YearOverYearBadge change={engagementData.yearOverYearChanges?.volunteers} increaseIsGood />

@@ -32,6 +32,7 @@ export function MobileRegionStatsSheet({
       <SheetContent
         side="right"
         className="!w-[100vw] !max-w-none p-0 flex flex-col h-full"
+        hideCloseButton
       >
         {/* Accessible title for screen readers */}
         <SheetTitle className="sr-only">
@@ -58,6 +59,7 @@ export function MobileRegionStatsSheet({
             onRegionSelect={onRegionSelect}
             selectedYear={selectedYear}
             hideHeader={false}
+            autoOpenLimitedSurveyDialog={false}
           />
         </div>
       </SheetContent>

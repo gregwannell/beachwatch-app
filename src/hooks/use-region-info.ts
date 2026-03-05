@@ -62,6 +62,17 @@ interface LitterItemBreakdown {
   presence: number
 }
 
+interface PolicyItemBreakdown {
+  policyItem: {
+    id: number
+    name: string
+  }
+  total: number
+  avgPer100m: number
+  presence: number
+  yearOverYearChange?: number
+}
+
 // Helper function to generate mock suggested regions (would be replaced with actual API)
 function generateSuggestedRegions(regionId: number): SuggestedRegion[] {
   // This would normally come from a real API that finds nearby regions with data
@@ -170,9 +181,11 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
     queryFn: async (): Promise<RegionData | null> => {
       if (!regionId) return null
 
-      // Single RPC call replacing 7–8 parallel HTTP requests
       const yearParam = year ? `&year=${year}` : ''
-      const panelResponse = await fetch(`/api/analytics/region-panel?regionId=${regionId}${yearParam}`)
+      const [panelResponse, policyResponse] = await Promise.all([
+        fetch(`/api/analytics/region-panel?regionId=${regionId}${yearParam}`),
+        fetch(`/api/analytics/policy-items?regionId=${regionId}${yearParam}`)
+      ])
 
       if (!panelResponse.ok) {
         throw new Error(`Failed to fetch region panel data: ${panelResponse.statusText}`)
@@ -192,6 +205,9 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           materials: MaterialBreakdown[]
         } | null
       } } = await panelResponse.json()
+
+      const policyApiData: { data: { policyItems: PolicyItemBreakdown[] } } | null =
+        policyResponse.ok ? await policyResponse.json() : null
 
       const panelData = panelApiData.data
       const { region, parent, aggregates = [] } = panelData
@@ -262,6 +278,20 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           presence: panelData.plasticFragmentsItem.presence
         }
       }
+
+      // --- Policy items ---
+      const policyBreakdown: RegionData['litterData']['policyBreakdown'] =
+        policyApiData?.data?.policyItems?.length
+          ? policyApiData.data.policyItems
+              .sort((a, b) => b.avgPer100m - a.avgPer100m)
+              .map(item => ({
+                policyItem: item.policyItem.name,
+                total: item.total,
+                avgPer100m: item.avgPer100m,
+                presence: item.presence,
+                yearOverYearChange: item.yearOverYearChange
+              }))
+          : undefined
 
       // --- Trend data: built from aggregates (all years, no extra request) ---
       const trendData: RegionData['litterData']['trendData'] = aggregates.length > 0
@@ -369,6 +399,7 @@ export function useRegionInfo(regionId: number | null, year?: number, enabled: b
           sourceBreakdown,
           topLitterItems,
           plasticFragmentsItem,
+          policyBreakdown,
           averageLitterPer100m,
           yearOverYearChange,
           ukAverageComparison,

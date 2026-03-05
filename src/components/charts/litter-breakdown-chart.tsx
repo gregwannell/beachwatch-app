@@ -19,6 +19,7 @@ import { Info } from "lucide-react"
 
 interface MaterialBreakdownItem {
   material: string
+  count?: number
   avgPer100m: number
   percentage: number
   yearOverYearChange?: number
@@ -26,6 +27,7 @@ interface MaterialBreakdownItem {
 
 interface SourceBreakdownItem {
   source: string
+  count?: number
   avgPer100m: number
   percentage: number
   yearOverYearChange?: number
@@ -44,7 +46,7 @@ export function LitterBreakdownChart({
   materialBreakdown,
   sourceBreakdown,
   className,
-  height = 250,
+  height = 180,
   title = "Litter Breakdown",
   description = "Breakdown by material type and source",
 }: LitterBreakdownChartProps) {
@@ -146,12 +148,13 @@ export function LitterBreakdownChart({
             <TabsTrigger value="source">By Source</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="material" className="mt-4">
+          <TabsContent value="material" className="mt-0">
             {materialBreakdown.length > 0 ? (
               <DonutPieChart
                 data={materialBreakdown.map((item, index) => ({
                   name: item.material,
                   value: item.avgPer100m,
+                  total: item.count,
                   percentage: item.percentage,
                   fill: Object.values(chartColors)[index % Object.values(chartColors).length],
                   yearOverYearChange: item.yearOverYearChange,
@@ -167,12 +170,13 @@ export function LitterBreakdownChart({
             )}
           </TabsContent>
 
-          <TabsContent value="source" className="mt-4">
+          <TabsContent value="source" className="mt-0">
             {sourceBreakdown.length > 0 ? (
               <DonutPieChart
                 data={sourceBreakdown.map((item, index) => ({
                   name: item.source,
                   value: item.avgPer100m,
+                  total: item.count,
                   percentage: item.percentage,
                   fill: Object.values(chartColors)[index % Object.values(chartColors).length],
                   yearOverYearChange: item.yearOverYearChange,

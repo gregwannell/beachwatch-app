@@ -9,11 +9,20 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { YearOverYearBadge } from "@/components/region-stats/components/year-over-year-badge"
 
 interface DonutPieChartData {
   name: string
   value: number
+  total?: number
   percentage?: number
   fill: string
   yearOverYearChange?: number
@@ -32,7 +41,6 @@ interface DonutPieChartProps {
 
 export function DonutPieChart({
   data,
-  title,
   className,
   height = 300,
   animationDuration = 800,
@@ -73,17 +81,17 @@ export function DonutPieChart({
       <div className="flex-1">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[15.625rem]"
-          style={{ height: `${height / 16}rem` }}
+          className="mx-auto aspect-square"
+          style={{ height: `${height / 16}rem`, maxHeight: `${height / 16}rem` }}
         >
-          <PieChart>
+          <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
                   indicator="line"
                   nameKey="name"
-                  formatter={(value, name) => {
+                  formatter={(_value, name) => {
                     const itemData = data.find(item => item.name === name)
                     const percentage = itemData?.percentage !== undefined
                       ? itemData.percentage
@@ -107,47 +115,49 @@ export function DonutPieChart({
         </ChartContainer>
 
         {/* Data Table */}
-        <div>
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-            <span>{title?.replace('Breakdown', '') || 'Item'}</span>
-            <span>Avg/100m / Share</span>
-          </div>
-          <ul className="divide-y divide-border text-sm">
-            {data.map((item) => {
-              return (
-                <li
-                  key={item.name}
-                  className="flex items-center justify-between space-x-6 py-2"
-                >
-                  <div className="flex items-center gap-2 truncate min-w-0">
-                    <span
-                      className="size-2.5 shrink-0 rounded-sm"
-                      style={{ backgroundColor: item.fill }}
-                      aria-hidden="true"
-                    />
-                    <span className="truncate">{item.name}</span>
-                    {item.yearOverYearChange != null && (
-                      <div className="scale-75 origin-left">
-                        <YearOverYearBadge change={item.yearOverYearChange} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2 shrink-0">
-                    <span className="font-medium tabular-nums">
-                      {item.value % 1 === 0
-                        ? item.value.toLocaleString()
-                        : item.value.toFixed(1)}
-                    </span>
-                    <span className="rounded-md bg-muted px-1.5 py-0.5 text-xs font-medium tabular-nums">
-                      {item.percentage !== undefined
-                        ? `${item.percentage.toFixed(1)}%`
-                        : `${((item.value / totalValue) * 100).toFixed(1)}%`}
-                    </span>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
+        <div className="rounded-lg border overflow-auto mt-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="text-xs text-muted-foreground/50 h-8 px-3">Item</TableHead>
+                <TableHead className="text-xs text-muted-foreground/50 h-8 px-3">Total</TableHead>
+                <TableHead className="text-xs text-muted-foreground/50 h-8 px-3">Avg/100m</TableHead>
+                <TableHead className="text-xs text-muted-foreground/50 h-8 px-3">Share</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item) => (
+                <TableRow key={item.name} className="text-xs">
+                  <TableCell className="px-3 py-2 font-medium">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span
+                        className="size-2.5 shrink-0 rounded-sm"
+                        style={{ backgroundColor: item.fill }}
+                        aria-hidden="true"
+                      />
+                      <span className="truncate">{item.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-2 tabular-nums">
+                    {item.total != null ? item.total.toLocaleString() : '—'}
+                  </TableCell>
+                  <TableCell className="px-3 py-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="tabular-nums">
+                        {item.value % 1 === 0 ? item.value.toLocaleString() : item.value.toFixed(1)}
+                      </span>
+                      <YearOverYearBadge change={item.yearOverYearChange} variant="plain" className="text-[11px]" />
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-3 py-2 tabular-nums">
+                    {item.percentage !== undefined
+                      ? `${item.percentage.toFixed(1)}%`
+                      : `${((item.value / totalValue) * 100).toFixed(1)}%`}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>

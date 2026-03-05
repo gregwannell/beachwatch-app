@@ -277,7 +277,7 @@ export function UKMap({
         maxBounds={UK_BOUNDS}
         maxBoundsViscosity={1.0}
         zoom={6}
-        minZoom={6}
+        minZoom={5}
         maxZoom={11}
         scrollWheelZoom={true}
         touchZoom={true}
@@ -320,7 +320,7 @@ export function UKMap({
       </MapContainer>
 
       {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
-      <div className="absolute bottom-32 right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
+      <div className="absolute bottom-[88px] right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
         <button
           onClick={() => mapRef.current?.zoomIn()}
           className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"

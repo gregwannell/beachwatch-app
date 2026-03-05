@@ -98,14 +98,14 @@ export function RegionStatsContent({
           <>
             <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <AlertDialogContent
-                className="border-amber-900 bg-amber-100 text-amber-900"
+                className="border-amber-900 bg-amber-100 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50"
               >
                 <AlertDialogHeader>
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                    <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                     <AlertDialogTitle>Limited Survey Data</AlertDialogTitle>
                   </div>
-                  <AlertDialogDescription className="text-amber-900">
+                  <AlertDialogDescription className="text-amber-900 dark:text-amber-50">
                     This region has fewer than 5 surveys. Statistics should be
                     interpreted with caution as they may not be representative.
                   </AlertDialogDescription>

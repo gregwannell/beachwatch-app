@@ -8,6 +8,7 @@ export interface ChildRegionStat {
   name: string
   type: string
   hasData: boolean
+  hasDataForYear: boolean
   avgPer100m: number | null
   avgPer100mYoY: number | null
   totalSurveys: number | null
@@ -82,6 +83,7 @@ export function useChildRegionStats(parentId: string | null, year?: number) {
           name: child.name,
           type: child.type,
           hasData: child.has_data,
+          hasDataForYear: target != null,
           avgPer100m: target?.avg_per_100m ?? null,
           avgPer100mYoY: calcYoY(target?.avg_per_100m, prev?.avg_per_100m),
           totalSurveys: target?.total_surveys ?? null,

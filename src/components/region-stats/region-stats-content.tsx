@@ -27,6 +27,7 @@ interface RegionStatsContentProps {
   onRegionSelect?: (regionId: string) => void
   selectedYear?: number
   hideHeader?: boolean
+  autoOpenLimitedSurveyDialog?: boolean
 }
 
 export function RegionStatsContent({
@@ -35,6 +36,7 @@ export function RegionStatsContent({
   onRegionSelect,
   selectedYear,
   hideHeader = false,
+  autoOpenLimitedSurveyDialog = true,
 }: RegionStatsContentProps) {
   const isLimitedSurvey = Boolean(
     regionData?.hasData &&
@@ -45,8 +47,10 @@ export function RegionStatsContent({
   const [dialogOpen, setDialogOpen] = React.useState(false)
 
   React.useEffect(() => {
-    setDialogOpen(isLimitedSurvey)
-  }, [regionData?.id, isLimitedSurvey])
+    if (autoOpenLimitedSurveyDialog) {
+      setDialogOpen(isLimitedSurvey)
+    }
+  }, [regionData?.id, isLimitedSurvey, autoOpenLimitedSurveyDialog])
 
   if (isLoading) {
     return <LoadingSkeleton />
@@ -130,20 +134,33 @@ export function RegionStatsContent({
               </AlertDialogContent>
             </AlertDialog>
 
-            <button
-              type="button"
-              onClick={() => setDialogOpen(true)}
-              className={cn(
-                "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm",
-                "border border-amber-200 bg-amber-50 text-amber-900",
-                "dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50",
-                "hover:bg-amber-100 dark:hover:bg-amber-900/50",
-                "transition-colors cursor-pointer"
-              )}
-            >
-              <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <span className="font-medium">Limited survey data</span>
-            </button>
+            {autoOpenLimitedSurveyDialog ? (
+              <button
+                type="button"
+                onClick={() => setDialogOpen(true)}
+                className={cn(
+                  "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm",
+                  "border border-amber-200 bg-amber-50 text-amber-900",
+                  "dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50",
+                  "hover:bg-amber-100 dark:hover:bg-amber-900/50",
+                  "transition-colors cursor-pointer"
+                )}
+              >
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <span className="font-medium">Limited survey data</span>
+              </button>
+            ) : (
+              <div
+                className={cn(
+                  "flex items-center gap-2 w-full px-3 py-2 rounded-md text-sm",
+                  "border border-amber-200 bg-amber-50 text-amber-900",
+                  "dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50",
+                )}
+              >
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <span className="font-medium">Limited survey data</span>
+              </div>
+            )}
           </>
         )}
 

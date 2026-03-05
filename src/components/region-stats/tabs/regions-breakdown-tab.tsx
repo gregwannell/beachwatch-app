@@ -23,7 +23,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { YearOverYearBadge } from '@/components/region-stats/components/year-over-year-badge'
 import { cn } from '@/lib/utils'
-import { formatNumber, formatBeachLength, formatWeight } from '@/lib/format-number'
+import { formatBeachLength, formatWeight } from '@/lib/format-number'
 import { useChildRegionStats, type ChildRegionStat } from '@/hooks/use-child-region-stats'
 import type { RegionData } from '@/types/region-types'
 
@@ -80,7 +80,10 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
     selectedYear
   )
 
-  const withData = React.useMemo(() => children?.filter(c => c.hasData) ?? [], [children])
+  const withData = React.useMemo(
+    () => children?.filter(c => c.hasData && c.hasDataForYear) ?? [],
+    [children]
+  )
   const excludedCount = (children?.length ?? 0) - withData.length
 
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -133,7 +136,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalSurveys
         return val != null ? (
-          <span className="tabular-nums">{formatNumber(val, 0)}</span>
+          <span className="tabular-nums">{val.toLocaleString()}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
@@ -146,7 +149,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalVolunteers
         return val != null ? (
-          <span className="tabular-nums">{formatNumber(val, 0)}</span>
+          <span className="tabular-nums">{val.toLocaleString()}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
@@ -159,7 +162,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
       cell: ({ row }) => {
         const val = row.original.totalLitter
         return val != null ? (
-          <span className="tabular-nums">{formatNumber(val, 0)}</span>
+          <span className="tabular-nums">{val.toLocaleString()}</span>
         ) : (
           <span className="text-muted-foreground">—</span>
         )
@@ -224,7 +227,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
     )
   }
 
-  if (children?.length === 0 || withData.length === 0) {
+  if (children?.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
         <MapPin className="w-5 h-5 text-muted-foreground" />
@@ -237,13 +240,24 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
     )
   }
 
+  if (withData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-center space-y-2">
+        <MapPin className="w-5 h-5 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">
+          No sub-regions have data{selectedYear ? ` for ${selectedYear}` : ''}.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between">
+      <div className="space-y-1">
         <h3 className="text-sm font-semibold">Regional Breakdown</h3>
         {excludedCount > 0 && (
           <p className="text-xs text-muted-foreground">
-            {excludedCount} {excludedCount === 1 ? 'region' : 'regions'} without data not shown.
+            Regions without data{selectedYear ? ` for ${selectedYear}` : ''} are hidden.
           </p>
         )}
       </div>

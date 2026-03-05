@@ -12,8 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { Info } from "lucide-react"
 
@@ -67,15 +67,15 @@ export function LitterBreakdownChart({
   // Shared content for both Drawer and Dialog
   const explanationContent = (
     <div className="text-sm text-muted-foreground space-y-3">
-      <p className="font-semibold">How is litter categorized?</p>
+      <p className="font-semibold">How is litter categorised?</p>
       <p className="text-sm">
-        <strong>Material Type:</strong> Litter is grouped by what it&apos;s made from - such as plastic, glass, metal, cloth, or rubber. This helps us understand which materials contribute most to beach pollution.
+        <strong>Material Type:</strong> Litter is grouped by the construction material is mainly made from, such as plastic, glass, or rubber. This helps us understand which materials contribute most to beach pollution.
       </p>
       <p className="text-sm">
-        <strong>Source:</strong> Litter is categorized by where it likely came from - such as public littering, fishing activities, shipping, sewage-related debris, or fly-tipped items. Identifying sources helps target prevention efforts.
+        <strong>Source:</strong> Litter is grouped by where it likely came from, such as public littering, fishing activities, shipping, or sewage-related debris. Identifying sources helps target prevention efforts.
       </p>
       <p className="text-sm">
-        Both breakdowns show the average amount per 100m and the share (percentage) that category represents of all litter found in this region.
+        Both breakdowns show the average amount per 100m and the share (percentage) that category represents. 
       </p>
     </div>
   )
@@ -111,7 +111,6 @@ export function LitterBreakdownChart({
               <DrawerContent>
                 <DrawerHeader>
                   <DrawerTitle>Litter Breakdown Categories</DrawerTitle>
-                  <DrawerDescription>Understanding material types and sources</DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-6">
                   {explanationContent}
@@ -133,7 +132,6 @@ export function LitterBreakdownChart({
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Litter Breakdown Categories</DialogTitle>
-                  <DialogDescription>Understanding material types and sources</DialogDescription>
                 </DialogHeader>
                 {explanationContent}
               </DialogContent>

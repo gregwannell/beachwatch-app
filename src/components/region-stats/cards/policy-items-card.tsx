@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import {
@@ -31,22 +31,22 @@ interface PolicyItemsCardProps {
 
 const explanationContent = (
   <div className="text-sm text-muted-foreground space-y-3">
-    <p>These groups are monitored as part of UK and international policy frameworks to track progress on reducing specific litter categories.</p>
+    <p>These groups are monitored by the Marine Conservation Society as part of UK & international policy work to track the need for, or progress on, reducing specific litter categories.</p>
     <dl className="space-y-2">
       <div>
-        <dt className="font-semibold text-foreground">DRD – Drink-Related Debris</dt>
-        <dd>Bottles, cans, cups and other drink packaging.</dd>
+        <dt className="font-semibold text-foreground">DRD: Drink-Related Debris</dt>
+        <dd>Items included in plans for proposed drink return schemes, such as plastic bottles, metal cans, and other drink packaging.</dd>
       </div>
       <div>
         <dt className="font-semibold text-foreground">Fishing</dt>
         <dd>Fishing lines, nets, hooks, rope and other fishing gear.</dd>
       </div>
       <div>
-        <dt className="font-semibold text-foreground">SRD – Sewage-Related Debris</dt>
+        <dt className="font-semibold text-foreground">SRD: Sewage-Related Debris</dt>
         <dd>Items flushed down toilets and drains, including wet wipes and cotton buds.</dd>
       </div>
       <div>
-        <dt className="font-semibold text-foreground">SUP – Single Use Plastics</dt>
+        <dt className="font-semibold text-foreground">SUP: Single Use Plastics</dt>
         <dd>Items covered by the EU Single Use Plastics Directive, such as straws, cutlery and balloon sticks.</dd>
       </div>
       <div>
@@ -83,9 +83,12 @@ export function PolicyItemsCard({ data, className }: PolicyItemsCardProps) {
     <Card className={className}>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-m font-bold text-muted-foreground">
-            Policy Monitoring
-          </CardTitle>
+          <div className="flex-1">
+            <CardTitle className="text-m font-bold text-muted-foreground">
+              Policy Monitoring
+            </CardTitle>
+            <CardDescription className="text-xs">Key litter categories tracked against UK and international policy targets</CardDescription>
+          </div>
           {isMobile ? (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
               <DrawerTrigger asChild>{infoTrigger}</DrawerTrigger>

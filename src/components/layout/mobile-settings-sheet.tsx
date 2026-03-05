@@ -119,7 +119,7 @@ export function MobileSettingsSheet({ open, onOpenChange }: MobileSettingsSheetP
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => onOpenChange(false)}
-              className="flex items-center justify-center w-full py-3 rounded-md text-sm font-medium bg-mcs-red text-white hover:bg-mcs-navy transition-colors"
+              className="flex items-center justify-center w-full py-3 rounded-md text-sm font-medium bg-mcs-red text-white hover:bg-mcs-green transition-colors"
             >
               Become a member
             </Link>

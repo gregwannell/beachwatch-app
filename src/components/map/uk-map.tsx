@@ -31,9 +31,9 @@ const REGION_COLORS = {
   england: 'var(--mcs-orange)',         // Orange
   wales: 'var(--mcs-red)',           // Red
   northernIreland: 'var(--mcs-green)', // Green
-  guernsey: 'var(--mcs-navy)',        // Dark blue
-  jersey: 'var(--mcs-navy)',          // Dark blue
-  isleOfMan: 'var(--mcs-light-blue)'        // Light blue
+  guernsey: 'var(--mcs-purple)',      // Purple
+  jersey: 'var(--mcs-purple)',        // Purple
+  isleOfMan: 'var(--mcs-teal)'        // Teal
 }
 
 // Function to calculate bounds from GeoJSON geometry

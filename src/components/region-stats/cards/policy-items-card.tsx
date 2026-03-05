@@ -130,7 +130,7 @@ export function PolicyItemsCard({ data, className }: PolicyItemsCardProps) {
                   <TableCell className="px-3 py-2.5">
                     <div className="flex items-center gap-1.5">
                       <span className="tabular-nums">{item.avgPer100m.toFixed(1)}</span>
-                      <YearOverYearBadge change={item.yearOverYearChange} variant="plain" className="text-[11px]" />
+                      <YearOverYearBadge change={item.yearOverYearChange} variant="plain" />
                     </div>
                   </TableCell>
                 </TableRow>

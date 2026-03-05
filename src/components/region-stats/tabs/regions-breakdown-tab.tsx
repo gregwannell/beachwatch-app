@@ -122,7 +122,7 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
         return val != null ? (
           <div className="flex items-center gap-1.5">
             <span className="tabular-nums text-xs">{val.toFixed(1)}</span>
-            <YearOverYearBadge change={row.original.avgPer100mYoY ?? undefined} variant="plain" className="text-[11px]"/>
+            <YearOverYearBadge change={row.original.avgPer100mYoY ?? undefined} variant="plain" />
           </div>
         ) : (
           <span className="text-muted-foreground">—</span>
@@ -257,7 +257,8 @@ export function RegionsTab({ regionData, selectedYear, onRegionSelect }: Regions
         <h3 className="text-sm font-semibold">Regional Breakdown</h3>
         {excludedCount > 0 && (
           <p className="text-xs text-muted-foreground">
-            Regions without data{selectedYear ? ` for ${selectedYear}` : ''} are hidden.
+            This shows a breakdown of key headline metrics for sub-regions within {regionData.name}. Sub-regions that had no {selectedYear ? ` ${selectedYear}` : ''} surveys are hidden.
+            Average litter/100m vs the previous year is shown where available, but may not be shown for all regions due to insufficient historical data.
           </p>
         )}
       </div>

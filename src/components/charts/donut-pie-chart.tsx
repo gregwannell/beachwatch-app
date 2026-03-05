@@ -105,7 +105,7 @@ export function DonutPieChart({
               data={data}
               dataKey="value"
               nameKey="name"
-              innerRadius={60}
+              innerRadius="40%"
               strokeWidth={5}
               animationDuration={animationDuration}
               animationEasing={animationEasing}
@@ -146,7 +146,7 @@ export function DonutPieChart({
                       <span className="tabular-nums">
                         {item.value % 1 === 0 ? item.value.toLocaleString() : item.value.toFixed(1)}
                       </span>
-                      <YearOverYearBadge change={item.yearOverYearChange} variant="plain" className="text-[11px]" />
+                      <YearOverYearBadge change={item.yearOverYearChange} variant="plain" />
                     </div>
                   </TableCell>
                   <TableCell className="px-3 py-2 tabular-nums">

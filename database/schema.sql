@@ -107,6 +107,25 @@ CREATE TABLE annual_litter_aggregates (
     UNIQUE(aggregate_id, litter_item_id)
 );
 
+-- Policy item dimension table
+CREATE TABLE policy_items (
+    id SERIAL PRIMARY KEY,
+    policy_item VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Annual policy item aggregates linked to region aggregates
+CREATE TABLE annual_policy_aggregates (
+    id SERIAL PRIMARY KEY,
+    aggregate_id INTEGER NOT NULL REFERENCES annual_region_aggregates(id) ON DELETE CASCADE,
+    policy_item_id INTEGER NOT NULL REFERENCES policy_items(id) ON DELETE CASCADE,
+    total NUMERIC(12,2) DEFAULT 0,
+    avg_per_100m NUMERIC(8,2) DEFAULT 0,
+    presence INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(aggregate_id, policy_item_id)
+);
+
 -- Create indexes for performance optimization
 CREATE INDEX idx_regions_type ON regions(type);
 CREATE INDEX idx_regions_parent ON regions(parent_id);
@@ -126,6 +145,9 @@ CREATE INDEX idx_annual_source_aggregates_source ON annual_source_aggregates(sou
 
 CREATE INDEX idx_annual_litter_aggregates_region ON annual_litter_aggregates(aggregate_id);
 CREATE INDEX idx_annual_litter_aggregates_litter ON annual_litter_aggregates(litter_item_id);
+
+CREATE INDEX idx_annual_policy_aggregates_region ON annual_policy_aggregates(aggregate_id);
+CREATE INDEX idx_annual_policy_aggregates_policy ON annual_policy_aggregates(policy_item_id);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -248,6 +270,8 @@ COMMENT ON TABLE annual_litter_aggregates IS 'Litter item breakdown data linked 
 COMMENT ON TABLE materials IS 'Dimension table for litter materials';
 COMMENT ON TABLE sources IS 'Dimension table for litter sources';
 COMMENT ON TABLE litter_items IS 'Dimension table for specific litter items';
+COMMENT ON TABLE policy_items IS 'Dimension table for litter item groups monitored for policy';
+COMMENT ON TABLE annual_policy_aggregates IS 'Annual policy item breakdown data linked to region aggregates';
 
 -- Enable Row Level Security (RLS) on all tables
 ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
@@ -259,6 +283,8 @@ ALTER TABLE annual_region_aggregates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE annual_material_aggregates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE annual_source_aggregates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE annual_litter_aggregates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE policy_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE annual_policy_aggregates ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies: Only app backend (service_role) can access data
 -- Users can only see data through the app interface, not raw database access
@@ -296,6 +322,14 @@ CREATE POLICY "app_backend_only_annual_source_aggregates" ON annual_source_aggre
     USING (true);
 
 CREATE POLICY "app_backend_only_annual_litter_aggregates" ON annual_litter_aggregates
+    FOR ALL TO service_role
+    USING (true);
+
+CREATE POLICY "app_backend_only_policy_items" ON policy_items
+    FOR ALL TO service_role
+    USING (true);
+
+CREATE POLICY "app_backend_only_annual_policy_aggregates" ON annual_policy_aggregates
     FOR ALL TO service_role
     USING (true);
 

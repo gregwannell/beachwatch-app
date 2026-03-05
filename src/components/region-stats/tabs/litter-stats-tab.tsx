@@ -1,6 +1,6 @@
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { TopLitterItemsChart, LitterBreakdownChart } from "@/components/charts"
-import { PlasticFragmentsCard } from "@/components/region-stats/cards"
+import { PlasticFragmentsCard, PolicyItemsCard } from "@/components/region-stats/cards"
 import { Info, PieChart } from "lucide-react"
 import type { RegionData } from '@/types/region-types'
 
@@ -64,6 +64,11 @@ export function LitterStatsTab({ regionData }: LitterStatsTabProps) {
             </div>
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* Policy monitoring breakdown */}
+      {regionData.litterData.policyBreakdown && regionData.litterData.policyBreakdown.length > 0 && (
+        <PolicyItemsCard data={regionData.litterData.policyBreakdown} className="w-full" />
       )}
 
       {/* Plastic Pieces 0-2.5cm highlight */}

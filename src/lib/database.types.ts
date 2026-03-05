@@ -291,6 +291,52 @@ export interface Database {
           created_at?: string
         }
       }
+      policy_items: {
+        Row: {
+          id: number
+          policy_item: string
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          policy_item: string
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          policy_item?: string
+          created_at?: string
+        }
+      }
+      annual_policy_aggregates: {
+        Row: {
+          id: number
+          aggregate_id: number
+          policy_item_id: number
+          total: number
+          avg_per_100m: number
+          presence: number
+          created_at: string
+        }
+        Insert: {
+          id?: number
+          aggregate_id: number
+          policy_item_id: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+        Update: {
+          id?: number
+          aggregate_id?: number
+          policy_item_id?: number
+          total?: number
+          avg_per_100m?: number
+          presence?: number
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

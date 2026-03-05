@@ -71,6 +71,7 @@ export function LitterStatsTab({ regionData }: LitterStatsTabProps) {
         <PolicyItemsCard data={regionData.litterData.policyBreakdown} className="w-full" />
       )}
 
+
       {/* Plastic Pieces 0-2.5cm highlight */}
       {regionData.litterData.plasticFragmentsItem && (
         <PlasticFragmentsCard

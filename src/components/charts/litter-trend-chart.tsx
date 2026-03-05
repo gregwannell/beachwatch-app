@@ -158,7 +158,7 @@ export function LitterTrendChart({
             />
             <YAxis
               hide={true}
-              domain={[0, 'auto']}
+              domain={[-10, 'auto']}
             />
             <ChartTooltip
               content={<ChartTooltipContent labelFormatter={(value, payload) => {

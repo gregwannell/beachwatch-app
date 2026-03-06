@@ -21,8 +21,8 @@ L.Icon.Default.mergeOptions({
 
 // UK map bounds (expanded to include Jersey ~49.2°N and Shetland ~60.8°N)
 const UK_BOUNDS = new LatLngBounds(
-  [48.8, -8.5], // Southwest (includes Jersey)
-  [61.8, 2.0]   // Northeast (includes Shetland)
+  [47.0, -9.5], // Southwest (extra padding to allow panning to Channel Islands)
+  [62.5, 3.0]   // Northeast (includes Shetland)
 )
 
 // Geographic region colors
@@ -321,7 +321,7 @@ export function UKMap({
       </MapContainer>
 
       {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
-      <div className="absolute bottom-above-nav right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
+      <div className="fixed top-[8rem] right-[25px] z-[1060] flex flex-col gap-1 md:absolute md:top-auto md:bottom-4 md:right-4 md:z-[10]">
         <button
           onClick={() => mapRef.current?.zoomIn()}
           className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"

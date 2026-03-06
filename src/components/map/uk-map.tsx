@@ -21,8 +21,8 @@ L.Icon.Default.mergeOptions({
 
 // UK map bounds (expanded to include Jersey ~49.2°N and Shetland ~60.8°N)
 const UK_BOUNDS = new LatLngBounds(
-  [48.8, -8.5], // Southwest (includes Jersey)
-  [61.8, 2.0]   // Northeast (includes Shetland)
+  [47.0, -9.5], // Southwest (extra padding to allow panning to Channel Islands)
+  [62.5, 3.0]   // Northeast (includes Shetland)
 )
 
 // Geographic region colors

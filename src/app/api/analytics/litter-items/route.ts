@@ -249,4 +249,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export const revalidate = 900 // 15 minutes cache for litter items data
+export const dynamic = 'force-dynamic'

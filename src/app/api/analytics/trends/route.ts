@@ -167,4 +167,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export const revalidate = 1800 // 30 minutes cache for trends data
+export const dynamic = 'force-dynamic'

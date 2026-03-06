@@ -48,7 +48,7 @@ function calculateGeometryBounds(geometry: { type: string; coordinates: number[]
       bounds.extend(new LatLng(coords[1] as number, coords[0] as number))
     } else {
       // Array of coordinates
-      coords.forEach((coord) => addCoordinatesToBounds(coord as number[] | number[][] | number[][][]))
+      ;(coords as Array<number[] | number[][] | number[][][]>).forEach(coord => addCoordinatesToBounds(coord))
     }
   }
 
@@ -321,7 +321,7 @@ export function UKMap({
       </MapContainer>
 
       {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
-      <div className="absolute bottom-28 right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
+      <div className="absolute bottom-above-nav right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
         <button
           onClick={() => mapRef.current?.zoomIn()}
           className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"

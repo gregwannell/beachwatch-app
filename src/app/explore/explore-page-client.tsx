@@ -254,23 +254,19 @@ function ExplorePageContent() {
     // Check if this region can be drilled down (Countries and Crown Dependencies have children)
     const canDrillDown = clickedRegion.type === 'Country' || clickedRegion.type === 'Crown Dependency'
 
-    // Update filter state using functional updater to preserve all settings including data availability
-    setFilters(prev => {
-      const updatedFilters = {
-        ...prev,
-        region: { selectedRegionId: regionId }
-      }
+    // Update filter state
+    setFilters(prev => ({
+      ...prev,
+      region: { selectedRegionId: regionId }
+    }))
 
-      // Update URL with new region (using the current state's year)
-      const params = new URLSearchParams()
-      params.set('region', regionId.toString())
-      if (prev.yearRange.startYear) {
-        params.set('year', prev.yearRange.startYear.toString())
-      }
-      router.push(`/explore?${params.toString()}`, { scroll: false })
-
-      return updatedFilters
-    })
+    // Update URL outside the state updater (side effects must not run inside setState)
+    const params = new URLSearchParams()
+    params.set('region', regionId.toString())
+    if (filters.yearRange.startYear) {
+      params.set('year', filters.yearRange.startYear.toString())
+    }
+    router.push(`/explore?${params.toString()}`, { scroll: false })
 
     // Update region selection and map layer
     setSelectedRegionId(regionId)

@@ -248,6 +248,11 @@
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
+
+  /* Position above the mobile nav bar (h-24 = 6rem) plus any device safe area inset */
+  .bottom-above-nav {
+    bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* Leaflet Map Z-Index Constraint */

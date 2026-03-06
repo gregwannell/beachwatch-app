@@ -140,4 +140,4 @@ export async function GET(
   }
 }
 
-export const revalidate = 900 // 15 minutes cache for analytics data
+export const dynamic = 'force-dynamic'

@@ -268,4 +268,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export const revalidate = 900 // 15 minutes cache for materials data
+export const dynamic = 'force-dynamic'

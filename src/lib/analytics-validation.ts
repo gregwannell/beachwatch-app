@@ -37,7 +37,7 @@ export function validateYearParams(
   endYear?: string | null
 ): ValidationResult & { years?: YearRangeValidation } {
   const currentYear = new Date().getFullYear()
-  const minYear = 2000 // Reasonable minimum year for beach litter data
+  const minYear = 1994 // Earliest year in the beach litter dataset
   
   // Single year validation
   if (year) {

@@ -261,8 +261,9 @@ export function UKMap({
   return (
     <div className={className} role="application" aria-label="Interactive UK regions map">
       {/* Map Legend - only show when highlighting is enabled */}
+      {/* On mobile, offset below the MCS logo overlay which sits at top-4 left-4 */}
       {highlightLimitedSurveys && (
-        <div className="absolute top-4 left-4 z-[1000] bg-white dark:bg-gray-800 rounded-lg shadow-lg px-3 py-2 border border-gray-200 dark:border-gray-700">
+        <div className="absolute top-20 left-4 md:top-4 z-[1000] bg-white dark:bg-gray-800 rounded-lg shadow-lg px-3 py-2 border border-gray-200 dark:border-gray-700">
           <div className="text-xs font-semibold mb-2 text-gray-900 dark:text-gray-100">Legend</div>
           <div className="flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300">
             <div className="w-4 h-3 border-2 border-orange-600 rounded"></div>
@@ -320,7 +321,7 @@ export function UKMap({
       </MapContainer>
 
       {/* Map Controls - React rendered to avoid Leaflet z-index issues */}
-      <div className="absolute bottom-[88px] right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
+      <div className="absolute bottom-28 right-3 z-[1060] flex flex-col gap-1 md:bottom-4 md:right-4 md:z-[10]">
         <button
           onClick={() => mapRef.current?.zoomIn()}
           className="flex items-center justify-center w-[30px] h-[30px] bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-t-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer shadow-md"

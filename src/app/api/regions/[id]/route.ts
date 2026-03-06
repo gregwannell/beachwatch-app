@@ -160,4 +160,4 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export const revalidate = 300 // 5 minutes cache
+export const dynamic = 'force-dynamic'

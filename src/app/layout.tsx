@@ -4,6 +4,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TourProvider } from "@/components/providers/tour-provider";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "Beachwatch Data Explorer",
@@ -27,6 +28,7 @@ export default function RootLayout({
             <TourProvider>
               {children}
               <Toaster />
+              <Analytics />
             </TourProvider>
           </QueryProvider>
         </ThemeProvider>

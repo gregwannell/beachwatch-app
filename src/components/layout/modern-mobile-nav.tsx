@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Map, Menu } from 'lucide-react'
+import { UserPlus, Map, Menu } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 import { BottomNavBar, type NavigationItem } from '@/components/ui/modern-mobile-menu'
@@ -13,32 +13,28 @@ export function ModernMobileNav() {
 
   // Determine default active tab based on current pathname
   const defaultTab = useMemo(() => {
-    if (pathname === '/') return 'home'
     if (pathname === '/explore') return 'explore'
-    return 'home'
+    return 'explore'
   }, [pathname])
 
   // Handle navigation when tabs change
   const handleTabChange = useCallback((tabId: string) => {
     switch (tabId) {
-      case 'home':
-        router.push('/')
+      case 'member':
+        window.open('https://www.mcsuk.org/become-a-member/', '_blank', 'noopener noreferrer')
         break
       case 'explore':
         router.push('/explore')
         break
       case 'settings':
-        // Toggle settings panel or navigate to settings page
         setIsSettingsOpen(prev => !prev)
-        // Uncomment to navigate to settings page:
-        // router.push('/settings')
         break
     }
   }, [router])
 
   // Define navigation items
   const sideItems: [NavigationItem, NavigationItem] = useMemo(() => [
-    { id: 'home', label: 'Home', icon: Home },
+    { id: 'member', label: 'Member', icon: UserPlus },
     { id: 'settings', label: 'Settings', icon: Menu }
   ], [])
 

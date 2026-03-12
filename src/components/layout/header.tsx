@@ -49,7 +49,7 @@ export function Header() {
       <header className="hidden md:block fixed top-0 left-0 right-0 z-[1100] backdrop-blur-md bg-mcs-navy border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Left: MCS Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/explore" className="flex-shrink-0">
             <Image
               src="/mcs-bw-logo.png"
               alt="Marine Conservation Society"

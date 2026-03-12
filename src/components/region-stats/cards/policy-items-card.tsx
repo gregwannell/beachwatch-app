@@ -34,7 +34,7 @@ const explanationContent = (
     <p>These groups are monitored by the Marine Conservation Society as part of UK & international policy work to track the need for, or progress on, reducing specific litter categories.</p>
     <dl className="space-y-2">
       <div>
-        <dt className="font-semibold text-foreground">DRD: Drink-Related Debris</dt>
+        <dt className="font-semibold text-foreground">Drink related litter</dt>
         <dd>Items included in plans for proposed drink return schemes, such as plastic bottles, metal cans, and other drink packaging.</dd>
       </div>
       <div>
@@ -42,11 +42,11 @@ const explanationContent = (
         <dd>Fishing lines, nets, hooks, rope and other fishing gear.</dd>
       </div>
       <div>
-        <dt className="font-semibold text-foreground">SRD: Sewage-Related Debris</dt>
+        <dt className="font-semibold text-foreground">Sewage related debris</dt>
         <dd>Items flushed down toilets and drains, including wet wipes and cotton buds.</dd>
       </div>
       <div>
-        <dt className="font-semibold text-foreground">SUP: Single Use Plastics</dt>
+        <dt className="font-semibold text-foreground">Single-use Plastics</dt>
         <dd>Items covered by the EU Single Use Plastics Directive, such as straws, cutlery and balloon sticks.</dd>
       </div>
       <div>

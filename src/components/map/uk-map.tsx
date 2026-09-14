@@ -293,6 +293,7 @@ export function UKMap({
           key={mapTheme}
           attribution={MAP_THEMES[mapTheme].attribution}
           url={MAP_THEMES[mapTheme].url}
+          subdomains="abcd"
         />
         
         {regions.map((region) => {

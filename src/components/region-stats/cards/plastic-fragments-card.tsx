@@ -106,7 +106,7 @@ export function PlasticFragmentsCard({ avgPer100m, presence, className }: Plasti
       {/* CTA */}
       <div className="relative z-10 mt-5">
         <a
-          href="https://www.mcsuk.org/what-you-can-do/citizen-science/big-microplastic-survey/"
+          href="https://microplasticsurvey.org/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-mcs-teal px-4 py-3 text-sm font-semibold text-white hover:bg-mcs-teal/80 transition-colors"
